@@ -1,0 +1,38 @@
+# KahoAgent 配置示例
+#
+# 复制为 config.toml 并填入实际值
+# 不要提交 config.toml 到仓库
+
+debug = true
+
+[server]
+port = 8080
+
+[db]
+# PostgreSQL DSN (用于 BM25 全文检索 ts_vector)
+dsn = "host=127.0.0.1 port=5432 user=postgres password=CHANGE_ME dbname=kahoagent sslmode=disable"
+
+[redis]
+addr = "127.0.0.1:6379"
+password = ""
+db = 0
+
+[milvus]
+addr = "127.0.0.1:19530"
+collection = "kaho_documents"
+
+[kafka]
+brokers = ["127.0.0.1:9092"]
+topic = "document-processing"
+group_id = "kahoagent-worker"
+
+[llm]
+provider = "deepseek"                      # openai / deepseek
+api_key = "CHANGE_ME"
+base_url = "https://api.deepseek.com/v1"   # OpenAI 兼容
+model = "deepseek-chat"
+embedding_model = "text-embedding-3-small" # 或 BAAI/bge-m3
+
+[mcp]
+transport = "stdio"  # stdio / sse
+port = 3000          # SSE 模式监听端口
