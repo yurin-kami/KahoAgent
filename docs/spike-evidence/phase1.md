@@ -108,3 +108,35 @@ $ go run -tags=ingestcheck ./scripts/eval/ingest_check.go docs/sample.md
 **实证依据**，也已记入 BACKLOG 作为 golden set 的难例。
 
 按防漂移铁律，本 Phase 不做任何检索排序改进。
+
+---
+
+### 📌 Phase 2 回访：上面这个归因是错的
+
+Phase 2 用 `scripts/eval/backlog_check.go` 复查了这条具体查询，
+结果与当时的结论不符：
+
+| 策略 | Top1 |
+|---|---|
+| vector-only | ✅ 正确（缓存穿透那一节） |
+| bm25-only | ❌ 无关 |
+| hybrid-rrf | ✅ 正确 |
+| hybrid+rerank | ✅ 正确 |
+
+**纯向量检索现在能答对**。变量不是检索算法 —— 是语料：
+Phase 1 时库里只有 `docs/sample.md` 一篇示例文档，
+里面并没有真正讲「缓存穿透」解法的段落，向量检索只能在
+现有内容里挑最接近的，于是返回了「击穿」。
+
+所以那是**召回覆盖问题**，被误读成了**排序能力问题**。
+Phase 2 灌入 77 篇真实文章（1307 chunk）后，正确的块进了库，
+向量路自己就能排对。
+
+这不影响 Phase 2 引入 BM25 + RRF + 精排的决策 ——
+近义概念混淆在更大的 golden set 上确有其事
+（`confusable` 类 vector-only MRR 仅 0.250，见 `../eval-results.md`），
+但**这个具体案例不构成那个结论的证据**，当时用它做论据是不严谨的。
+
+教训：**在语料不完整时观察到的检索错误，不能归因于检索算法。**
+要先确认「正确答案在库里」，再谈「排没排出来」——
+这正是 Phase 2 用 recall@50 先做分层定位的原因。

@@ -1,0 +1,1178 @@
+[
+  {
+    "query": "怎么防止缓存被恶意请求打穿",
+    "kind": "confusable",
+    "rationale": "必须讲缓存穿透的解法（布隆过滤器/缓存空值），排除只讲击穿或雪崩的块",
+    "relevant_chunk_ids": [
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "f549fc91d7e9af22c52431c2eaf7858b"
+    ]
+  },
+  {
+    "query": "热点key突然失效导致数据库压力暴增怎么办",
+    "kind": "confusable",
+    "rationale": "必须讲缓存击穿的解法（互斥锁/逻辑过期）",
+    "relevant_chunk_ids": [
+      "22e3c7d3f306075041bbed33cd6fdc95",
+      "661bbd3db7ab8f35a0bdc43899537317",
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "94df4d5f059e5d9ba021df4808348439",
+      "a0c45ac4e5f32bd302edb317ae8381eb",
+      "f549fc91d7e9af22c52431c2eaf7858b"
+    ]
+  },
+  {
+    "query": "大量缓存同时过期怎么处理",
+    "kind": "confusable",
+    "rationale": "必须讲缓存雪崩的解法（随机TTL/多级缓存）",
+    "relevant_chunk_ids": [
+      "22e3c7d3f306075041bbed33cd6fdc95",
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "94df4d5f059e5d9ba021df4808348439",
+      "9f8f585a44dbf6af537573ccdf0c420a",
+      "eccccbd1825ac0cba25fb8d87be00928",
+      "f549fc91d7e9af22c52431c2eaf7858b"
+    ]
+  },
+  {
+    "query": "MySQL 里读到别的事务没提交的数据是什么问题",
+    "kind": "confusable",
+    "rationale": "必须提到脏读概念",
+    "relevant_chunk_ids": [
+      "72dcbf365ad419d556320dbbfa2374bb",
+      "9057f2688f14756f31da000f50e1bcb8",
+      "ce850442e05b34a6b34ef8fe4ca041d6",
+      "d961770e375c030b39934f56f9dac125"
+    ]
+  },
+  {
+    "query": "同一个查询两次结果不一样是什么隔离级别问题",
+    "kind": "confusable",
+    "rationale": "必须提到不可重复读",
+    "relevant_chunk_ids": [
+      "1e68113ce170faa589ffa05c13a2abce",
+      "72dcbf365ad419d556320dbbfa2374bb",
+      "74ef2dbda8e822c08bf3404bacffbd04",
+      "9057f2688f14756f31da000f50e1bcb8",
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "d961770e375c030b39934f56f9dac125"
+    ]
+  },
+  {
+    "query": "事务中两次范围查询返回的行数变了",
+    "kind": "confusable",
+    "rationale": "讲幻读及其解决（间隙锁），排除只顺带提一句幻读的块",
+    "relevant_chunk_ids": [
+      "01d0750c5e824914e84526b6467a29fe",
+      "042e28e3bc20a07b1ab5c370e88df294",
+      "13293b39d1253650e91bde770715756f",
+      "19c70913d2ef348bbdaf99abe3b49321",
+      "44152818ed7469fcb6aa3cd95cff0022",
+      "44dd3923241403342fab54a69348e3f5",
+      "74ef2dbda8e822c08bf3404bacffbd04",
+      "bb02099fdf18054afb4a2567840f1612",
+      "db34b39dcb084148fbf4b919d8fce213",
+      "e2972cb7801322c35e4af6f111c1f9f2"
+    ]
+  },
+  {
+    "query": "Go 里协程和线程有什么区别",
+    "kind": "confusable",
+    "rationale": "讲 goroutine 与线程的具体差异（栈大小/调度开销）",
+    "relevant_chunk_ids": [
+      "07690ee7ac1bcbce9c5fe33f141389c8",
+      "1dffd650b7f64a5f9e75f2c4725b4380",
+      "3f1cd301859f95bbba3a2533ca4890d4",
+      "4a138d9fcb0214a6d603c4d8badd56b9",
+      "5ca03a2943852ce0422e88ede744e0c8",
+      "8177fc5bb057a529cfeab105603149fc",
+      "920ef57522ffe88a5470bb4c836d3b33",
+      "98ea4231e1b4b0a1ce400035736c9046",
+      "9ca54d5d0552db5184de9e618a1d53e8",
+      "ad48d77ef91e0f50c3d842d5678a9bae",
+      "ed04b9e546c921e1c9fc837b3fe87dc4"
+    ]
+  },
+  {
+    "query": "数据库查询太慢了怎么优化",
+    "kind": "semantic",
+    "rationale": "讲慢查询定位方法",
+    "relevant_chunk_ids": [
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "0a692c757b9486e13c62a8a25735c4bc",
+      "0c7cdcdbfeb47a3580c40b1271dc27e0",
+      "0df3bac5ad2ae14cc8554d123d069f69",
+      "13293b39d1253650e91bde770715756f",
+      "3b5602f43440257de81885a6678e1fd1",
+      "9e634880a8277a6f49ebc6a446781134",
+      "b1e08e759f609aa37116efea5df6fd31",
+      "bfdcd35873495c1ce081097e843547e1",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "d84df8f7987dc5f661532ea2e1388970",
+      "da091350e0f2e49a97966f9b9c8a4641",
+      "ec502e29a2a63bb73232817cc31eba4e",
+      "f54210fecd4ddac3cce6ed41e24124d2"
+    ]
+  },
+  {
+    "query": "怎么保证消息不丢",
+    "kind": "semantic",
+    "rationale": "讲消息可靠投递的具体机制",
+    "relevant_chunk_ids": [
+      "053a8ff553a6f61760364309ac38cd86",
+      "22171d09752e92c552bd7588508fb611",
+      "6cf929386f0013b159911009769b9d2b",
+      "6f9721c06dcdce9be46d6bfa725cb52b",
+      "701629acb076f09911f6eb7524bcdb1e",
+      "77447aac577ef8d6b0d7af3d985cfb09",
+      "80fe08b746ef1843f6ad815ac1a8399c",
+      "8d48f783706db69a93ca16d4d2eff97d",
+      "92b1cfae52395f2c7027aace9e06da3b",
+      "b1822c42c980d6a144138475c78fb12c",
+      "b3172744563fb695172a4249bd45caf3",
+      "b5fa647b0c7c72d5556fa1da7e255a16",
+      "d0fb097b4ac346717ae09fdc1432c5da",
+      "ed6f8a334057f14000899b3f02a4e9d8",
+      "f5051f544cd818446781fcfe203d1311"
+    ]
+  },
+  {
+    "query": "服务挂了怎么自动重连",
+    "kind": "semantic",
+    "rationale": "讲重连与退避策略",
+    "relevant_chunk_ids": [
+      "135e2892399ef3daa53561b9f63dcebb",
+      "2e2f61ca387a31148de63161a5e72151",
+      "33cd6970295a55d381e8133aad4d7f7d",
+      "49f37ba5aff1efd6c73882aa6f7c7a36",
+      "86aa663707ce4c7726373e02f23006e2",
+      "eccccbd1825ac0cba25fb8d87be00928",
+      "f376d99a54dfe0a4e018d67885a4cdf4",
+      "fd86071f330e0ab17cffda3275acd3bc"
+    ]
+  },
+  {
+    "query": "多台机器怎么保证同一时间只有一个在执行",
+    "kind": "semantic",
+    "rationale": "讲分布式锁的具体实现",
+    "relevant_chunk_ids": [
+      "1350f9b9486dac2869b156c987591965",
+      "65d78e26ccee752ef2b1012df06cc335",
+      "661bbd3db7ab8f35a0bdc43899537317",
+      "c103474c9ab62525a2003b42ca79d7b8",
+      "c627e02e9339c4514187ec67c1c07016",
+      "dd30b9a92a0aeb1e49712ce139fa8935",
+      "fab863b1ff525dafb3a050b3bbe901f0"
+    ]
+  },
+  {
+    "query": "怎么生成全局唯一的ID",
+    "kind": "semantic",
+    "rationale": "讲雪花算法的位分配结构",
+    "relevant_chunk_ids": [
+      "2e3a6d312e832bc579a9b1a523fa92b2",
+      "9546416842b7e3e4f8a7ba4063920eb4",
+      "9bb1ed73fb9de43bd983a68458bca3b2",
+      "a3d404a1b77dd99ca17b4cb1f8734ef2",
+      "b6615e194ce9d83889b55c79d49dcb2c",
+      "b75f86d53612c01a189e9a2dc434cab7",
+      "ef2108f0e8d6d2ea08254077153f7546",
+      "f1faf68f1a7d938f8510286a0c163189",
+      "ff91a33c26a5d2ae4b775d247e171c1a"
+    ]
+  },
+  {
+    "query": "用户登录状态怎么保存",
+    "kind": "semantic",
+    "rationale": "讲 JWT 或 Session 认证机制",
+    "relevant_chunk_ids": [
+      "0203750891a5e1a7143ed7edd651e570",
+      "0ebc506a1bfa451d49f75d0ee9f261ba",
+      "3270fc943bf5a4da948abfcc119e8c8b",
+      "a0011ba114afd1596e059a4f4af5d1c1",
+      "d06c03d139239e58c2c468f6d1776d4b"
+    ]
+  },
+  {
+    "query": "程序内存一直涨是什么原因",
+    "kind": "semantic",
+    "rationale": "讲内存泄漏或 GC 行为",
+    "relevant_chunk_ids": [
+      "00cc62bd49e542b325da72dd00d5ca57",
+      "0f31b8f32296d18ce1602b41d995835c",
+      "1e6cc3bf7ad7333433777e0028ea5eea",
+      "6b1b2c94d2d1d83487ed39ccdf3dbf15",
+      "6d73dea2f0a67e212cdc36bd42a566a6",
+      "be1da7965f0f5bfad0949d8f1813ceff",
+      "f240d478e5a7560f2fead681db854e59"
+    ]
+  },
+  {
+    "query": "怎么让接口响应更快",
+    "kind": "semantic",
+    "rationale": "讲具体的性能优化手段而非泛泛提到缓存",
+    "relevant_chunk_ids": [
+      "3f43ade259179dcc801cb18e3f4981a2",
+      "45f68810de9f9eb79f6dbc00a08d5b94"
+    ]
+  },
+  {
+    "query": "两个服务之间怎么通信比较好",
+    "kind": "semantic",
+    "rationale": "讲通信协议选型权衡",
+    "relevant_chunk_ids": [
+      "27eff2b56f52cbdb79d7e51caca503e2",
+      "5a0a80c73c3981072b834a62685227ef",
+      "5c7fe9cd2da1eb3b426dba16a3a86318",
+      "ac20a6429ba1c051a1199e95579c98d1"
+    ]
+  },
+  {
+    "query": "大文件上传怎么做",
+    "kind": "semantic",
+    "rationale": "讲分片上传",
+    "relevant_chunk_ids": [
+      "0ebc506a1bfa451d49f75d0ee9f261ba",
+      "57d7f47f898f27f68045928082cddb54",
+      "71dbb5adb830719ce88208f436c6aff1",
+      "992e8349d5ee536881c037a68826d27e",
+      "a0011ba114afd1596e059a4f4af5d1c1",
+      "b641b46a93dfc3d10dadc276895128fc",
+      "ba1cf2a5c479771016139f630834b712",
+      "e12b5dd5591f34fc9bc74642548cca1e",
+      "e73edc72fcf30011b96f76dbbe4e62c6",
+      "ea03d16a530904ba1e4215c44b9125b8",
+      "ed08bc9d679ca61a6f40ee06baa9065c"
+    ]
+  },
+  {
+    "query": "密码应该怎么存到数据库",
+    "kind": "semantic",
+    "rationale": "讲 bcrypt 等密码哈希方案",
+    "relevant_chunk_ids": [
+      "055a7ff4f808afe9fd6d59c66a3117ef",
+      "16a85700710d008adeff48a84d4f171e",
+      "3c300b3c4b22dce307b536bb864e64bc",
+      "4e4decd1f97f35921da8e95932e1381c",
+      "555c649d3671ed0510cc8d259a0800eb",
+      "750457374d858d61e6c0dc23630c9317",
+      "85c4e2226a5b42cadb2a05b0efe3c340",
+      "8d58f13650d39ced8e5cbb37b2cedf9e",
+      "9eb2a3adc8a31bcda8ddd8c320cc8fd6",
+      "b985411d36118e1c1e86d6716104fa1d",
+      "c1572ae88c659f55d1786dd606f9004c",
+      "e56d55b4b2d810a99af2dcf9ea0b4e36"
+    ]
+  },
+  {
+    "query": "怎么知道文件有没有重复上传过",
+    "kind": "semantic",
+    "rationale": "讲秒传或文件指纹去重",
+    "relevant_chunk_ids": [
+      "0dadf211aa19bfdee0a25222d5589366",
+      "26c229760e56c02915b190c7fc466768",
+      "447d9cae65adb52c041fc40a658f5044",
+      "787548738b464dccf79e0e0d00629f54",
+      "88e605376eda3cb19ee27d4e49cdb7b5",
+      "9f89d19c56393f76703d58abf5f21c57",
+      "c0df5e077ef0722882d354f1dc8e66cc",
+      "dadb48ce7014abf2d8343789dcfde50c",
+      "e6f69f5481ca1f43533e8eec8d1f852e"
+    ]
+  },
+  {
+    "query": "并发写同一条记录会有什么问题",
+    "kind": "semantic",
+    "rationale": "讲死锁的成因与处理",
+    "relevant_chunk_ids": [
+      "0dadf211aa19bfdee0a25222d5589366",
+      "0e370201c041f439ac32db098178556d",
+      "44dd3923241403342fab54a69348e3f5",
+      "766bdf8ce2992923e10e0438eb54d349",
+      "7f2866ee26d2333f4ca280a4723bbbdc",
+      "82ac88b087221db877a73dde0433f947",
+      "959cdf374d91b847149b8ab53d14dc44",
+      "9f89d19c56393f76703d58abf5f21c57",
+      "bb02099fdf18054afb4a2567840f1612",
+      "c5a2623df40145f4f65dff9cf67babe8",
+      "d3d3c24fd59648a066a423e5fd521346",
+      "e9732e96194fd91cb11bc1633ec400dd",
+      "fe45b79a092dba81679b15b38409d88c"
+    ]
+  },
+  {
+    "query": "怎么做限流",
+    "kind": "semantic",
+    "rationale": "讲限流算法",
+    "relevant_chunk_ids": [
+      "0566c093cfdd0bbace447a024685357b",
+      "3d6685c5f82e57cb549b50cb524dcf71",
+      "447ff12d8ef1f25f405d21207f2698e6",
+      "61b57331a1b04bf844eb6619eb4d50a7",
+      "7b42553470827b03d0fb87608572acc7",
+      "9d20bb9716747c922041d4c5162c82ec",
+      "bdab109a1c0f8268d2a2bc1ce4b250f2",
+      "d466b42f61706b0965d01715e5f43cb4",
+      "e3bfa5d4cd543885e5f84530d743fffa",
+      "edc77f3dc833c732a19170285581dfaf",
+      "f061d42eb037b33e0e916af95f7fe994",
+      "f376d99a54dfe0a4e018d67885a4cdf4"
+    ]
+  },
+  {
+    "query": "前端点了按钮怎么立刻有反馈",
+    "kind": "semantic",
+    "rationale": "讲乐观 UI",
+    "relevant_chunk_ids": [
+      "54d1de97e586810f1c6dae7a33962e08",
+      "578563bf0d0a5bc3b4e3a51eb2d8f742",
+      "fb3b0ed1d15cf1b7013bca4d5bb76484"
+    ]
+  },
+  {
+    "query": "网络断了消息怎么补发",
+    "kind": "semantic",
+    "rationale": "讲离线消息补发或重传机制",
+    "relevant_chunk_ids": [
+      "02533e9482204f6dbedc606fa8d84c19",
+      "0de20c52c09b7c16298b28dba36980db",
+      "0f109b4b193bf36eaa28c08105a3596b",
+      "12db64066ff1302f8e8130d4bc3c0020",
+      "3dc1a2dff3649628f58fab89d8b65bab",
+      "49f37ba5aff1efd6c73882aa6f7c7a36",
+      "5ac180e380940d8857d926e21b78c0ab",
+      "700dde4b6709630107c9ceb764ff2bb1",
+      "905253ff8b18d712f4dd53ddf724759b",
+      "b5deec015e414576aded0f41018e2522"
+    ]
+  },
+  {
+    "query": "MVCC",
+    "kind": "keyword",
+    "rationale": "讲 MVCC 实现机制",
+    "relevant_chunk_ids": [
+      "0726f930481453bf84d9965589aacf6a",
+      "13293b39d1253650e91bde770715756f",
+      "9057f2688f14756f31da000f50e1bcb8",
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "d07a121d01d343827db104060e26f798",
+      "db34b39dcb084148fbf4b919d8fce213",
+      "ec502e29a2a63bb73232817cc31eba4e",
+      "fb7559db15f4d6a6f2bc18c2124350c5"
+    ]
+  },
+  {
+    "query": "GMP 调度模型",
+    "kind": "keyword",
+    "rationale": "讲 GMP 三者关系与队列",
+    "relevant_chunk_ids": [
+      "236e93e1d78781657a52ddbd29ad692f",
+      "8177fc5bb057a529cfeab105603149fc",
+      "87b39a76c4835eab1cce7e4297ae7a10",
+      "98ea4231e1b4b0a1ce400035736c9046"
+    ]
+  },
+  {
+    "query": "B+树索引",
+    "kind": "keyword",
+    "rationale": "讲 B+ 树叶子节点结构",
+    "relevant_chunk_ids": [
+      "0b246d9c4f799de1e6d6cc94bbe077d4",
+      "1b2738de3c9bd3ea1e7fde8f04a283fc",
+      "2da1e2f21b90c3d59bd25dab7a2763bc",
+      "509c74629f629a4c9bb60663b88b3f25",
+      "c212c24cb4e732ab60d79a6e75ac5cd6"
+    ]
+  },
+  {
+    "query": "sync.Pool",
+    "kind": "keyword",
+    "rationale": "讲 sync.Pool",
+    "relevant_chunk_ids": [
+      "3dfec09ddcecbe42ef253c54101fb937",
+      "6328b0b1fae1be2535ce8eca391e9a1c"
+    ]
+  },
+  {
+    "query": "context.WithCancel",
+    "kind": "keyword",
+    "rationale": "讲 context 取消传播",
+    "relevant_chunk_ids": [
+      "25598f460fceb50d59260c1008405d50",
+      "58cbf40af1abe5da624f0a8fe297bb47",
+      "60da1420446cfbbb605484e97feed2ee",
+      "7ce8fefab53398ae792d343ebbbf7839",
+      "bdab109a1c0f8268d2a2bc1ce4b250f2",
+      "d5d50c0f05bca2d145b2e8e9e4507bdc",
+      "dae3972d1b5f84b05fc0bba14f741a84",
+      "e1a59454b2bc740785ff0c17757928ec",
+      "e833c723420ae35fad594878ca6ce11e"
+    ]
+  },
+  {
+    "query": "Redis AOF RDB",
+    "kind": "keyword",
+    "rationale": "讲 AOF 重写或混合持久化",
+    "relevant_chunk_ids": [
+      "0ba24f2627fb64f7dce3a4230ad78b1f",
+      "1bbfcc9ea6349ae71bf239459ff4baee",
+      "2f4f5bb210c8724f791e52dfe9aef2e5",
+      "55809e418acdb67337528eb0c223135d",
+      "56602c0e25b131cfd52297f359df120f",
+      "79d49e1a15b6ecb5355bcd26d0e6dabb",
+      "7a23b26ccb8e7b172c0e0576deac00bf",
+      "8c25eb96885a197228eb0c7347ef82b0",
+      "a6bd3a74a5e54f5ff2a520683e88fd43",
+      "ac8b86f611f477dc5f2d35ab06a94ef1",
+      "d73a2449cbb495e2c271c1f34ba4f5b0",
+      "e6f38126669f6a8b397865bc36069e7e",
+      "eabe54bd7da5b687c924e1f3e80d7c0a"
+    ]
+  },
+  {
+    "query": "Redis Cluster 槽位",
+    "kind": "keyword",
+    "rationale": "讲集群分片槽位",
+    "relevant_chunk_ids": [
+      "0debe7b946e9aad21f31bc73b86f41aa",
+      "11a9b879c0eba96714dd66f7ab5b6d31",
+      "15b764b9ce20ddce0a3133b6e59d1ee9",
+      "35738a1f8fdffd046b1681d74d2ce5af",
+      "3f39123f5e697f07c1e1bc2dbb9bd6d5",
+      "63e8a3b35a793eb5cdbef75ff3577bd0",
+      "68b3d701fed7bed24ed817d39616742d",
+      "85dc9cdad82d6bb493ce2db162296cce",
+      "921f0de591335ca014f5b22825ae369d",
+      "cd05bb8e76ceb60697a65f147eb436c4",
+      "e828eafbc48172215a4c0de62ec77c9d"
+    ]
+  },
+  {
+    "query": "ZSet 跳表",
+    "kind": "keyword",
+    "rationale": "讲跳表结构",
+    "relevant_chunk_ids": [
+      "0566c093cfdd0bbace447a024685357b",
+      "0b246d9c4f799de1e6d6cc94bbe077d4",
+      "1e93505eca44ab4cb58bfa176806c9fb",
+      "2bb82f5f716afc28244e9b019de6902c",
+      "375f783efd93e5e9e3e63e689df2c4d8",
+      "571a7156fdefa209a5ac3c26cdeb64ec",
+      "5e487203e45f2cf7c0e1aee49c7d6493",
+      "5ef9354c2e13ce94578707b11e1e310a",
+      "9a2d8ab458457fd766d7f04544f2aabc",
+      "a0a68870733e388d7f3786447f6942c4",
+      "a7678ce772308c7751c5ed52c706db55",
+      "ce368eb22f81fcac39c146138262d78c"
+    ]
+  },
+  {
+    "query": "Kafka ISR",
+    "kind": "keyword",
+    "rationale": "讲 ISR 副本同步",
+    "relevant_chunk_ids": [
+      "053a8ff553a6f61760364309ac38cd86",
+      "22171d09752e92c552bd7588508fb611",
+      "5f8a1cd9645b8987e19f8065d3e293f5",
+      "6f9721c06dcdce9be46d6bfa725cb52b",
+      "80fe08b746ef1843f6ad815ac1a8399c",
+      "8f3c52f3c56a8a108e18b509fdaa18fd",
+      "92b1cfae52395f2c7027aace9e06da3b",
+      "b3172744563fb695172a4249bd45caf3"
+    ]
+  },
+  {
+    "query": "Kafka 零拷贝 sendfile",
+    "kind": "keyword",
+    "rationale": "讲零拷贝原理",
+    "relevant_chunk_ids": [
+      "002427f5649205bbdc582e72d3c7cc94",
+      "0f6a71e85a1182ba2a3aaa719f8780e9",
+      "3f43ade259179dcc801cb18e3f4981a2",
+      "7bfb8e0636c3df9c5beeca532e6a223f",
+      "85dc9cdad82d6bb493ce2db162296cce",
+      "9336215838199e5e534af3156ee10d5e",
+      "992feb9c8aedd7201dc3e66bc7a5c5b4",
+      "d0c2083e32a441bf4dee5310ad3ba71d",
+      "d6383ecd1dda716fc0e79dabfb138dfc",
+      "e00c518efa75a9a96bfe72af56d141b2",
+      "fb96119afc9ec83fc5a738f0f5c992d4"
+    ]
+  },
+  {
+    "query": "TCP 三次握手",
+    "kind": "keyword",
+    "rationale": "讲三次握手过程",
+    "relevant_chunk_ids": [
+      "20a5b687a193f0d12ad0efa1fa65a549",
+      "23e4b0d33ca57f2fca650e7e6c02c08f",
+      "2f1afefce5ecfbb3612d17b38f040274",
+      "3dc1a2dff3649628f58fab89d8b65bab",
+      "726d1763c18cc7191c1c34170a58e912",
+      "ae100a850b5dbec57d6e284b33b3cf7e",
+      "b212abd6c60739d8ef4094a42bdb0d28",
+      "bb9659200d937d18f2e2dee1c96099ab",
+      "d01fce3d0872274cb144f4ccb0bb8759"
+    ]
+  },
+  {
+    "query": "HTTP/2 多路复用",
+    "kind": "keyword",
+    "rationale": "讲 HTTP/2 的多路复用与头部压缩",
+    "relevant_chunk_ids": [
+      "27eff2b56f52cbdb79d7e51caca503e2",
+      "427cabcfb35ca07a33dd2621847a3a9a",
+      "4ff6f23b878978e7bd51f5dee71e09a0",
+      "50757400bee13a3844a6a3e98a3c2c08",
+      "5a0a80c73c3981072b834a62685227ef",
+      "61b57331a1b04bf844eb6619eb4d50a7",
+      "673af92889f734b89ab006a5c0a24a60",
+      "9ada5ff420ce77b8caf8f9590ef79352",
+      "be2e86f13048d940615895a91611d12d",
+      "c3f51f07bacd17669f2da5a22de0a1c4",
+      "c610d76bba59b8aa343bf1973c29a15a",
+      "cc5b4b0105291b0c1548d9f4fa164c6b",
+      "de0cbc4f8759658c520f9f45bce4c683"
+    ]
+  },
+  {
+    "query": "bcrypt cost",
+    "kind": "keyword",
+    "rationale": "讲 bcrypt 参数",
+    "relevant_chunk_ids": [
+      "055a7ff4f808afe9fd6d59c66a3117ef",
+      "16a85700710d008adeff48a84d4f171e",
+      "3c300b3c4b22dce307b536bb864e64bc",
+      "4e4decd1f97f35921da8e95932e1381c",
+      "555c649d3671ed0510cc8d259a0800eb",
+      "750457374d858d61e6c0dc23630c9317",
+      "85c4e2226a5b42cadb2a05b0efe3c340",
+      "8d58f13650d39ced8e5cbb37b2cedf9e",
+      "9eb2a3adc8a31bcda8ddd8c320cc8fd6",
+      "b985411d36118e1c1e86d6716104fa1d",
+      "c1572ae88c659f55d1786dd606f9004c",
+      "e56d55b4b2d810a99af2dcf9ea0b4e36"
+    ]
+  },
+  {
+    "query": "S3 multipart upload",
+    "kind": "keyword",
+    "rationale": "讲 S3 分片上传",
+    "relevant_chunk_ids": [
+      "0ebc506a1bfa451d49f75d0ee9f261ba",
+      "57d7f47f898f27f68045928082cddb54",
+      "992e8349d5ee536881c037a68826d27e",
+      "a0011ba114afd1596e059a4f4af5d1c1",
+      "b641b46a93dfc3d10dadc276895128fc",
+      "ba1cf2a5c479771016139f630834b712",
+      "e12b5dd5591f34fc9bc74642548cca1e",
+      "e73edc72fcf30011b96f76dbbe4e62c6",
+      "ea03d16a530904ba1e4215c44b9125b8",
+      "ed08bc9d679ca61a6f40ee06baa9065c"
+    ]
+  },
+  {
+    "query": "gRPC 双向流",
+    "kind": "keyword",
+    "rationale": "讲 gRPC 双向流式通信",
+    "relevant_chunk_ids": [
+      "0ed98da0e776883677cf2f6c56dc1842",
+      "21c86b7add07f7b9386d4c1fa22f2f60",
+      "27aa1566f0a24703ce71b5589bb1ec67",
+      "27eff2b56f52cbdb79d7e51caca503e2",
+      "427cabcfb35ca07a33dd2621847a3a9a",
+      "4ce93da71ab84d5c5730ba91fff86ea8",
+      "5a0a80c73c3981072b834a62685227ef",
+      "5c7fe9cd2da1eb3b426dba16a3a86318",
+      "780521276b4603194fbf5dbeed3a33d9",
+      "9ada5ff420ce77b8caf8f9590ef79352",
+      "9baa6981b9220096fa0a5c2fe1142961",
+      "ac20a6429ba1c051a1199e95579c98d1",
+      "b4470b77d0799a8a53c56e67ff12cb55",
+      "c610d76bba59b8aa343bf1973c29a15a",
+      "cc5b4b0105291b0c1548d9f4fa164c6b",
+      "e38f32615fab4ad40f40ecf87e9d2a79"
+    ]
+  },
+  {
+    "query": "select case channel",
+    "kind": "keyword",
+    "rationale": "讲 select 的阻塞与随机选择行为",
+    "relevant_chunk_ids": [
+      "25598f460fceb50d59260c1008405d50",
+      "4d7a415c5bb7325c01da51f1262fc2b1",
+      "5951c46f8a1e27bd264e136f9e193b1f",
+      "59d5790de4269e12fc9703dd02c1eba3",
+      "60ffefeb44426cf734fc6b4e6a95554f",
+      "7bfa0b715cb5c64753f20f47d85b3a5d",
+      "7ec68ceb36f431ec4a1082f02ed422b5",
+      "92121283bad3a35cd714555e9b401618",
+      "b56df03109648b8a88bef1e1439e5d48",
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "ec2805a2960ec1ecdc7c9008f9f8a68f"
+    ]
+  },
+  {
+    "query": "defer recover panic",
+    "kind": "keyword",
+    "rationale": "讲 Go panic 恢复",
+    "relevant_chunk_ids": [
+      "12db64066ff1302f8e8130d4bc3c0020"
+    ]
+  },
+  {
+    "query": "slice 扩容",
+    "kind": "keyword",
+    "rationale": "讲 slice 底层扩容策略",
+    "relevant_chunk_ids": [
+      "1fac0f83d34771d463daf5b9db4f8470",
+      "2f8afb85f3665ad6551d672132216e26"
+    ]
+  },
+  {
+    "query": "map 并发安全",
+    "kind": "keyword",
+    "rationale": "讲 map 并发问题",
+    "relevant_chunk_ids": [
+      "1fac0f83d34771d463daf5b9db4f8470",
+      "3b612e945c1d79b612c5861ce099dc1d",
+      "3dfec09ddcecbe42ef253c54101fb937",
+      "4b0cb3d4cefa563fdfb8452225d038a7",
+      "63e8a3b35a793eb5cdbef75ff3577bd0",
+      "a63cce845a08178b63eedee92f5c4dad"
+    ]
+  },
+  {
+    "query": "两阶段提交 2PC",
+    "kind": "keyword",
+    "rationale": "讲 2PC 协议",
+    "relevant_chunk_ids": [
+      "20ba3279913f69f6f0cdee37ee643e16",
+      "2a2b2fbe50e15a17968aa065cfe28cbd",
+      "3dcff598a37882df09bff36f0258ba44",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "8d1cf7b791b417bea6782e78f11ef894",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "9ed23d48753345757e438fc873283f3b",
+      "bf958dfbb49c20246a9f8736d8e101b2",
+      "cefa672dfa9b5029b89fef4ec1812e06",
+      "f5bafed8544772f7ad66ae4f211db054",
+      "f65b39e4cff6fb5b7ef3a9018e508417"
+    ]
+  },
+  {
+    "query": "TCC 补偿事务",
+    "kind": "keyword",
+    "rationale": "讲 TCC 模式",
+    "relevant_chunk_ids": [
+      "081e97d976781aafa795038446a2705c",
+      "20ba3279913f69f6f0cdee37ee643e16",
+      "3dcff598a37882df09bff36f0258ba44",
+      "447d9cae65adb52c041fc40a658f5044",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "7f2866ee26d2333f4ca280a4723bbbdc",
+      "92afff68e8e873501b34b92b69d7e84e",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "9ed23d48753345757e438fc873283f3b",
+      "bf958dfbb49c20246a9f8736d8e101b2",
+      "cefa672dfa9b5029b89fef4ec1812e06"
+    ]
+  },
+  {
+    "query": "雪花算法时钟回拨",
+    "kind": "keyword",
+    "rationale": "讲时钟回拨处理",
+    "relevant_chunk_ids": [
+      "5c19d55adceb2c31404093ff50382ed8",
+      "7ed44eb1e2dd905132f8eb8056fc988b",
+      "a3d404a1b77dd99ca17b4cb1f8734ef2",
+      "b75f86d53612c01a189e9a2dc434cab7",
+      "f1faf68f1a7d938f8510286a0c163189",
+      "f5ebbabb32a914c9c6f0262dfb359d44",
+      "ff91a33c26a5d2ae4b775d247e171c1a"
+    ]
+  },
+  {
+    "query": "Redlock",
+    "kind": "keyword",
+    "rationale": "讲 Redlock 算法",
+    "relevant_chunk_ids": [
+      "1350f9b9486dac2869b156c987591965",
+      "65d78e26ccee752ef2b1012df06cc335",
+      "771d847002e596cee952620f09c14f1c",
+      "cebfcd1e709f38cecea43142020f8d39",
+      "dd30b9a92a0aeb1e49712ce139fa8935",
+      "fab863b1ff525dafb3a050b3bbe901f0"
+    ]
+  },
+  {
+    "query": "间隙锁 next-key lock",
+    "kind": "keyword",
+    "rationale": "讲间隙锁如何防幻读",
+    "relevant_chunk_ids": [
+      "01d0750c5e824914e84526b6467a29fe",
+      "042e28e3bc20a07b1ab5c370e88df294",
+      "13293b39d1253650e91bde770715756f",
+      "19c70913d2ef348bbdaf99abe3b49321",
+      "44dd3923241403342fab54a69348e3f5",
+      "74ef2dbda8e822c08bf3404bacffbd04",
+      "959cdf374d91b847149b8ab53d14dc44",
+      "bb02099fdf18054afb4a2567840f1612",
+      "bfdcd35873495c1ce081097e843547e1",
+      "c0df5e077ef0722882d354f1dc8e66cc",
+      "db34b39dcb084148fbf4b919d8fce213",
+      "e2972cb7801322c35e4af6f111c1f9f2",
+      "e9732e96194fd91cb11bc1633ec400dd",
+      "fb7559db15f4d6a6f2bc18c2124350c5",
+      "fe45b79a092dba81679b15b38409d88c"
+    ]
+  },
+  {
+    "query": "WezTerm tab 关闭",
+    "kind": "keyword",
+    "rationale": "讲 WezTerm 具体问题",
+    "relevant_chunk_ids": [
+      "008ef2a863b82f1bd8e6c18ce277bba4",
+      "1cf5733fb115eb3b108bbd50d1f4c798",
+      "2cd859018413844c58e9c961a5d443e9",
+      "a8d9c9c297b3c939548b7a5aa55e8ef9",
+      "fc9a7b8b9dc3e08d7c12a4468eacdb60"
+    ]
+  },
+  {
+    "query": "ImGui 破坏性变更",
+    "kind": "keyword",
+    "rationale": "讲 ImGui 版本升级问题",
+    "relevant_chunk_ids": [
+      "21a555cd9816752c7ccbb1b24b8a6fae",
+      "3a79996e2155f468d29b8fda17ca5ee3",
+      "5fbe2524d5bd0b06d2100f7806fae778",
+      "85a85e04a5377e033970e921503e1ff4",
+      "d447772f14e065d3e3d5f4c05a2a0ab3",
+      "e6a9851dc0d0363f617c1cb21b207c3e",
+      "e7ae060a7cc681c64340c0864b246ff0",
+      "f112c7089eb766f96b425870a6421e95"
+    ]
+  },
+  {
+    "query": "UTF-8 编译错误",
+    "kind": "keyword",
+    "rationale": "讲 UTF-8 导致的具体编译报错",
+    "relevant_chunk_ids": [
+      "1b08566f7a01c20292b266d66f9fd7d3",
+      "3ee8ab9f6ad834627f1fce307d7ff477",
+      "59fb489c03401f8a31ffa8b27edeaffc",
+      "5b7a3194ab34f81b7847bc2744847a2b",
+      "9e37dc5c3d087eaa497cdd50939c8563",
+      "ac53c65f9955d6ae43dcd1383f1ba1f7",
+      "b08c96a537981a2cf26ff85adf48a547",
+      "c4d25c89e0289b8678d0cfa24067b020",
+      "cd55966f9cf7869457f0527c8bbfdf5a"
+    ]
+  },
+  {
+    "query": "CJK 字体渲染",
+    "kind": "keyword",
+    "rationale": "讲 CJK 字形范围加载",
+    "relevant_chunk_ids": [
+      "13820b27aed7f56f02e5e27d431e3cfb",
+      "14c60c5364cacf5568b93f06e723bb8e",
+      "19773bb52009dc56321fc80c5dfec92e",
+      "23405f084641b6a285d38c413ee59f73",
+      "379fa08f965854a199ccbcab4184d3a8",
+      "720936e9aebebc0513ab0f154f9405e6",
+      "73e1c4680d7cb7c84c9c737ef301efb1",
+      "7b838c546311be7a6c2d95ef1df2bdfc",
+      "8669fbc72c0904505711d58bae3f51fe",
+      "88c66334e9158c10633872c3a14fef0e",
+      "9e37dc5c3d087eaa497cdd50939c8563",
+      "9f30ebf52620654254e6ad8842a1aefc",
+      "a46e9d394a64798a7765f119b9c550e0",
+      "e54c22042ee3ef67bee7e3624951c53d"
+    ]
+  },
+  {
+    "query": "pgx 连接池",
+    "kind": "keyword",
+    "rationale": "讲 pgx 用法",
+    "relevant_chunk_ids": [
+      "0c4057bad65093cd96fa7334a088c91e",
+      "3961b95a163f46e1f45badc06744a9f8",
+      "43ec6915facecfa95381181454e40cac",
+      "5d79a60430f2491f591bce85219d4755"
+    ]
+  },
+  {
+    "query": "微服务拆分粒度",
+    "kind": "keyword",
+    "rationale": "讲微服务拆分原则",
+    "relevant_chunk_ids": [
+      "d466b42f61706b0965d01715e5f43cb4"
+    ]
+  },
+  {
+    "query": "设计模式 Go 实现",
+    "kind": "keyword",
+    "rationale": "讲具体设计模式",
+    "relevant_chunk_ids": [
+      "0884543f697eaca8ae394ef1125b39c6",
+      "2a3db83399d0161c559002f083f615b3",
+      "3efaf1789311e84700c596d4abf90ab1",
+      "4de7a32072fc3290b869d1426b51cd97",
+      "588dd38a0873d206142538b9794c65a5",
+      "5951c46f8a1e27bd264e136f9e193b1f",
+      "71dbb5adb830719ce88208f436c6aff1",
+      "b56df03109648b8a88bef1e1439e5d48",
+      "c1ccb3f6c3b35e83d81701cdc769a0e2",
+      "e73edc72fcf30011b96f76dbbe4e62c6",
+      "e7efe9e0afac87bf5f53c80d1602d8b7"
+    ]
+  },
+  {
+    "query": "Redis 为什么这么快",
+    "kind": "semantic",
+    "rationale": "讲 Redis 高性能的具体原因",
+    "relevant_chunk_ids": [
+      "94df4d5f059e5d9ba021df4808348439",
+      "a621899246cb5f7d015c6cf30eea5a93",
+      "ecdc94a22af291e0ac35444036c2332c"
+    ]
+  },
+  {
+    "query": "Kafka 为什么吞吐量高",
+    "kind": "semantic",
+    "rationale": "讲 Kafka 高吞吐设计",
+    "relevant_chunk_ids": [
+      "0f6a71e85a1182ba2a3aaa719f8780e9",
+      "3f43ade259179dcc801cb18e3f4981a2",
+      "85dc9cdad82d6bb493ce2db162296cce",
+      "992feb9c8aedd7201dc3e66bc7a5c5b4",
+      "d0c2083e32a441bf4dee5310ad3ba71d",
+      "d6383ecd1dda716fc0e79dabfb138dfc",
+      "e828eafbc48172215a4c0de62ec77c9d",
+      "fb96119afc9ec83fc5a738f0f5c992d4"
+    ]
+  },
+  {
+    "query": "索引失效的情况有哪些",
+    "kind": "semantic",
+    "rationale": "讲索引失效场景",
+    "relevant_chunk_ids": [
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "13293b39d1253650e91bde770715756f",
+      "1b2738de3c9bd3ea1e7fde8f04a283fc",
+      "5ef9354c2e13ce94578707b11e1e310a",
+      "6813f7848c0a11a113d14b57ec71501b",
+      "a7678ce772308c7751c5ed52c706db55",
+      "b1e08e759f609aa37116efea5df6fd31",
+      "cbfc50f98a65b72d812827a627d6091e",
+      "d36cb6d8bd0d7abf654608da1f312571",
+      "d5d7bb41ded7c7d6433019d34a612ba0",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "d84df8f7987dc5f661532ea2e1388970",
+      "ec502e29a2a63bb73232817cc31eba4e"
+    ]
+  },
+  {
+    "query": "回表是什么意思",
+    "kind": "keyword",
+    "rationale": "讲回表概念",
+    "relevant_chunk_ids": [
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "0a692c757b9486e13c62a8a25735c4bc",
+      "0c7cdcdbfeb47a3580c40b1271dc27e0",
+      "13293b39d1253650e91bde770715756f",
+      "1b2738de3c9bd3ea1e7fde8f04a283fc",
+      "39f58be3519d7c98edf8c2cdcd4723a0",
+      "3bcc9096777afb2d0313ca55e2c3f424",
+      "5a85838280c6c0209d0485bb0d217fbd",
+      "5ef9354c2e13ce94578707b11e1e310a",
+      "62120b704931e5c04f6c3988888f4c6b",
+      "b1e08e759f609aa37116efea5df6fd31",
+      "c212c24cb4e732ab60d79a6e75ac5cd6",
+      "d5d7bb41ded7c7d6433019d34a612ba0",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "d84df8f7987dc5f661532ea2e1388970",
+      "da091350e0f2e49a97966f9b9c8a4641",
+      "ec502e29a2a63bb73232817cc31eba4e",
+      "edee9ddf3207e20ceb6f72df505725d4"
+    ]
+  },
+  {
+    "query": "覆盖索引",
+    "kind": "keyword",
+    "rationale": "讲覆盖索引优化",
+    "relevant_chunk_ids": [
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "0b246d9c4f799de1e6d6cc94bbe077d4",
+      "13293b39d1253650e91bde770715756f",
+      "1b2738de3c9bd3ea1e7fde8f04a283fc",
+      "3bcc9096777afb2d0313ca55e2c3f424",
+      "5a85838280c6c0209d0485bb0d217fbd",
+      "5ef9354c2e13ce94578707b11e1e310a",
+      "62120b704931e5c04f6c3988888f4c6b",
+      "797d417fc3959296925f15a53ea2f061",
+      "9b461e1b5482d5e3785f33182c173e56",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "d84df8f7987dc5f661532ea2e1388970",
+      "ec502e29a2a63bb73232817cc31eba4e"
+    ]
+  },
+  {
+    "query": "分库分表怎么做",
+    "kind": "semantic",
+    "rationale": "讲分库分表策略",
+    "relevant_chunk_ids": [
+      "08122b67b2667c7561b89c4ccc4f6a3b",
+      "13293b39d1253650e91bde770715756f",
+      "304c3d42a78fdc06c1dc99532eb008f9",
+      "5bc78dea4300e7e9f3be9c1e109cae15",
+      "b8dbe1d911a66de9df4da97a02f805f8",
+      "c39a85c815a4697089f291f0fc99de9a",
+      "d5d7bb41ded7c7d6433019d34a612ba0",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "e8226d2f6412d36044836f2812cffa3b",
+      "ec502e29a2a63bb73232817cc31eba4e"
+    ]
+  },
+  {
+    "query": "主从复制原理",
+    "kind": "semantic",
+    "rationale": "讲主从同步机制",
+    "relevant_chunk_ids": [
+      "87647068f3e66da82f5ca5dba1836f8d",
+      "c72c18179fb7200a1f99ddf67f63f738"
+    ]
+  },
+  {
+    "query": "Redis 过期键怎么删除",
+    "kind": "semantic",
+    "rationale": "讲过期删除策略",
+    "relevant_chunk_ids": [
+      "661bbd3db7ab8f35a0bdc43899537317",
+      "caa373e3f905eb90567f536ab5e9dd7f"
+    ]
+  },
+  {
+    "query": "Redis 内存满了怎么办",
+    "kind": "semantic",
+    "rationale": "讲内存淘汰策略",
+    "relevant_chunk_ids": [
+      "37871cf3041a396f454ff0fc1ed83117",
+      "661bbd3db7ab8f35a0bdc43899537317",
+      "736ff5f999845604ac32d09341801f11",
+      "8c25eb96885a197228eb0c7347ef82b0",
+      "94df4d5f059e5d9ba021df4808348439"
+    ]
+  },
+  {
+    "query": "goroutine 泄漏",
+    "kind": "keyword",
+    "rationale": "讲 goroutine 泄漏成因",
+    "relevant_chunk_ids": [
+      "0df70127a86cb21328a0b8e4f443dcc1",
+      "21c86b7add07f7b9386d4c1fa22f2f60",
+      "60da1420446cfbbb605484e97feed2ee",
+      "e10e956a8f1f23052c631d53b5265b8c",
+      "ec2805a2960ec1ecdc7c9008f9f8a68f"
+    ]
+  },
+  {
+    "query": "GC 三色标记",
+    "kind": "keyword",
+    "rationale": "讲三色标记与写屏障",
+    "relevant_chunk_ids": [
+      "00cc62bd49e542b325da72dd00d5ca57",
+      "0f31b8f32296d18ce1602b41d995835c",
+      "1e6cc3bf7ad7333433777e0028ea5eea",
+      "6b1b2c94d2d1d83487ed39ccdf3dbf15",
+      "6d73dea2f0a67e212cdc36bd42a566a6",
+      "7d6396f627665c1fe74f4569b3184c1d",
+      "88893c0edfefac0bd7f11e0058f4b0f6",
+      "927490c357c405dfb986fb601cdb386f",
+      "df19e401cd73fb51f135143bf4d2d96e",
+      "f240d478e5a7560f2fead681db854e59"
+    ]
+  },
+  {
+    "query": "channel 关闭后再读会怎样",
+    "kind": "semantic",
+    "rationale": "讲 channel 关闭语义",
+    "relevant_chunk_ids": [
+      "7ec68ceb36f431ec4a1082f02ed422b5",
+      "9bcc09404a9cef2fe525d2b980f15e5d"
+    ]
+  },
+  {
+    "query": "WaitGroup 用法",
+    "kind": "keyword",
+    "rationale": "讲 WaitGroup",
+    "relevant_chunk_ids": [
+      "2293624b71a5b0891206369e8f717e6d",
+      "30b3f89741145cc11aa174c2d26388eb",
+      "3dfec09ddcecbe42ef253c54101fb937",
+      "447ff12d8ef1f25f405d21207f2698e6",
+      "4bc2a9200b3980eefbea7f77eca075eb",
+      "4de7a32072fc3290b869d1426b51cd97",
+      "79c3b4e270dc8617d58b62df76407e7a",
+      "96ba576947506e51bcb761e07966b568",
+      "a63cce845a08178b63eedee92f5c4dad",
+      "bdab109a1c0f8268d2a2bc1ce4b250f2",
+      "c564fbd86b27425fbf3328b539020fb9",
+      "e369d452af88d7001bdb0a034681ac1e",
+      "ebf04e26729e1a9860012f5ada2b233c"
+    ]
+  },
+  {
+    "query": "Mutex 和 RWMutex 区别",
+    "kind": "confusable",
+    "rationale": "讲读写锁与互斥锁差异",
+    "relevant_chunk_ids": [
+      "0c6b23900dd6d5858943af32a56b0c73",
+      "30b3f89741145cc11aa174c2d26388eb",
+      "3dfec09ddcecbe42ef253c54101fb937",
+      "447ff12d8ef1f25f405d21207f2698e6",
+      "4b0cb3d4cefa563fdfb8452225d038a7",
+      "4bc2a9200b3980eefbea7f77eca075eb",
+      "6f3a753b8712ca78829c1daeed9d2334",
+      "791abf22182a4ea8a69c693b8a2e47ef",
+      "a0e1fd3ac07667f17f22e52d7ac6ef8b",
+      "a63cce845a08178b63eedee92f5c4dad",
+      "e369d452af88d7001bdb0a034681ac1e",
+      "e7efe9e0afac87bf5f53c80d1602d8b7",
+      "ebf04e26729e1a9860012f5ada2b233c"
+    ]
+  },
+  {
+    "query": "幂等性怎么保证",
+    "kind": "semantic",
+    "rationale": "讲幂等设计",
+    "relevant_chunk_ids": [
+      "053a8ff553a6f61760364309ac38cd86",
+      "22171d09752e92c552bd7588508fb611",
+      "447d9cae65adb52c041fc40a658f5044",
+      "4a41d8c842999eb26cb9d9d4b08cd5d3",
+      "6cf929386f0013b159911009769b9d2b",
+      "77447aac577ef8d6b0d7af3d985cfb09",
+      "7f2866ee26d2333f4ca280a4723bbbdc",
+      "92afff68e8e873501b34b92b69d7e84e",
+      "a85b143e02c5102cfcd083423945907f",
+      "a93f352c6649d51e69045c2c570c9143",
+      "b29bd59fb13dac16cc0e4af584ef0485",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "dc88b13202a0bf12b753e59883402e01",
+      "ecb73e66a285cf7c6f0a7f329d64c296",
+      "f5051f544cd818446781fcfe203d1311"
+    ]
+  },
+  {
+    "query": "Kafka 消费者组 rebalance",
+    "kind": "keyword",
+    "rationale": "讲 rebalance 机制",
+    "relevant_chunk_ids": [
+      "053a8ff553a6f61760364309ac38cd86",
+      "133d3f619c5e033e406981d2aff788da",
+      "3c6362e653d59daf6f1885912e3f13f9",
+      "614977393308b9d36c612482b73dd5d8",
+      "8f3c52f3c56a8a108e18b509fdaa18fd",
+      "a97d714bd1f566065a1791681947263f",
+      "c130881ed93e32aa6c9df9dd13b440e0",
+      "e2c4a965139301fd1fde2bca3246bf0c"
+    ]
+  },
+  {
+    "query": "消息重复消费怎么处理",
+    "kind": "semantic",
+    "rationale": "讲重复消费与去重",
+    "relevant_chunk_ids": [
+      "053a8ff553a6f61760364309ac38cd86",
+      "1ccfb99110ddab8e065e2aa29fcd0932",
+      "77447aac577ef8d6b0d7af3d985cfb09"
+    ]
+  },
+  {
+    "query": "Saga 模式",
+    "kind": "keyword",
+    "rationale": "讲 Saga 分布式事务",
+    "relevant_chunk_ids": [
+      "19a46acb9a735d98a5c0187fad3b267d",
+      "20ba3279913f69f6f0cdee37ee643e16",
+      "3dcff598a37882df09bff36f0258ba44",
+      "447d9cae65adb52c041fc40a658f5044",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "7f2866ee26d2333f4ca280a4723bbbdc",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "9ed23d48753345757e438fc873283f3b",
+      "bf958dfbb49c20246a9f8736d8e101b2",
+      "ce850442e05b34a6b34ef8fe4ca041d6",
+      "cefa672dfa9b5029b89fef4ec1812e06"
+    ]
+  },
+  {
+    "query": "本地消息表",
+    "kind": "keyword",
+    "rationale": "讲本地消息表方案",
+    "relevant_chunk_ids": [
+      "3dcff598a37882df09bff36f0258ba44",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "cefa672dfa9b5029b89fef4ec1812e06"
+    ]
+  },
+  {
+    "query": "缓存和数据库怎么保证一致",
+    "kind": "semantic",
+    "rationale": "讲双写一致性方案",
+    "relevant_chunk_ids": [
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "121c6e6262a6d74234ce5028213bf556",
+      "a0c45ac4e5f32bd302edb317ae8381eb",
+      "fac44f5d62033fef9802128eae1330eb"
+    ]
+  },
+  {
+    "query": "布隆过滤器误判率",
+    "kind": "keyword",
+    "rationale": "讲布隆过滤器原理与误判",
+    "relevant_chunk_ids": [
+      "0405c8b869a41d306ea71a8a85fad5de",
+      "9f8f585a44dbf6af537573ccdf0c420a"
+    ]
+  },
+  {
+    "query": "MySQL 慢查询怎么排查",
+    "kind": "semantic",
+    "rationale": "讲慢查询排查流程",
+    "relevant_chunk_ids": [
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "0a692c757b9486e13c62a8a25735c4bc",
+      "0c7cdcdbfeb47a3580c40b1271dc27e0",
+      "0df3bac5ad2ae14cc8554d123d069f69",
+      "13293b39d1253650e91bde770715756f",
+      "3b5602f43440257de81885a6678e1fd1",
+      "9e634880a8277a6f49ebc6a446781134",
+      "b1e08e759f609aa37116efea5df6fd31",
+      "bfdcd35873495c1ce081097e843547e1",
+      "d6f57b8acfcabdac3399de0942ea8d32",
+      "d84df8f7987dc5f661532ea2e1388970",
+      "da091350e0f2e49a97966f9b9c8a4641",
+      "ec502e29a2a63bb73232817cc31eba4e",
+      "f54210fecd4ddac3cce6ed41e24124d2"
+    ]
+  },
+  {
+    "query": "深分页问题",
+    "kind": "semantic",
+    "rationale": "讲深分页优化",
+    "relevant_chunk_ids": [
+      "08122b67b2667c7561b89c4ccc4f6a3b",
+      "0c7cdcdbfeb47a3580c40b1271dc27e0",
+      "39f58be3519d7c98edf8c2cdcd4723a0",
+      "3bcc9096777afb2d0313ca55e2c3f424",
+      "5bc78dea4300e7e9f3be9c1e109cae15",
+      "797d417fc3959296925f15a53ea2f061",
+      "d36cb6d8bd0d7abf654608da1f312571",
+      "d5d7bb41ded7c7d6433019d34a612ba0",
+      "d6f57b8acfcabdac3399de0942ea8d32"
+    ]
+  }
+]

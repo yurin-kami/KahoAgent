@@ -1,0 +1,827 @@
+[
+  {
+    "query": "怎么防止缓存被恶意请求打穿",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "2f5dd2edf8592a44c075e8ebc6b9dd5b",
+      "c627e02e9339c4514187ec67c1c07016",
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "6a6e14abdc7318f8ac0bb707aad51e04",
+      "40914c4bd53967b27b6d37bb261eaf8f",
+      "f549fc91d7e9af22c52431c2eaf7858b",
+      "8e195cfc4e7272f000726be6540bb6d5"
+    ],
+    "note": "应命中缓存穿透而非击穿 —— Phase 1 实测失败的用例"
+  },
+  {
+    "query": "热点key突然失效导致数据库压力暴增怎么办",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "d6e231abf6db3a669c9c919e3a7fde83",
+      "c627e02e9339c4514187ec67c1c07016",
+      "f061d42eb037b33e0e916af95f7fe994",
+      "2f5dd2edf8592a44c075e8ebc6b9dd5b",
+      "80894c3d5613bf506d86d5096467ca7c",
+      "f79df147bba568747f574a497f9860c9",
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "f93dd03f3c5dbb3c106955f808cd6613"
+    ],
+    "note": "应命中缓存击穿而非穿透"
+  },
+  {
+    "query": "大量缓存同时过期怎么处理",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "f061d42eb037b33e0e916af95f7fe994",
+      "37871cf3041a396f454ff0fc1ed83117",
+      "2176b18e921753da53756cf983c4cecc",
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "40914c4bd53967b27b6d37bb261eaf8f",
+      "fac44f5d62033fef9802128eae1330eb",
+      "6e7f106c5304fb9a81df02292bfad9d4",
+      "f549fc91d7e9af22c52431c2eaf7858b"
+    ],
+    "note": "应命中缓存雪崩"
+  },
+  {
+    "query": "MySQL 里读到别的事务没提交的数据是什么问题",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "1e68113ce170faa589ffa05c13a2abce",
+      "1ccfb99110ddab8e065e2aa29fcd0932",
+      "7f2866ee26d2333f4ca280a4723bbbdc",
+      "e3c11b26eab01960315ed25047158c12",
+      "72dcbf365ad419d556320dbbfa2374bb",
+      "0a692c757b9486e13c62a8a25735c4bc",
+      "747cd422c354ffe25194b249bb500db8"
+    ],
+    "note": "脏读，非幻读/不可重复读"
+  },
+  {
+    "query": "同一个查询两次结果不一样是什么隔离级别问题",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "72dcbf365ad419d556320dbbfa2374bb",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "1babf824c2d541cc3e5f71aa890f8117",
+      "f5bafed8544772f7ad66ae4f211db054",
+      "042e28e3bc20a07b1ab5c370e88df294",
+      "97b1437506ebb69e87fb92373cf4d750",
+      "fb7559db15f4d6a6f2bc18c2124350c5"
+    ],
+    "note": "不可重复读"
+  },
+  {
+    "query": "事务中两次范围查询返回的行数变了",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "04f60f1f027fc4af6ac8e30c1477acd3",
+      "1e68113ce170faa589ffa05c13a2abce",
+      "74ef2dbda8e822c08bf3404bacffbd04",
+      "c212c24cb4e732ab60d79a6e75ac5cd6",
+      "d50af6b175d835dc569fe1a7271e7fc7",
+      "cbfc50f98a65b72d812827a627d6091e",
+      "a0a68870733e388d7f3786447f6942c4",
+      "97b1437506ebb69e87fb92373cf4d750"
+    ],
+    "note": "幻读"
+  },
+  {
+    "query": "Go 里协程和线程有什么区别",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "1dffd650b7f64a5f9e75f2c4725b4380",
+      "3f1cd301859f95bbba3a2533ca4890d4",
+      "26d46976e4a85264e24a3008b98e27e6",
+      "9ca54d5d0552db5184de9e618a1d53e8",
+      "8177fc5bb057a529cfeab105603149fc",
+      "98ea4231e1b4b0a1ce400035736c9046",
+      "5ca03a2943852ce0422e88ede744e0c8",
+      "2a3db83399d0161c559002f083f615b3"
+    ],
+    "note": "goroutine vs thread"
+  },
+  {
+    "query": "进程和线程的区别",
+    "kind": "confusable",
+    "relevant_chunk_ids": [
+      "3f1cd301859f95bbba3a2533ca4890d4",
+      "26d46976e4a85264e24a3008b98e27e6",
+      "1dffd650b7f64a5f9e75f2c4725b4380",
+      "8177fc5bb057a529cfeab105603149fc",
+      "98ea4231e1b4b0a1ce400035736c9046",
+      "07690ee7ac1bcbce9c5fe33f141389c8",
+      "5ca03a2943852ce0422e88ede744e0c8",
+      "4a138d9fcb0214a6d603c4d8badd56b9"
+    ],
+    "note": "应命中 OS 相关而非 goroutine"
+  },
+  {
+    "query": "数据库查询太慢了怎么优化",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "0a692c757b9486e13c62a8a25735c4bc",
+      "ef2108f0e8d6d2ea08254077153f7546",
+      "23ea8473862b42d7b4940aac9bf74eab",
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "a7678ce772308c7751c5ed52c706db55",
+      "c627e02e9339c4514187ec67c1c07016",
+      "2da1e2f21b90c3d59bd25dab7a2763bc"
+    ],
+    "note": "索引优化相关"
+  },
+  {
+    "query": "怎么保证消息不丢",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "b5deec015e414576aded0f41018e2522",
+      "b5fa647b0c7c72d5556fa1da7e255a16",
+      "80fe08b746ef1843f6ad815ac1a8399c",
+      "92b1cfae52395f2c7027aace9e06da3b",
+      "5ccb36e41fd03c8109dc496b9d22a568",
+      "5a01a9284ecc914d7d8ddecc2526c133",
+      "0c48eef43b67576474016ddda04ffcab",
+      "0ba24f2627fb64f7dce3a4230ad78b1f"
+    ],
+    "note": "Kafka 可靠性"
+  },
+  {
+    "query": "服务挂了怎么自动重连",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "fd86071f330e0ab17cffda3275acd3bc",
+      "b4470b77d0799a8a53c56e67ff12cb55",
+      "86aa663707ce4c7726373e02f23006e2",
+      "135e2892399ef3daa53561b9f63dcebb",
+      "02533e9482204f6dbedc606fa8d84c19",
+      "ff9d856a4b73e2bb259e30191181df71",
+      "5f8a1cd9645b8987e19f8065d3e293f5",
+      "1920f52e0542fcce6e8e9d63486d8155"
+    ],
+    "note": "重连机制"
+  },
+  {
+    "query": "多台机器怎么保证同一时间只有一个在执行",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "4de7a32072fc3290b869d1426b51cd97",
+      "6328b0b1fae1be2535ce8eca391e9a1c",
+      "c4b68b5dc741bf562d0340d6be03f3db",
+      "89bf9c293f3ce31680385d679421ecf9",
+      "07690ee7ac1bcbce9c5fe33f141389c8",
+      "0de20c52c09b7c16298b28dba36980db",
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "236e93e1d78781657a52ddbd29ad692f"
+    ],
+    "note": "分布式锁"
+  },
+  {
+    "query": "怎么生成全局唯一的ID",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "8ac8fe1b2f179fe22ffe15cb26fb2f04",
+      "9bb1ed73fb9de43bd983a68458bca3b2",
+      "f1faf68f1a7d938f8510286a0c163189",
+      "a3d404a1b77dd99ca17b4cb1f8734ef2",
+      "395f173e51fded617fd5559c15f5df16",
+      "a93f352c6649d51e69045c2c570c9143",
+      "92121283bad3a35cd714555e9b401618",
+      "23ea8473862b42d7b4940aac9bf74eab"
+    ],
+    "note": "雪花算法"
+  },
+  {
+    "query": "用户登录状态怎么保存",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "617ab2bebaade8e6a4e6e1b5e2e545b5",
+      "f0174aa7d5337b223d8809996078148d",
+      "54d1de97e586810f1c6dae7a33962e08",
+      "6924cc2314ce58098e90c5878bcc4bc4",
+      "fb3b0ed1d15cf1b7013bca4d5bb76484",
+      "3c87ce603a25ea617f1722da8a559482",
+      "0c48eef43b67576474016ddda04ffcab",
+      "e56d55b4b2d810a99af2dcf9ea0b4e36"
+    ],
+    "note": "JWT / Session"
+  },
+  {
+    "query": "程序内存一直涨是什么原因",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "0f6a71e85a1182ba2a3aaa719f8780e9",
+      "5777d6e8c87db38428c43ab1a5c9f32d",
+      "7d6396f627665c1fe74f4569b3184c1d",
+      "9a2d8ab458457fd766d7f04544f2aabc",
+      "375f783efd93e5e9e3e63e689df2c4d8",
+      "927490c357c405dfb986fb601cdb386f",
+      "55809e418acdb67337528eb0c223135d",
+      "05169c31f569459fe665b48f46a48758"
+    ],
+    "note": "GC / 内存泄漏"
+  },
+  {
+    "query": "怎么让接口响应更快",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "f79df147bba568747f574a497f9860c9",
+      "b664ebd3ce0a1b704128fed150c77d00",
+      "cc5b4b0105291b0c1548d9f4fa164c6b",
+      "0c48eef43b67576474016ddda04ffcab",
+      "992feb9c8aedd7201dc3e66bc7a5c5b4",
+      "16a85700710d008adeff48a84d4f171e",
+      "9e634880a8277a6f49ebc6a446781134",
+      "4ce93da71ab84d5c5730ba91fff86ea8"
+    ],
+    "note": "缓存 / 性能优化"
+  },
+  {
+    "query": "两个服务之间怎么通信比较好",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "1e4cb90292a489261d3e3d5f8098d9d6",
+      "17b2c33f1bd02781c56fff1b1beb45f1",
+      "0ed98da0e776883677cf2f6c56dc1842",
+      "91125c2b1b70767ca7e3082a45bf0210",
+      "5a0a80c73c3981072b834a62685227ef",
+      "fdb7e8ea7e8eb909156dbeb3cf671bd6",
+      "e38f32615fab4ad40f40ecf87e9d2a79",
+      "5c7fe9cd2da1eb3b426dba16a3a86318"
+    ],
+    "note": "RPC / 协议选择"
+  },
+  {
+    "query": "大文件上传怎么做",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "71dbb5adb830719ce88208f436c6aff1",
+      "0ebc506a1bfa451d49f75d0ee9f261ba",
+      "3b138fb6a818f2e8918c48bf128affa3",
+      "caaafafce128665206468bf06f4cd6e1",
+      "ba1cf2a5c479771016139f630834b712",
+      "b547b11fb450c71e5acb181d4fa20903",
+      "e12b5dd5591f34fc9bc74642548cca1e",
+      "eaad1e757cc4b1beb4b9605df2c6b577"
+    ],
+    "note": "分片上传"
+  },
+  {
+    "query": "密码应该怎么存到数据库",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "0c6ffef0a263bf5f843f2c553e53f1d2",
+      "e56d55b4b2d810a99af2dcf9ea0b4e36",
+      "8d58f13650d39ced8e5cbb37b2cedf9e",
+      "2f5dd2edf8592a44c075e8ebc6b9dd5b",
+      "c627e02e9339c4514187ec67c1c07016",
+      "c1572ae88c659f55d1786dd606f9004c",
+      "555c649d3671ed0510cc8d259a0800eb",
+      "1c9e692e4c9572a8d3526ed34335ddd5"
+    ],
+    "note": "bcrypt"
+  },
+  {
+    "query": "怎么知道文件有没有重复上传过",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "3b138fb6a818f2e8918c48bf128affa3",
+      "e12b5dd5591f34fc9bc74642548cca1e",
+      "26c229760e56c02915b190c7fc466768",
+      "1c6d2142d8becc0eee18bfa45e2d0b5d",
+      "325115d5dd9b45d492992ab8c56ac97b",
+      "ea03d16a530904ba1e4215c44b9125b8",
+      "f70bf916ae06e7179b90031fcc4fabc2",
+      "9057f2688f14756f31da000f50e1bcb8"
+    ],
+    "note": "秒传 / 哈希"
+  },
+  {
+    "query": "并发写同一条记录会有什么问题",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "3b138fb6a818f2e8918c48bf128affa3",
+      "1c9e692e4c9572a8d3526ed34335ddd5",
+      "3b612e945c1d79b612c5861ce099dc1d",
+      "911a14db5583c538fbee4063167cc551",
+      "0b246d9c4f799de1e6d6cc94bbe077d4",
+      "6cf929386f0013b159911009769b9d2b",
+      "9e965daa71c2248894b61b6f3a329d0c",
+      "1c19b41c35c4ed2e167d57efe552eb3b"
+    ],
+    "note": "锁 / 死锁"
+  },
+  {
+    "query": "怎么做限流",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "3d6685c5f82e57cb549b50cb524dcf71",
+      "a916a01ccbaf4082e1fcbf7c40463c09",
+      "84cf09a91fed7cf7020354d021b1b88e",
+      "e10e956a8f1f23052c631d53b5265b8c",
+      "2e3a6d312e832bc579a9b1a523fa92b2",
+      "0566c093cfdd0bbace447a024685357b",
+      "644ccafc21f0f3609a0997b5f09cbf2a",
+      "8c25eb96885a197228eb0c7347ef82b0"
+    ],
+    "note": "限流算法"
+  },
+  {
+    "query": "前端点了按钮怎么立刻有反馈",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "fb3b0ed1d15cf1b7013bca4d5bb76484",
+      "0c48eef43b67576474016ddda04ffcab",
+      "54d1de97e586810f1c6dae7a33962e08",
+      "b0614d470bdf3bc215bad9a82cbc8fcc",
+      "5a239a9c6b90f2ebd152661a8efa4388",
+      "71c93f45e69bd44c80156a2bcab9dee6",
+      "6cf929386f0013b159911009769b9d2b",
+      "b08445def8e1d2a74e366b30fe22b684"
+    ],
+    "note": "乐观 UI"
+  },
+  {
+    "query": "网络断了消息怎么补发",
+    "kind": "semantic",
+    "relevant_chunk_ids": [
+      "ff9d856a4b73e2bb259e30191181df71",
+      "b5deec015e414576aded0f41018e2522",
+      "5910c316b15601a4c55ba1a1f35d1cce",
+      "b4470b77d0799a8a53c56e67ff12cb55",
+      "135e2892399ef3daa53561b9f63dcebb",
+      "79f167788fbba6a12e9d12ed287adb24",
+      "0c48eef43b67576474016ddda04ffcab",
+      "fb3b0ed1d15cf1b7013bca4d5bb76484"
+    ],
+    "note": "消息投递"
+  },
+  {
+    "query": "MVCC",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "4e7f4af513549352677ee3c32a726b54",
+      "fb7559db15f4d6a6f2bc18c2124350c5",
+      "fe45b79a092dba81679b15b38409d88c",
+      "c2737c8f7f29a31dbe9e2cd906f3e19f",
+      "db34b39dcb084148fbf4b919d8fce213",
+      "0726f930481453bf84d9965589aacf6a",
+      "ef70b1ee6c9380bc79bcd8c844a8255b",
+      "9057f2688f14756f31da000f50e1bcb8"
+    ],
+    "note": "MySQL 多版本并发控制"
+  },
+  {
+    "query": "GMP 调度模型",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "8177fc5bb057a529cfeab105603149fc",
+      "87b39a76c4835eab1cce7e4297ae7a10",
+      "ad48d77ef91e0f50c3d842d5678a9bae",
+      "1dffd650b7f64a5f9e75f2c4725b4380",
+      "98ea4231e1b4b0a1ce400035736c9046",
+      "236e93e1d78781657a52ddbd29ad692f",
+      "8fa7e143b1ee92e3fad12e854f82f8ba",
+      "eb829f05056dbe59dc73b10b15e73de8"
+    ],
+    "note": "Go 调度器"
+  },
+  {
+    "query": "B+树索引",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "5ef9354c2e13ce94578707b11e1e310a",
+      "cbfc50f98a65b72d812827a627d6091e",
+      "c212c24cb4e732ab60d79a6e75ac5cd6",
+      "509c74629f629a4c9bb60663b88b3f25",
+      "08f338a6147e6a3195fa1fdf5a30698f",
+      "a0a68870733e388d7f3786447f6942c4",
+      "1b2738de3c9bd3ea1e7fde8f04a283fc",
+      "0b246d9c4f799de1e6d6cc94bbe077d4"
+    ],
+    "note": "MySQL 索引结构"
+  },
+  {
+    "query": "sync.Pool",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "6328b0b1fae1be2535ce8eca391e9a1c",
+      "3dfec09ddcecbe42ef253c54101fb937",
+      "4b0cb3d4cefa563fdfb8452225d038a7",
+      "30b3f89741145cc11aa174c2d26388eb",
+      "4bc2a9200b3980eefbea7f77eca075eb",
+      "2293624b71a5b0891206369e8f717e6d",
+      "791abf22182a4ea8a69c693b8a2e47ef",
+      "02533e9482204f6dbedc606fa8d84c19"
+    ],
+    "note": "Go 标准库"
+  },
+  {
+    "query": "context.WithCancel",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "7ce8fefab53398ae792d343ebbbf7839",
+      "e1a59454b2bc740785ff0c17757928ec",
+      "dae3972d1b5f84b05fc0bba14f741a84",
+      "60da1420446cfbbb605484e97feed2ee",
+      "d5d50c0f05bca2d145b2e8e9e4507bdc",
+      "58cbf40af1abe5da624f0a8fe297bb47",
+      "14042ef6345567db0ca841c3e41c5dc9",
+      "911a14db5583c538fbee4063167cc551"
+    ],
+    "note": "Go context"
+  },
+  {
+    "query": "Redis AOF RDB",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "2f4f5bb210c8724f791e52dfe9aef2e5",
+      "e6f38126669f6a8b397865bc36069e7e",
+      "ac8b86f611f477dc5f2d35ab06a94ef1",
+      "5cf3cd286af35b4c02e109bc74ca19f7",
+      "eabe54bd7da5b687c924e1f3e80d7c0a",
+      "79d49e1a15b6ecb5355bcd26d0e6dabb",
+      "c27af1442a36cdd91adc167b0415dc6f",
+      "55809e418acdb67337528eb0c223135d"
+    ],
+    "note": "持久化"
+  },
+  {
+    "query": "Redis Cluster 槽位",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "0debe7b946e9aad21f31bc73b86f41aa",
+      "2291689ca1ad75d174e088d76f1e143f",
+      "63e8a3b35a793eb5cdbef75ff3577bd0",
+      "3f39123f5e697f07c1e1bc2dbb9bd6d5",
+      "15b764b9ce20ddce0a3133b6e59d1ee9",
+      "921f0de591335ca014f5b22825ae369d",
+      "0a87baa8016622b0204019d9216eea9d",
+      "abe67fb086778e84fbdf30e002270a51"
+    ],
+    "note": "集群分片"
+  },
+  {
+    "query": "ZSet 跳表",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "1e93505eca44ab4cb58bfa176806c9fb",
+      "375f783efd93e5e9e3e63e689df2c4d8",
+      "7b6e74cce30882af18e51f22f02ea797",
+      "2f9f4d0e6ad3bc2ee28db98a4e77b6c9",
+      "ce368eb22f81fcac39c146138262d78c",
+      "9a2d8ab458457fd766d7f04544f2aabc",
+      "b2ce2fc79abeef3b532cdd65061aa786",
+      "a0a68870733e388d7f3786447f6942c4"
+    ],
+    "note": "Redis 数据结构"
+  },
+  {
+    "query": "Kafka ISR",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "22171d09752e92c552bd7588508fb611",
+      "80fe08b746ef1843f6ad815ac1a8399c",
+      "b3172744563fb695172a4249bd45caf3",
+      "3f43ade259179dcc801cb18e3f4981a2",
+      "e43ffc0d818926ccbd09b62a07ade1b9",
+      "0f6a71e85a1182ba2a3aaa719f8780e9",
+      "5ccb36e41fd03c8109dc496b9d22a568",
+      "a1699b47bf3633d3c114f1bc81880b6a"
+    ],
+    "note": "副本同步"
+  },
+  {
+    "query": "Kafka 零拷贝 sendfile",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "3f43ade259179dcc801cb18e3f4981a2",
+      "9336215838199e5e534af3156ee10d5e",
+      "85dc9cdad82d6bb493ce2db162296cce",
+      "992feb9c8aedd7201dc3e66bc7a5c5b4",
+      "fb96119afc9ec83fc5a738f0f5c992d4",
+      "002427f5649205bbdc582e72d3c7cc94",
+      "0f6a71e85a1182ba2a3aaa719f8780e9",
+      "5ccb36e41fd03c8109dc496b9d22a568"
+    ],
+    "note": "高性能原理"
+  },
+  {
+    "query": "TCP 三次握手",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "296a15cc6fce9e8e9f2017d45241ef8e",
+      "23e4b0d33ca57f2fca650e7e6c02c08f",
+      "3dc1a2dff3649628f58fab89d8b65bab",
+      "bb9659200d937d18f2e2dee1c96099ab",
+      "b212abd6c60739d8ef4094a42bdb0d28",
+      "ae100a850b5dbec57d6e284b33b3cf7e",
+      "20a5b687a193f0d12ad0efa1fa65a549",
+      "726d1763c18cc7191c1c34170a58e912"
+    ],
+    "note": "网络协议"
+  },
+  {
+    "query": "HTTP/2 多路复用",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "cc5b4b0105291b0c1548d9f4fa164c6b",
+      "be2e86f13048d940615895a91611d12d",
+      "c3f51f07bacd17669f2da5a22de0a1c4",
+      "50757400bee13a3844a6a3e98a3c2c08",
+      "9ada5ff420ce77b8caf8f9590ef79352",
+      "de0cbc4f8759658c520f9f45bce4c683",
+      "673af92889f734b89ab006a5c0a24a60",
+      "700dde4b6709630107c9ceb764ff2bb1"
+    ],
+    "note": "协议演进"
+  },
+  {
+    "query": "bcrypt cost",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "750457374d858d61e6c0dc23630c9317",
+      "16a85700710d008adeff48a84d4f171e",
+      "3c300b3c4b22dce307b536bb864e64bc",
+      "b985411d36118e1c1e86d6716104fa1d",
+      "85c4e2226a5b42cadb2a05b0efe3c340",
+      "8d58f13650d39ced8e5cbb37b2cedf9e",
+      "e56d55b4b2d810a99af2dcf9ea0b4e36",
+      "9eb2a3adc8a31bcda8ddd8c320cc8fd6"
+    ],
+    "note": "密码哈希参数"
+  },
+  {
+    "query": "S3 multipart upload",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "ea03d16a530904ba1e4215c44b9125b8",
+      "0ebc506a1bfa451d49f75d0ee9f261ba",
+      "b641b46a93dfc3d10dadc276895128fc",
+      "e12b5dd5591f34fc9bc74642548cca1e",
+      "992e8349d5ee536881c037a68826d27e",
+      "ba1cf2a5c479771016139f630834b712",
+      "a0011ba114afd1596e059a4f4af5d1c1",
+      "790e910f2eb1891d836fbfced2cd2b94"
+    ],
+    "note": "分片上传 API"
+  },
+  {
+    "query": "gRPC 双向流",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "780521276b4603194fbf5dbeed3a33d9",
+      "c610d76bba59b8aa343bf1973c29a15a",
+      "27aa1566f0a24703ce71b5589bb1ec67",
+      "0ed98da0e776883677cf2f6c56dc1842",
+      "21c86b7add07f7b9386d4c1fa22f2f60",
+      "4ce93da71ab84d5c5730ba91fff86ea8",
+      "ac20a6429ba1c051a1199e95579c98d1",
+      "b4470b77d0799a8a53c56e67ff12cb55"
+    ],
+    "note": "流式 RPC"
+  },
+  {
+    "query": "select case channel",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "7ec68ceb36f431ec4a1082f02ed422b5",
+      "6865d117d498506849d1e39b67f98d26",
+      "b56df03109648b8a88bef1e1439e5d48",
+      "59d5790de4269e12fc9703dd02c1eba3",
+      "92121283bad3a35cd714555e9b401618",
+      "fdb7e8ea7e8eb909156dbeb3cf671bd6",
+      "c564fbd86b27425fbf3328b539020fb9",
+      "363c3afa2ee37a58fb05c532e3b213ac"
+    ],
+    "note": "Go 并发原语"
+  },
+  {
+    "query": "defer recover panic",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "d47b8f22de5efe2bece65eeef94ba7e4",
+      "9600bfdeb49ccf67eddf5a56e2b38f21",
+      "9bcc09404a9cef2fe525d2b980f15e5d",
+      "58cbf40af1abe5da624f0a8fe297bb47",
+      "7ce8fefab53398ae792d343ebbbf7839",
+      "7bc90d594727c7ef9c026ebef430822f",
+      "c627e02e9339c4514187ec67c1c07016",
+      "6328b0b1fae1be2535ce8eca391e9a1c"
+    ],
+    "note": "Go 错误处理"
+  },
+  {
+    "query": "slice 扩容",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "1fac0f83d34771d463daf5b9db4f8470",
+      "2f8afb85f3665ad6551d672132216e26",
+      "be0a3da062c00947f7386aa0587727cb",
+      "443b93d697702ed66c49475c14462ae5",
+      "1d1b49fcd043f6bf9bb7abc26cf0902c",
+      "20ba544489c662174697d7aabbe99912",
+      "88de6b2fe7f02bd930fe0d5a7ebffcd9",
+      "2a5ca16b62bc681b4255794134210beb"
+    ],
+    "note": "Go 底层"
+  },
+  {
+    "query": "map 并发安全",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "3b612e945c1d79b612c5861ce099dc1d",
+      "4b0cb3d4cefa563fdfb8452225d038a7",
+      "a63cce845a08178b63eedee92f5c4dad",
+      "3b138fb6a818f2e8918c48bf128affa3",
+      "447ff12d8ef1f25f405d21207f2698e6",
+      "1fac0f83d34771d463daf5b9db4f8470",
+      "6b1b2c94d2d1d83487ed39ccdf3dbf15",
+      "88893c0edfefac0bd7f11e0058f4b0f6"
+    ],
+    "note": "Go map"
+  },
+  {
+    "query": "两阶段提交 2PC",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "2a2b2fbe50e15a17968aa065cfe28cbd",
+      "8d1cf7b791b417bea6782e78f11ef894",
+      "f65b39e4cff6fb5b7ef3a9018e508417",
+      "f5051f544cd818446781fcfe203d1311",
+      "80fe08b746ef1843f6ad815ac1a8399c",
+      "20ba3279913f69f6f0cdee37ee643e16",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "3dcff598a37882df09bff36f0258ba44"
+    ],
+    "note": "分布式事务"
+  },
+  {
+    "query": "TCC 补偿事务",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "081e97d976781aafa795038446a2705c",
+      "3dcff598a37882df09bff36f0258ba44",
+      "92afff68e8e873501b34b92b69d7e84e",
+      "4c755e4e81a5ce9f95a7bb9e4b281954",
+      "a4a8bdf8d020d2ef9bef614a15a1c030",
+      "3158290ac62a4d807f8346cdf1dc0e53",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "ce850442e05b34a6b34ef8fe4ca041d6"
+    ],
+    "note": "分布式事务"
+  },
+  {
+    "query": "雪花算法时钟回拨",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "7ed44eb1e2dd905132f8eb8056fc988b",
+      "ff91a33c26a5d2ae4b775d247e171c1a",
+      "5c19d55adceb2c31404093ff50382ed8",
+      "a3d404a1b77dd99ca17b4cb1f8734ef2",
+      "b75f86d53612c01a189e9a2dc434cab7",
+      "91c721db4695cbde8f1014072ac42953",
+      "d04e8da62796c2248f9d72b4044e5027",
+      "83932e408df050e4469b5ae82c16a56e"
+    ],
+    "note": "ID 生成边界情况"
+  },
+  {
+    "query": "Redlock",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "fab863b1ff525dafb3a050b3bbe901f0",
+      "771d847002e596cee952620f09c14f1c",
+      "cebfcd1e709f38cecea43142020f8d39",
+      "65d78e26ccee752ef2b1012df06cc335",
+      "dd30b9a92a0aeb1e49712ce139fa8935",
+      "1350f9b9486dac2869b156c987591965",
+      "c4b68b5dc741bf562d0340d6be03f3db",
+      "0dadf211aa19bfdee0a25222d5589366"
+    ],
+    "note": "Redis 分布式锁"
+  },
+  {
+    "query": "间隙锁 next-key lock",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "e9732e96194fd91cb11bc1633ec400dd",
+      "042e28e3bc20a07b1ab5c370e88df294",
+      "74ef2dbda8e822c08bf3404bacffbd04",
+      "01d0750c5e824914e84526b6467a29fe",
+      "bb02099fdf18054afb4a2567840f1612",
+      "959cdf374d91b847149b8ab53d14dc44",
+      "19c70913d2ef348bbdaf99abe3b49321",
+      "a0e1fd3ac07667f17f22e52d7ac6ef8b"
+    ],
+    "note": "MySQL 锁"
+  },
+  {
+    "query": "WezTerm tab 关闭",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "008ef2a863b82f1bd8e6c18ce277bba4",
+      "31ed56a25bad059d7a2826f923ac223c",
+      "a8d9c9c297b3c939548b7a5aa55e8ef9",
+      "f30328cadd2d2fc46f5c0aad02704f3c",
+      "944b7d34b8a3ac5a9e268ba5fbc494b5",
+      "9bcc09404a9cef2fe525d2b980f15e5d",
+      "2cd859018413844c58e9c961a5d443e9",
+      "10447b2bdb6265949ed77b2b5bc7b984"
+    ],
+    "note": "工具类问题"
+  },
+  {
+    "query": "ImGui 破坏性变更",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "d447772f14e065d3e3d5f4c05a2a0ab3",
+      "d142bfc3d0cfbc3c6880d4d2e40b80ba",
+      "85a85e04a5377e033970e921503e1ff4",
+      "e844d125a0b6ddeeb3999a12766ef1e7",
+      "63d67293ee65cdd1c75a9c94eaa34d1a",
+      "5fbe2524d5bd0b06d2100f7806fae778",
+      "5480d14a3f9e54ce85838cef86c79a3d",
+      "73e1c4680d7cb7c84c9c737ef301efb1"
+    ],
+    "note": "OptiScaler 项目"
+  },
+  {
+    "query": "UTF-8 编译错误",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "36b9bc7294328781af37105fe70d6f45",
+      "6fdde73581061cbae35dd8258c729634",
+      "deb86136a30ecc9fbaa51a4e62a5d1fb",
+      "7a25a7a1c3e026b798f989bde0a7ca95",
+      "7a54f46dd3d465880b21b39df37df9f1",
+      "8cb01128a8e2f5f358df9e49b0f93697",
+      "c46044bf112070e947d12d5e9d2e21f8",
+      "b08c96a537981a2cf26ff85adf48a547"
+    ],
+    "note": "字符编码问题"
+  },
+  {
+    "query": "CJK 字体渲染",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "23405f084641b6a285d38c413ee59f73",
+      "7b838c546311be7a6c2d95ef1df2bdfc",
+      "a46e9d394a64798a7765f119b9c550e0",
+      "73e1c4680d7cb7c84c9c737ef301efb1",
+      "8669fbc72c0904505711d58bae3f51fe",
+      "9f30ebf52620654254e6ad8842a1aefc",
+      "e54c22042ee3ef67bee7e3624951c53d",
+      "720936e9aebebc0513ab0f154f9405e6"
+    ],
+    "note": "中文字体"
+  },
+  {
+    "query": "pgx 连接池",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "3961b95a163f46e1f45badc06744a9f8",
+      "61b57331a1b04bf844eb6619eb4d50a7",
+      "6328b0b1fae1be2535ce8eca391e9a1c",
+      "4b0cb3d4cefa563fdfb8452225d038a7",
+      "09d606aa5f37169d9913747334908513",
+      "0c4057bad65093cd96fa7334a088c91e",
+      "5d79a60430f2491f591bce85219d4755",
+      "ff9d856a4b73e2bb259e30191181df71"
+    ],
+    "note": "Go PostgreSQL 驱动"
+  },
+  {
+    "query": "微服务拆分粒度",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "1e4cb90292a489261d3e3d5f8098d9d6",
+      "d466b42f61706b0965d01715e5f43cb4",
+      "5bc93aa2b06bab3c7983834f43920fcc",
+      "e3bfa5d4cd543885e5f84530d743fffa",
+      "3d6685c5f82e57cb549b50cb524dcf71",
+      "9a262d4f3d9d73ec5c937840a82f0f3f",
+      "fedec427b8adc98ee584088ee3c83700",
+      "7b42553470827b03d0fb87608572acc7"
+    ],
+    "note": "架构设计"
+  },
+  {
+    "query": "设计模式 Go 实现",
+    "kind": "keyword",
+    "relevant_chunk_ids": [
+      "1802bba1b4b8e6f4bd660deab7cc2347",
+      "2a3db83399d0161c559002f083f615b3",
+      "0884543f697eaca8ae394ef1125b39c6",
+      "f70bf916ae06e7179b90031fcc4fabc2",
+      "25d21897f2ba27a9d9d9d3819690ed6f",
+      "e73edc72fcf30011b96f76dbbe4e62c6",
+      "e7efe9e0afac87bf5f53c80d1602d8b7",
+      "23fe0b0b24dd2f3748942a3e9d8c3c86"
+    ],
+    "note": "设计模式"
+  }
+]

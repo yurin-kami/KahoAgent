@@ -19,9 +19,17 @@ import (
 
 const (
 	// defaultBatchSize 是单次请求携带的文本条数。
-	// 64 是保守值：DashScope 单批上限较低，且过大的批次在失败重试时
-	// 浪费更多已成功的工作。
-	defaultBatchSize = 64
+	//
+	// ⚠️ 10 是 DashScope 的硬性上限，不是保守估计。超出会收到：
+	//   HTTP 400 InternalError.Algo.InvalidParameter:
+	//   "batch size is invalid, it should not be larger than 10"
+	//
+	// 这个限制在 Phase 1 没暴露 —— sample.md 只切出 7 个 chunk，
+	// 一批就发完了。直到 Phase 2 入库 1300+ chunk 的真实语料才炸。
+	// 教训：跟外部 API 的批量上限，必须用真实规模的数据验证。
+	//
+	// 若换成 OpenAI（上限 2048），可用 WithBatchSize 调大。
+	defaultBatchSize = 10
 
 	// maxAttempts 含首次尝试，即最多重试 2 次。
 	maxAttempts = 3
