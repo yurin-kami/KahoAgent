@@ -29,5 +29,13 @@ config.toml
 .DS_Store
 Thumbs.db
 
+# Windows reserved device names.
+# git on Windows can surface these as phantom untracked entries even when
+# no such file exists on disk (a stray shell redirect is enough to trigger it).
+NUL
+CON
+PRN
+AUX
+
 # Temp
 /tmp/

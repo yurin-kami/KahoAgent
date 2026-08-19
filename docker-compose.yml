@@ -9,6 +9,12 @@
 # 清空：  podman-compose down -v   （会删除数据卷）
 #
 # 内存说明：WSL2 限额 6GB，各服务已设 mem_limit 防止单个服务吃满。
+#
+# ⚠️ 镜像拉取：若 docker.io 直连失败（EOF / timeout），先用镜像源拉取再打标签：
+#     podman pull docker.m.daocloud.io/library/redis:7-alpine
+#     podman tag  docker.m.daocloud.io/library/redis:7-alpine docker.io/library/redis:7-alpine
+#   一键脚本见 scripts/pull-images.ps1。
+#   这样 compose 文件保持标准镜像名，不把镜像源硬编码进去。
 
 services:
   # ── Milvus 的元数据存储 ──────────────────────────────
