@@ -15,6 +15,7 @@
 |------|-----------|---------|------|
 | _(示例) 支持 PDF 解析_ | _技术文档很多是 PDF_ | _2026-08-19_ | _Phase 6 可选_ |
 | 把「缓存穿透 vs 击穿 vs 雪崩」这类近义概念纳入 golden set | Phase 1 验收时实测：查询「怎么防止缓存被恶意请求打穿」，Top1 返回的是「缓存击穿」而非正确的「缓存穿透」（score 0.7096）。纯向量检索分不开这类高度相似的技术概念 —— 三者字面和语义都极近，但答案完全不同。这正是 Phase 2 要 BM25 + ReRank 的实证依据，**必须进 golden set 当难例** | 2026-08-19 | Phase 2 |
+| 清理 346 行孤儿 chunk | `ingest_corpus` 早期版本的 docID 只用 basename，导致 en/ja 子目录同名文件互相覆盖。修复为相对路径后，12 个无前缀的旧 docID（`markdown-features`、`theme-customization` 等）成了孤儿。**已确认不影响评估**：这 346 行全是博客主题文档，不含任何 Redis/Kafka/MySQL 内容，golden set 所依赖的 809 条技术 chunk 完全不受影响。清理脚本 `scripts/eval/cleanup_docs.go -stale` 已写好但执行被环境的安全策略拦截，需人工运行 | 2026-08-20 | 待人工执行 |
 
 ---
 
