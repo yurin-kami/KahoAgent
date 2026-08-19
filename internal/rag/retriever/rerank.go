@@ -78,6 +78,18 @@ func (r *LLMReranker) Rerank(ctx context.Context, query string, candidates []rag
 	scored := make([]rag.ScoredChunk, len(candidates))
 	copy(scored, candidates)
 
+	// ⚠️ 打分成功与失败的块必须落在**同一量纲**上。
+	//
+	// 成功的块会被归一化到 0-1，而 RRF 分数在 0.016 量级 ——
+	// 若失败的块直接沿用 RRF 分数，它就等价于 0.016 分，
+	// 会被排到所有打过分的块后面，与「让它仍能参与排序」的意图相反。
+	// 一次 API 抖动不应该让一个可能高度相关的块被判死刑。
+	//
+	// 这里改为：失败的块取**成功块分数的中位数**，即「未知 ≈ 平均水平」。
+	// 再由下面的 sort.SliceStable 在并列时保持 RRF 原序，
+	// 于是失败块之间仍按 RRF 的偏好排列。
+	ok := make([]bool, len(scored))
+
 	// 用带缓冲的 channel 做信号量限制并发
 	sem := make(chan struct{}, rerankConcurrency)
 	var wg sync.WaitGroup
@@ -96,27 +108,45 @@ func (r *LLMReranker) Rerank(ctx context.Context, query string, candidates []rag
 
 			raw, err := r.model.Score(ctx, buildPrompt(query, scored[i].Chunk.Content))
 			if err != nil {
-				// 单块打分失败时保留原 RRF 分数，不让整次精排失败。
-				// 保留原分数而非置 0，是为了让它仍能参与排序 ——
-				// 置 0 会把一个可能相关的块直接踢到最后。
-				r.logger.Warn("rerank scoring failed, keeping the RRF score",
+				// 单块打分失败不让整次精排失败，分数留给下面统一兜底
+				r.logger.Warn("rerank scoring failed, will fall back to the median score",
 					"chunk", scored[i].Chunk.ID, "err", err)
 				return
 			}
 
-			score, ok := parseScore(raw)
-			if !ok {
-				r.logger.Warn("could not parse a score, keeping the RRF score",
+			score, parsed := parseScore(raw)
+			if !parsed {
+				r.logger.Warn("could not parse a score, will fall back to the median score",
 					"chunk", scored[i].Chunk.ID, "output", truncate(raw, 80))
 				return
 			}
 			scored[i].Score = score
+			ok[i] = true
 		}()
 	}
 	wg.Wait()
 
 	if err := ctx.Err(); err != nil {
 		return nil, err
+	}
+
+	// 全部失败时报错，让调用方降级回 RRF 顺序 ——
+	// 此时没有任何新信息，强行排序只是把 RRF 的结果打乱。
+	var succeeded []float64
+	for i := range scored {
+		if ok[i] {
+			succeeded = append(succeeded, float64(scored[i].Score))
+		}
+	}
+	if len(succeeded) == 0 {
+		return nil, fmt.Errorf("all %d candidates failed to score", len(scored))
+	}
+
+	fallback := float32(median(succeeded))
+	for i := range scored {
+		if !ok[i] {
+			scored[i].Score = fallback
+		}
 	}
 
 	// 稳定排序：分数相同时保持 RRF 的相对顺序。
@@ -184,4 +214,14 @@ func truncate(s string, n int) string {
 		return s
 	}
 	return string(r[:n]) + "…"
+}
+
+// median 返回中位数。会就地排序，调用方传的是临时切片。
+func median(v []float64) float64 {
+	sort.Float64s(v)
+	n := len(v)
+	if n%2 == 1 {
+		return v[n/2]
+	}
+	return (v[n/2-1] + v[n/2]) / 2
 }

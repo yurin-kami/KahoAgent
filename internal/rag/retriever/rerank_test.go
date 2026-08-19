@@ -164,21 +164,58 @@ func TestRerank_ParsesMessyModelOutput(t *testing.T) {
 	}
 }
 
-func TestRerank_UnparseableOutputKeepsRRFScore(t *testing.T) {
-	// 解析失败时保留原分数而非置 0 —— 置 0 会把一个可能相关的块
-	// 直接踢到最后，比保持原状更糟
+func TestRerank_AllScoringFailedReturnsError(t *testing.T) {
+	// 全部打分失败时应报错，由调用方降级回 RRF 顺序。
+	//
+	// 为什么不「保留原分数静默返回」：那样返回的其实就是 RRF 顺序，
+	// 却对外宣称是精排结果 —— 一次彻底的 LLM 故障会被完全掩盖。
+	// 报错后 HybridRetriever 会记 warn 并用 RRF 结果，
+	// 用户看到的结果一样，但故障是可见的。
 	scorer := &fakeScorer{fixed: "无法评分"}
 	r, _ := NewLLMReranker(scorer, quiet())
 
-	candidates := rerankCandidatesFrom("内容")
-	original := candidates[0].Score
-
-	got, err := r.Rerank(context.Background(), "查询", candidates, 1)
-	if err != nil {
-		t.Fatalf("unparseable output must not fail the rerank: %v", err)
+	if _, err := r.Rerank(context.Background(), "查询",
+		rerankCandidatesFrom("内容"), 1); err == nil {
+		t.Fatal("expected an error when every candidate fails to score")
 	}
-	if got[0].Score != original {
-		t.Errorf("expected the RRF score %v to be kept, got %v", original, got[0].Score)
+}
+
+func TestRerank_FailedChunkGetsMedianNotRRFScore(t *testing.T) {
+	// ⚠️ 这是量纲一致性问题：打分成功的块归一化到 0-1，
+	// 而 RRF 分数在 0.016 量级。失败的块若沿用 RRF 分数，
+	// 就等于拿 0.016 去和 0-1 比较，必然垫底 ——
+	// 「让它仍能参与排序」的意图会落空。
+	//
+	// 正确做法是取成功块的中位数：未知 ≈ 平均水平。
+	scorer := &fakeScorer{
+		byContent: map[string]string{"高": "10", "中": "6", "低": "2"},
+		errFor:    map[string]bool{"失败": true},
+	}
+	r, _ := NewLLMReranker(scorer, quiet())
+
+	got, err := r.Rerank(context.Background(), "查询",
+		rerankCandidatesFrom("高", "中", "低", "失败"), 4)
+	if err != nil {
+		t.Fatalf("rerank: %v", err)
+	}
+
+	var failed *rag.ScoredChunk
+	for i := range got {
+		if got[i].Chunk.Content == "失败" {
+			failed = &got[i]
+		}
+	}
+	if failed == nil {
+		t.Fatal("the failed chunk should still be present in the results")
+	}
+
+	// 成功分数为 1.0 / 0.6 / 0.2，中位数 0.6
+	if failed.Score != 0.6 {
+		t.Errorf("expected the median score 0.6, got %v", failed.Score)
+	}
+	// 关键断言：它必须排在最低分的块**前面**，而不是垫底
+	if got[len(got)-1].Chunk.Content == "失败" {
+		t.Error("the failed chunk must not sink below the lowest-scored chunk")
 	}
 }
 
