@@ -116,13 +116,13 @@ func main() {
 
 	start := time.Now()
 	results, err := cli.Search(ctx, collName,
-		nil,                     // partitions
-		"",                      // expr：标量过滤，Phase 2 会用
-		[]string{"id"},          // outputFields
+		nil,            // partitions
+		"",             // expr：标量过滤，Phase 2 会用
+		[]string{"id"}, // outputFields
 		[]entity.Vector{entity.FloatVector([]float32{1, 0, 0, 0})},
-		"vector",                // vectorField
-		entity.COSINE,           // 必须与建索引时一致
-		2,                       // topK
+		"vector",      // vectorField
+		entity.COSINE, // 必须与建索引时一致
+		2,             // topK
 		sp,
 	)
 	if err != nil {
