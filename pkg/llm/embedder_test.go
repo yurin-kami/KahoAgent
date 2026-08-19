@@ -267,6 +267,36 @@ func TestEmbedder_RespectsContextCancellation(t *testing.T) {
 	}
 }
 
+func TestEmbedder_DefaultBatchSizeRespectsDashScopeLimit(t *testing.T) {
+	// DashScope 硬性上限为 10，超出直接 400。
+	// 这个限制在 Phase 1 没暴露（sample.md 只有 7 个 chunk，一批发完），
+	// 直到 Phase 2 入库 1300+ chunk 的真实语料才炸 ——
+	// 故用测试钉死，避免有人「顺手调大点更快」。
+	const dashscopeMax = 10
+	if defaultBatchSize > dashscopeMax {
+		t.Fatalf("defaultBatchSize is %d, DashScope rejects anything over %d",
+			defaultBatchSize, dashscopeMax)
+	}
+
+	// 行为验证：22 条文本不能有任何一批超过上限
+	srv, _ := fakeEmbedServer(t, func(req embedRequest, _ int) (int, any) {
+		if len(req.Input) > dashscopeMax {
+			t.Errorf("sent a batch of %d, exceeds the limit of %d", len(req.Input), dashscopeMax)
+		}
+		return http.StatusOK, okResponse(req, 2)
+	})
+
+	texts := make([]string, 22)
+	for i := range texts {
+		texts[i] = "文本"
+	}
+
+	e := NewEmbedder("k", srv.URL, "m", 2)
+	if _, err := e.Embed(context.Background(), texts); err != nil {
+		t.Fatalf("embed: %v", err)
+	}
+}
+
 func contains(s, sub string) bool {
 	return strings.Contains(s, sub)
 }
