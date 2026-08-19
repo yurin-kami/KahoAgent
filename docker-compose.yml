@@ -1,0 +1,149 @@
+# KahoAgent 依赖服务
+#
+# 兼容 docker compose 与 podman-compose。
+# 本机使用 Podman（rootless），所有端口均 > 1024，无需 rootful。
+#
+# 启动：  podman-compose up -d
+# 状态：  podman-compose ps
+# 停止：  podman-compose down
+# 清空：  podman-compose down -v   （会删除数据卷）
+#
+# 内存说明：WSL2 限额 6GB，各服务已设 mem_limit 防止单个服务吃满。
+
+services:
+  # ── Milvus 的元数据存储 ──────────────────────────────
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: kaho-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd_data:/etcd
+    command: >
+      etcd -advertise-client-urls=http://127.0.0.1:2379
+      -listen-client-urls http://0.0.0.0:2379
+      --data-dir /etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    mem_limit: 512m
+
+  # ── Milvus 的对象存储 ────────────────────────────────
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: kaho-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    volumes:
+      - minio_data:/minio_data
+    command: minio server /minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    mem_limit: 512m
+
+  # ── 向量数据库 ───────────────────────────────────────
+  milvus:
+    image: milvusdb/milvus:v2.4.15
+    container_name: kaho-milvus
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    volumes:
+      - milvus_data:/var/lib/milvus
+    ports:
+      - "19530:19530"   # gRPC，SDK 连这个
+      - "9091:9091"     # metrics / healthz
+    depends_on:
+      - etcd
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    mem_limit: 2g
+
+  # ── BM25 全文检索（Phase 2） ─────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: kaho-postgres
+    environment:
+      POSTGRES_USER: kaho
+      POSTGRES_PASSWORD: kaho_dev_pw
+      POSTGRES_DB: kahoagent
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kaho -d kahoagent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 512m
+
+  # ── 缓存 ─────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: kaho-redis
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 256m
+
+  # ── 异步文档处理管道（Phase 1.4） ────────────────────
+  # KRaft 模式，无需 Zookeeper
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: kaho-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 15s
+      start_period: 30s
+      timeout: 10s
+      retries: 5
+    mem_limit: 1g
+
+volumes:
+  etcd_data:
+  minio_data:
+  milvus_data:
+  pg_data:
+  redis_data:
