@@ -67,7 +67,7 @@ func TestPlainChunker_OverlapIsPreserved(t *testing.T) {
 func TestPlainChunker_ChineseNoMojibake(t *testing.T) {
 	// 中文一个字 3 字节。若误用 []byte 切分会把字符劈开产生非法 UTF-8。
 	text := strings.Repeat("缓存穿透与布隆过滤器", 50) // 500 个中文字符
-	c := NewPlainChunker(37, 7)                       // 故意用非 3 倍数触发字节错位
+	c := NewPlainChunker(37, 7)              // 故意用非 3 倍数触发字节错位
 
 	chunks, err := c.Chunk(context.Background(), "cn", []byte(text))
 	if err != nil {

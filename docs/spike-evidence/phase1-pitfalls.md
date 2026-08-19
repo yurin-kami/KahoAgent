@@ -153,9 +153,99 @@ ok  github.com/yurin-kami/KahoAgent/pkg/vectorstore  27.367s
 
 ## 面试可讲的点
 
-两个坑都是**具体、可复现、有源码级根因**的排查经历，比「我用过 Milvus」
+三个坑都是**具体、可复现、有源码级根因**的排查经历，比「我用过 Milvus/Kafka」
 有说服力得多：
 
 - 字节/字符单位问题 → 体现对多字节编码的理解，以及「中文场景下才暴露」
   这一点对做中文知识库尤其有说服力
 - SDK 空结果误报 → 体现读第三方源码定位问题的能力，而非卡在错误文本上
+- 共享 transport 元数据缓存 → 体现「单独跑过、一起跑挂」这类
+  测试间隐式耦合的排查思路，以及对客户端缓存机制的理解
+
+---
+
+## 坑 3：kafka-go 的 DefaultTransport 是包级共享缓存
+
+### 现象
+
+三个 Kafka 集成测试，**单独跑每个都过，一起跑后两个必挂**：
+
+```
+=== RUN   TestKafka_ProduceAndConsume                    --- PASS
+=== RUN   TestKafka_MalformedMessageDoesNotBlockTheQueue
+    write: [3] Unknown Topic Or Partition                --- FAIL
+=== RUN   TestKafka_FailedMessageIsRedeliveredAfterRestart
+    publish: [3] Unknown Topic Or Partition              --- FAIL
+```
+
+每个测试都会先建自己的 topic 并等到就绪，日志确认 topic 创建成功
+（`CreateTopics err=<nil>`），随后写入却说 topic 不存在。
+
+### 排查过程
+
+值得记录的是**排除法的顺序**，因为前两个猜测都错了：
+
+1. **猜测「topic 创建是异步的」** → 加 `waitForTopic` 用
+   `conn.ReadPartitions` 轮询到 leader 就绪。**无效**，仍然失败。
+2. **猜测「上个测试的 DeleteTopics 干扰了元数据」** → 去掉 cleanup 里的
+   删除。**无效**，仍然失败。
+3. **注意到关键线索**：失败的永远是「第一个之后」的测试。
+   单跑必过、连跑必挂 → 说明存在跨测试的共享状态。
+   于是去翻 kafka-go 源码找缓存，在 `transport.go:126` 找到：
+
+```go
+// DefaultTransport is the default transport used by kafka clients in this package.
+var DefaultTransport RoundTripper = &Transport{ ... }
+
+func (t *Transport) metadataTTL() time.Duration {
+    if t.MetadataTTL > 0 { return t.MetadataTTL }
+    return 6 * time.Second   // ← 默认 6 秒元数据缓存
+}
+```
+
+### 根因
+
+`kafka.Writer` 未指定 `Transport` 时用的是**包级全局** `DefaultTransport`，
+它带 6 秒的元数据缓存。时序如下：
+
+| 时刻 | 事件 |
+|------|------|
+| T0 | 测试 1 建 topic A，写入 → transport 缓存冷，拉取元数据，**成功** |
+| T0+2s | 测试 2 建 topic B，用**独立 Conn** 确认 B 已就绪 ✅ |
+| T0+2s | 测试 2 写入 B → transport 用 T0 时刻的缓存，里面**没有 B** → 报错 |
+
+关键在于：**验证用的连接和实际写入用的连接看到的不是同一份元数据。**
+用 `conn.ReadPartitions` 查得再准也没用 —— 那是另一条路径。
+
+### 修复
+
+从 Producer 实际使用的那个 transport 去验证可见性：
+
+```go
+client := &kafka.Client{
+    Addr:      kafka.TCP(kafkaBrokers()...),
+    Transport: kafka.DefaultTransport,   // ← 与 Writer 用同一个
+}
+resp, err := client.Metadata(ctx, &kafka.MetadataRequest{Topics: []string{topic}})
+```
+
+查到了才说明 Producer 也能看到。改完三个测试稳定通过。
+
+### 教训
+
+> **「单独跑过、一起跑挂」几乎必然是共享状态。**
+> 不要在「我的等待逻辑不够久」上反复加时间 —— 那是在治标。
+> 先问：这两次运行之间共享了什么？包级变量、全局缓存、单例连接池
+> 都是嫌疑对象。
+>
+> 另一条：**验证要走和实际操作相同的代码路径。**
+> 用一条独立连接去「确认服务端状态 OK」，再用另一条连接干活，
+> 中间任何缓存层都会让这个确认失去意义。
+
+### 生产环境的对应影响
+
+这不只是测试问题。线上若动态创建 topic（如按租户分 topic），
+创建后立刻写入同样会撞上这 6 秒缓存。本项目 topic 是固定的
+（`document-processing`，随 compose 一起建好），因此不受影响 ——
+但值得记下来。
+
