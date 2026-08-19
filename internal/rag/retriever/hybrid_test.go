@@ -339,7 +339,7 @@ func TestHybrid_RerankSeesLimitedCandidates(t *testing.T) {
 	// 全部候选都精排太慢且没必要，RRF 已把不相关的排到后面
 	ids := make([]string, 40)
 	for i := range ids {
-		ids[i] = string(rune('a' + i%26)) + string(rune('0'+i/26))
+		ids[i] = string(rune('a'+i%26)) + string(rune('0'+i/26))
 	}
 	vec := &fakeRecaller{name: "vector", hits: chunks(ids...)}
 	rr := &fakeReranker{}
