@@ -1,7 +1,12 @@
 # KahoAgent 配置示例
 #
-# 复制为 config.toml 并填入实际值
-# 不要提交 config.toml 到仓库
+# 复制为 config.toml 并填入实际值：
+#   cp config.example.toml config.toml
+#
+# config.toml 已在 .gitignore 中，不会被提交。
+#
+# API Key 也可通过环境变量提供，优先级：环境变量 > config.toml
+#   DASHSCOPE_API_KEY / OPENAI_API_KEY / DEEPSEEK_API_KEY
 
 debug = true
 
@@ -9,8 +14,8 @@ debug = true
 port = 8080
 
 [db]
-# PostgreSQL DSN (用于 BM25 全文检索 ts_vector)
-dsn = "host=127.0.0.1 port=5432 user=postgres password=CHANGE_ME dbname=kahoagent sslmode=disable"
+# PostgreSQL：Phase 2 的 BM25 全文检索
+dsn = "host=127.0.0.1 port=5432 user=kaho password=kaho_dev_pw dbname=kahoagent sslmode=disable"
 
 [redis]
 addr = "127.0.0.1:6379"
@@ -27,12 +32,34 @@ topic = "document-processing"
 group_id = "kahoagent-worker"
 
 [llm]
-provider = "deepseek"                      # openai / deepseek
-api_key = "CHANGE_ME"
-base_url = "https://api.deepseek.com/v1"   # OpenAI 兼容
-model = "deepseek-chat"
-embedding_model = "text-embedding-3-small" # 或 BAAI/bge-m3
+# 支持任何 OpenAI 兼容的服务：
+#
+#   阿里百炼 DashScope（本机默认，已有 DASHSCOPE_API_KEY）
+#     base_url        = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+#     model           = "qwen-plus"
+#     embedding_model = "text-embedding-v3"   # 1024 维
+#
+#   DeepSeek
+#     base_url        = "https://api.deepseek.com/v1"
+#     model           = "deepseek-chat"
+#     （DeepSeek 无 embedding 接口，需另配）
+#
+#   OpenAI
+#     base_url        = "https://api.openai.com/v1"
+#     model           = "gpt-4o-mini"
+#     embedding_model = "text-embedding-3-small"  # 1536 维
+provider = "dashscope"
+api_key = ""                                                        # 留空则读环境变量
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+model = "qwen-plus"
+embedding_model = "text-embedding-v3"
+
+# ⚠️ 必须与 embedding_model 的实际输出维度一致。
+#    不一致会导致 Milvus 插入失败（维度校验不通过）。
+#      text-embedding-v3       → 1024
+#      text-embedding-3-small  → 1536
+embedding_dim = 1024
 
 [mcp]
-transport = "stdio"  # stdio / sse
-port = 3000          # SSE 模式监听端口
+transport = "stdio"   # stdio（Claude Desktop）/ http（远程）
+port = 3000
