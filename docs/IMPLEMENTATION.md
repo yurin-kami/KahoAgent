@@ -885,16 +885,20 @@ func (c *Consumer) Start(ctx context.Context) error {
 ```bash
 go test ./internal/rag/... -v                          # 单测全绿
 go test -tags=integration ./... -v                     # 集成测试全绿
-go run scripts/eval/ingest_check.go docs/sample.md     # 手动验证
+go run -tags=ingestcheck ./scripts/eval/ingest_check.go docs/sample.md  # 手动验证
 ```
 
-- [ ] 上传 Markdown → Milvus 能查到对应 chunk（`doc_id` 匹配）
-- [ ] **幂等验证**：同文件上传两次，chunk 总数不变
-- [ ] **删除验证**：`DeleteByDoc` 后该文档 chunk 全消失
-- [ ] **中文验证**：纯中文文档分块后无乱码
-- [ ] **heading_path 验证**：嵌套标题文档，metadata 里路径正确
-- [ ] **Kafka 可靠性**：处理中途 kill consumer，重启后消息被重新消费
-- [ ] `git tag phase1-done`
+- [x] 上传 Markdown → Milvus 能查到对应 chunk（`doc_id` 匹配）
+- [x] **幂等验证**：同文件上传两次，chunk 总数不变
+- [x] **删除验证**：`DeleteByDoc` 后该文档 chunk 全消失
+- [x] **中文验证**：纯中文文档分块后无乱码
+- [x] **heading_path 验证**：嵌套标题文档，metadata 里路径正确
+- [x] **Kafka 可靠性**：处理中途 kill consumer，重启后消息被重新消费
+- [x] `git tag phase1-done`
+
+> ✅ **验收通过**（2026-08-19）。证据见 `docs/spike-evidence/phase1.md`，
+> 踩坑记录见 `docs/spike-evidence/phase1-pitfalls.md`。
+> 测试总数 51（单测 38 + 集成 13）。
 
 ## 🚫 Phase 1 不做
 
