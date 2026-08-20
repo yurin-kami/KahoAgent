@@ -2,11 +2,27 @@
 package tokenizer
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
 	"github.com/yanyiwu/gojieba"
 )
+
+// dictDirEnv 指定词典目录，用于容器等「源码不在运行环境里」的场景。
+//
+// ⚠️ 这个开关是被迫加的，不是为了灵活性。
+// gojieba 的默认词典路径是 init() 里用 runtime.Caller 算出来的
+// **编译机源码路径**（$GOMODCACHE/github.com/yanyiwu/gojieba@v1.4.7/deps/...）。
+// 多阶段构建的运行镜像里没有 Go module 缓存，于是一调用 NewJieba 就 panic：
+//
+//	panic: Dictionary file does not exist: github.com/yanyiwu/gojieba@.../jieba.dict.utf8
+//
+// 更隐蔽的是：加了 -trimpath 之后这个路径会变成相对路径，
+// 报错信息看起来像「词典文件缺失」，而实际原因是路径基准整个错了。
+// 编译期完全无法发现 —— 只有真正启动容器才会暴露。
+const dictDirEnv = "KAHO_JIEBA_DICT_DIR"
 
 // Jieba 封装 gojieba 做中英文混合分词。
 //
@@ -33,11 +49,33 @@ var (
 //
 // 用单例是因为词典加载昂贵（约 100MB 内存 + 秒级耗时）。
 // gojieba 的分词方法本身是并发安全的，可以多 goroutine 共用。
+//
+// 若设置了 KAHO_JIEBA_DICT_DIR，改从该目录加载词典（见 dictDirEnv 说明）。
 func Shared() *Jieba {
 	sharedOnce.Do(func() {
-		shared = &Jieba{seg: gojieba.NewJieba()}
+		shared = &Jieba{seg: newSegmenter()}
 	})
 	return shared
+}
+
+// newSegmenter 按需切换词典目录。
+//
+// 传空串给 gojieba 表示「用该项默认值」，所以未设环境变量时
+// 传五个空串即可完全保持原行为 —— 不给本地开发增加任何配置负担。
+func newSegmenter() *gojieba.Jieba {
+	dir := os.Getenv(dictDirEnv)
+	if dir == "" {
+		return gojieba.NewJieba()
+	}
+	// 顺序固定：dict / hmm / user / idf / stop_words，与 gojieba 的入参一致。
+	// 写错顺序不会报错，只会让分词结果悄悄劣化 —— 所以这里不做「智能匹配」。
+	return gojieba.NewJieba(
+		filepath.Join(dir, "jieba.dict.utf8"),
+		filepath.Join(dir, "hmm_model.utf8"),
+		filepath.Join(dir, "user.dict.utf8"),
+		filepath.Join(dir, "idf.utf8"),
+		filepath.Join(dir, "stop_words.utf8"),
+	)
 }
 
 // Tokenize 把文本切成词元，返回空格连接的字符串，可直接存入 PG。

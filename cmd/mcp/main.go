@@ -50,7 +50,7 @@ func run() error {
 	)
 	flag.Parse()
 
-	cfg, err := config.Load("config.toml")
+	cfg, err := config.Load(config.DefaultPath())
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)
 	}

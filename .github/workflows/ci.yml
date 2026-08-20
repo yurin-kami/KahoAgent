@@ -1,0 +1,99 @@
+# CI：每次 push / PR 跑格式检查、静态分析、构建与单元测试。
+#
+# 范围刻意划在「不依赖外部服务」这条线上：
+# 带 integration / e2e 标签的测试需要 Milvus、PostgreSQL、Redis 和真实
+# LLM API Key，跑在 CI 里要么得起一堆 service 容器、要么得把密钥交给
+# GitHub —— 前者让 CI 慢到没人愿意等，后者是不必要的密钥暴露面。
+# 那些测试在本地跑（见 README「测试」一节），CI 守住「代码能编译、
+# 单元逻辑正确、没有明显静态问题」这条底线。
+name: CI
+
+on:
+  push:
+    branches: [main, "phase*"]
+  pull_request:
+    branches: [main]
+
+# 同一分支上新的 push 取消仍在跑的旧任务：
+# 连续提交时没必要为已经过时的 commit 占用 runner
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          # 与 go.mod 保持一致。写 'stable' 会在 Go 发新版时静默切换，
+          # 于是 CI 突然变红却查不出改了什么。
+          go-version-file: go.mod
+          cache: true
+
+      # gojieba 是 cgo + C++，缺 g++ 会在编译期报
+      # `exec: "g++": executable file not found`。
+      # ubuntu-latest 自带 build-essential，这一步只是显式确认，
+      # 顺便让「为什么需要 C++ 工具链」这件事在 CI 配置里有据可查。
+      - name: Verify the C++ toolchain
+        run: g++ --version
+
+      - name: Check formatting
+        run: |
+          # gofmt -l 列出未格式化的文件；有输出就失败。
+          # 用 tee 而不是直接判断退出码：gofmt 找到问题时仍然返回 0，
+          # 只靠退出码永远不会失败。
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "以下文件未格式化，请运行 gofmt -w ："
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      # -race 能抓到并发缺陷 —— 本项目有共享分词器实例、会话内存、
+      # MCP 并发限流，都是竞态高发区，值得为它多花一倍测试时间。
+      - name: Test
+        run: go test -race -count=1 ./...
+
+      # 确认带标签的测试**能编译**。
+      # 它们不在默认构建里，很容易在重构时被改坏却毫无察觉，
+      # 等到本地想跑集成测试时才发现编译不过。
+      # -run=^$ 表示一个用例都不执行，只做编译与链接。
+      - name: Compile the tagged tests
+        run: |
+          go test -tags=integration -run='^$' ./... > /dev/null
+          go test -tags=e2e -run='^$' ./... > /dev/null
+
+      - name: Build
+        run: go build ./...
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 只构建、不推送：这一步的目的是守住 Dockerfile 不腐烂。
+      # 镜像构建的失败模式（缺 g++、缺 libstdc++、词典路径失效）
+      # 全都是 go build 发现不了的，必须真的构建一次才知道。
+      - name: Build the image
+        run: docker build -t kahoagent:ci .
+
+      # 构建成功不等于跑得起来 —— 实测踩过：镜像构建通过，
+      # 但容器一启动就因为缺 libstdc++ 而刷屏 symbol not found。
+      # 这里让它在缺配置的情况下启动，只要求「进程能加载、
+      # 报的是配置缺失而不是动态链接错误」。
+      - name: Verify the binary loads
+        run: |
+          out=$(docker run --rm kahoagent:ci 2>&1 || true)
+          echo "$out"
+          # 期望：走到配置加载才失败，说明动态链接与词典都没问题
+          echo "$out" | grep -q "load config" || {
+            echo "容器没有正常启动到配置加载这一步，可能是动态库或词典问题"
+            exit 1
+          }

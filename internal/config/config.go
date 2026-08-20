@@ -84,6 +84,23 @@ var apiKeyEnvVars = []string{
 	"DEEPSEEK_API_KEY",
 }
 
+// DefaultPath 返回配置文件路径：优先取 KAHO_CONFIG，否则用工作目录下的
+// config.toml。
+//
+// ⚠️ 容器里必须能改这个路径。config.toml 含 API Key，绝不打进镜像，
+// 只能挂载进来 —— 而挂载点通常不是工作目录（/app 里除了二进制什么都没有）。
+// 路径写死的话，镜像就只能靠「把文件挂到 /app/config.toml」这一种方式跑，
+// Kubernetes 的 ConfigMap/Secret 一般挂在 /etc/kaho 之类的位置。
+//
+// 不放进 Load 里：Load 是纯函数，给什么路径读什么路径，
+// 测试才能稳定地指向自己的固件；环境变量只在 main 的入口处生效。
+func DefaultPath() string {
+	if p := os.Getenv("KAHO_CONFIG"); p != "" {
+		return p
+	}
+	return "config.toml"
+}
+
 // Load 从 path 读取配置，应用默认值与环境变量回退，并校验必填项。
 func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
