@@ -13,6 +13,8 @@ import (
 
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
+
+	"github.com/yurin-kami/KahoAgent/internal/metrics"
 )
 
 // EinoChatModel 把 OpenAI 兼容的 chat completions 接口适配成 Eino 的
@@ -137,6 +139,13 @@ type agentRequest struct {
 	Temperature float32        `json:"temperature"`
 	Stream      bool           `json:"stream,omitempty"`
 	Tools       []agentToolDef `json:"tools,omitempty"`
+	// StreamOptions 只在流式时设置，用于索要 token 用量。
+	// 非流式请求带上它会被部分服务端拒绝，所以用指针 + omitempty。
+	StreamOptions *streamOptions `json:"stream_options,omitempty"`
+}
+
+type streamOptions struct {
+	IncludeUsage bool `json:"include_usage"`
 }
 
 type agentChoice struct {
@@ -145,11 +154,34 @@ type agentChoice struct {
 	FinishReason string       `json:"finish_reason"`
 }
 
+// agentUsage 是 OpenAI 兼容接口返回的 token 用量。
+//
+// ⚠️ 流式响应默认**不带** usage —— 必须在请求里带上
+// stream_options.include_usage=true，且它只出现在最后一个 chunk 里。
+// 不知道这点的话会以为"流式就是统计不到 token"，
+// 于是漏掉整个成本维度的可观测性。
+type agentUsage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
 type agentResponse struct {
 	Choices []agentChoice `json:"choices"`
+	Usage   *agentUsage   `json:"usage,omitempty"`
 	Error   *struct {
 		Message string `json:"message"`
 	} `json:"error"`
+}
+
+// recordUsage 把 token 用量上报到指标。
+// usage 为 nil 时静默跳过 —— 有的兼容实现不返回它，
+// 不该因此让整个请求失败。
+func (c *EinoChatModel) recordUsage(u *agentUsage) {
+	if u == nil {
+		return
+	}
+	metrics.RecordTokens(c.model, u.PromptTokens, u.CompletionTokens)
 }
 
 // Generate 一次性生成，实现 model.BaseChatModel。
@@ -175,6 +207,7 @@ func (c *EinoChatModel) Generate(ctx context.Context, input []*schema.Message, o
 		return nil, fmt.Errorf("response contained no choices")
 	}
 
+	c.recordUsage(parsed.Usage)
 	return toSchemaMessage(parsed.Choices[0].Message), nil
 }
 
@@ -256,6 +289,12 @@ func (c *EinoChatModel) pumpSSE(ctx context.Context, body io.Reader, sw *schema.
 			sw.Send(nil, fmt.Errorf("api error: %s", chunk.Error.Message))
 			return
 		}
+
+		// ⚠️ usage 只出现在**最后一个** chunk 里，而那个 chunk 的
+		// choices 通常是空的 —— 所以必须在下面的 len(Choices)==0
+		// 提前 continue 之前处理，否则 token 统计永远是 0。
+		c.recordUsage(chunk.Usage)
+
 		if len(chunk.Choices) == 0 {
 			continue
 		}
@@ -318,6 +357,10 @@ func (c *EinoChatModel) buildRequest(input []*schema.Message, opts []model.Optio
 		Messages:    msgs,
 		Temperature: temperature,
 		Stream:      stream,
+	}
+	if stream {
+		// 索要 token 用量，否则流式请求统计不到成本
+		req.StreamOptions = &streamOptions{IncludeUsage: true}
 	}
 
 	for _, t := range tools {

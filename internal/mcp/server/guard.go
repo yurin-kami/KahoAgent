@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"golang.org/x/sync/semaphore"
+
+	"github.com/yurin-kami/KahoAgent/internal/metrics"
 )
 
 const (
@@ -107,11 +109,14 @@ func (g *Guard) Wrap(name string, fn Invoker) Invoker {
 
 		result, err := fn(callCtx, argsJSON)
 
+		elapsed := time.Since(start)
+		metrics.ObserveToolCall(name, elapsed.Seconds(), err)
+
 		status := "ok"
 		if err != nil {
 			status = "error"
 		}
-		g.audit(name, argsJSON, time.Since(start), status, err)
+		g.audit(name, argsJSON, elapsed, status, err)
 		return result, err
 	}
 }

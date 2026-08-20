@@ -13,6 +13,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 
 	"github.com/yurin-kami/KahoAgent/internal/agent"
+	"github.com/yurin-kami/KahoAgent/internal/metrics"
 )
 
 // Memory 是 chat handler 依赖的会话存储。
@@ -106,6 +107,12 @@ func (h *ChatHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 这样断开时正在进行的模型调用会一并取消，不会白烧 token
 	ctx, cancel := context.WithTimeout(r.Context(), chatTimeout)
 	defer cancel()
+
+	// ⚠️ Inc 和 Dec 必须成对，且 Dec 要用 defer。
+	// 中途 return 漏掉 Dec 的话，Gauge 只增不减，最后显示几万个
+	// "活跃会话" —— 而这种指标一旦失真就再也没人信它了。
+	metrics.ActiveSessions.Inc()
+	defer metrics.ActiveSessions.Dec()
 
 	h.stream(ctx, w, flusher, req)
 }

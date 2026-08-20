@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log/slog"
 	"sync"
+	"time"
 
 	einoretriever "github.com/cloudwego/eino/components/retriever"
 	"github.com/cloudwego/eino/schema"
 
+	"github.com/yurin-kami/KahoAgent/internal/metrics"
 	"github.com/yurin-kami/KahoAgent/internal/rag"
 )
 
@@ -127,11 +129,19 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 		return nil, fmt.Errorf("query must not be empty")
 	}
 
+	start := time.Now()
+
 	// 1. 查缓存。key 必须包含策略参数 —— 否则改了 topK
 	//    还会命中用旧参数算出的结果。
 	key := h.cacheKey(query)
 	if h.cache != nil {
-		if hit, ok := h.cache.Get(ctx, key); ok {
+		hit, ok := h.cache.Get(ctx, key)
+		metrics.RecordCache("retrieval", ok)
+		if ok {
+			// ⚠️ 命中也要记 hybrid 耗时。
+			// 只记未命中的话，P99 会虚高 —— 而用户感知到的是**所有**
+			// 请求的分布，其中相当一部分是毫秒级的缓存命中。
+			metrics.ObserveRetrieval("hybrid", time.Since(start).Seconds())
 			return hit, nil
 		}
 	}
@@ -164,7 +174,9 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 		if len(candidates) > rerankCandidates {
 			candidates = candidates[:rerankCandidates]
 		}
+		rerankStart := time.Now()
 		reranked, err := h.reranker.Rerank(ctx, query, candidates, h.topK)
+		metrics.ObserveRetrieval("rerank", time.Since(rerankStart).Seconds())
 		if err != nil {
 			// 精排失败不应让整次检索失败 —— RRF 的结果已经可用了，
 			// 降级返回它好过返回错误。
@@ -181,6 +193,7 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 	if h.cache != nil {
 		h.cache.Set(ctx, key, results)
 	}
+	metrics.ObserveRetrieval("hybrid", time.Since(start).Seconds())
 	return results, nil
 }
 
@@ -202,7 +215,11 @@ func (h *HybridRetriever) recallAll(ctx context.Context, query string) ([]Rankin
 		go func() {
 			defer wg.Done()
 
+			recallStart := time.Now()
 			hits, err := r.Recall(ctx, query, h.recallN)
+			// 按路记耗时：vector 和 bm25 差着两个数量级
+			// （Phase 2 实测 135ms vs 4ms），混在一起看不出是哪路慢
+			metrics.ObserveRetrieval(r.Name(), time.Since(recallStart).Seconds())
 			if err != nil {
 				// 降级：记日志但不影响其他路
 				h.logger.Warn("recaller failed, degrading",
