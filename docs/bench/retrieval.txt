@@ -1,0 +1,55 @@
+goos: windows
+goarch: amd64
+pkg: github.com/yurin-kami/KahoAgent/internal/rag/retriever
+cpu: AMD Ryzen 7 5800H with Radeon Graphics         
+BenchmarkFuseRRF/recall=10-16        	    2000	      1884 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=10-16        	    2000	      1469 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=10-16        	    2000	      2156 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=10-16        	    2000	      1659 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=10-16        	    2000	      1531 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=10-16        	    2000	      1892 ns/op	    2440 B/op	      15 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	     10286 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	      9771 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	      9494 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	      8667 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	      8998 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=50-16        	    2000	      8539 ns/op	   10856 B/op	      55 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     36605 ns/op	   43688 B/op	     205 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     43559 ns/op	   43690 B/op	     205 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     39852 ns/op	   43688 B/op	     205 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     38825 ns/op	   43688 B/op	     205 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     39585 ns/op	   43688 B/op	     205 allocs/op
+BenchmarkFuseRRF/recall=200-16       	    2000	     36751 ns/op	   43688 B/op	     205 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     15336 ns/op	   10139 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     15317 ns/op	   10139 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     14607 ns/op	   10134 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     14970 ns/op	   10135 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     12374 ns/op	   10132 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=10-16   	    2000	     15947 ns/op	   10138 B/op	      47 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     48522 ns/op	   44341 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     48771 ns/op	   44343 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     48175 ns/op	   44337 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     46679 ns/op	   44343 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     52532 ns/op	   44348 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=50-16   	    2000	     51919 ns/op	   44347 B/op	     131 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    166920 ns/op	  182847 B/op	     435 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    161021 ns/op	  182844 B/op	     435 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    162875 ns/op	  182846 B/op	     435 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    162492 ns/op	  182845 B/op	     435 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    166296 ns/op	  182836 B/op	     435 allocs/op
+BenchmarkHybridSearch/recall=200-16  	    2000	    193454 ns/op	  182851 B/op	     435 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       630.8 ns/op	     136 B/op	       6 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       825.2 ns/op	     136 B/op	       6 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       615.0 ns/op	     136 B/op	       6 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       544.7 ns/op	     136 B/op	       6 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       498.2 ns/op	     136 B/op	       6 allocs/op
+BenchmarkHybridSearch_CacheHit-16    	    2000	       527.6 ns/op	     136 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       325.8 ns/op	     185 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       394.1 ns/op	     185 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       427.3 ns/op	     185 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       308.2 ns/op	     185 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       311.1 ns/op	     185 B/op	       6 allocs/op
+BenchmarkCacheKey-16                 	    2000	       447.7 ns/op	     185 B/op	       6 allocs/op
+PASS
+ok  	github.com/yurin-kami/KahoAgent/internal/rag/retriever	4.433s
+

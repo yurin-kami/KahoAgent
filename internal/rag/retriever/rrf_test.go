@@ -93,6 +93,45 @@ func TestFuseRRF_DeduplicatesWithinOneRanking(t *testing.T) {
 	}
 }
 
+// TestFuseRRF_DeduplicatesAcrossInterleavedRankings 覆盖「同一 ID 既在
+// 单路内重复、又跨路出现」这个组合情形。
+//
+// 去重原先靠「每路一个 seen map」，优化后改成 lastSeen[i] 记录该结果
+// 上一次被哪一路计过分（省掉一个 map，见 docs/optimization.md）。
+// 现在的实现按路顺序处理，lastSeen 只会单调前进，所以是正确的 ——
+// 但这个正确性**依赖于遍历顺序**，而顺序依赖是最容易在后续重构里
+// （比如改成并发融合、或按 ID 分组处理）被无声破坏的那类前提。
+// 上面几个测试要么只测单路重复、要么只测跨路，都覆盖不到这个组合。
+//
+// 构造：A 在 vector 路出现两次，且 bm25 路也有 A。
+// 正确结果是 A 只从每路各得一次分，即恰好 2 个来源。
+func TestFuseRRF_DeduplicatesAcrossInterleavedRankings(t *testing.T) {
+	got := FuseRRF([]Ranking{
+		{Name: "vector", IDs: []string{"A", "B", "A"}},
+		{Name: "bm25", IDs: []string{"A", "C"}},
+	})
+
+	var a *FusedResult
+	for i := range got {
+		if got[i].ID == "A" {
+			a = &got[i]
+		}
+	}
+	if a == nil {
+		t.Fatal("A should be present")
+	}
+
+	if len(a.Sources) != 2 {
+		t.Errorf("A must be counted once per ranking, got sources %v", a.Sources)
+	}
+	// 两路都排第 1：2 × 1/61 ≈ 0.032787。
+	// 若重复计分会变成 3 项相加，明显更高。
+	want := 2.0 / 61.0
+	if diff := a.Score - want; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("expected score %.6f (rank 1 in both rankings), got %.6f", want, a.Score)
+	}
+}
+
 func TestFuseRRF_IsDeterministic(t *testing.T) {
 	// map 遍历顺序随机，若不显式定序，同样输入会产生不同排序，
 	// 评估数据就不可复现了。这里用完全并列的分数逼出问题。

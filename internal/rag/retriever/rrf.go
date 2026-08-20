@@ -1,7 +1,10 @@
 // Package retriever 实现检索召回与融合。
 package retriever
 
-import "sort"
+import (
+	"cmp"
+	"slices"
+)
 
 // rrfK 是 RRF 的平滑常数。
 //
@@ -44,36 +47,66 @@ type FusedResult struct {
 //
 // 返回按分数降序排列；分数相同时按 ID 升序，保证结果稳定可复现 ——
 // 否则 map 遍历的随机性会让同样的输入产生不同的排序，评估数据就不可信了。
+//
+// ⚠️ 实现上刻意避开「多个 map」的写法，理由见 docs/optimization.md：
+// pprof 显示原实现（scores/sources/seen 三个 map + 每 ID 一个 slice）
+// 占了整条检索链路 43% 的分配量。现在只用一个 map 定位下标，
+// 其余数据都落在预分配的 slice 里。
 func FuseRRF(rankings []Ranking) []FusedResult {
-	scores := make(map[string]float64)
-	sources := make(map[string][]string)
-
+	// 上界：所有路的 ID 总数。实际会因去重而少一些，
+	// 但预分配到上界可以完全避免 append 过程中的多次扩容拷贝。
+	total := 0
 	for _, r := range rankings {
-		// 同一路内去重：某个 ID 重复出现时只按最靠前的排名计分，
-		// 否则重复项会被累加多次，凭空拿到更高分数。
-		seen := make(map[string]bool, len(r.IDs))
+		total += len(r.IDs)
+	}
+	if total == 0 {
+		return nil
+	}
+
+	out := make([]FusedResult, 0, total)
+	index := make(map[string]int, total)
+	// lastSeen[i] 记录 out[i] 最后一次被哪一路计过分。
+	//
+	// 用它代替「每路一个 seen map」：同一路内重复出现的 ID 只按最靠前的
+	// 排名计分，否则重复项会被累加多次，凭空拿到更高分数。
+	// 初值 -1 表示还没被任何一路计过。
+	lastSeen := make([]int, 0, total)
+
+	for ri, r := range rankings {
 		for rank, id := range r.IDs {
-			if seen[id] {
+			// rank 从 0 开始，公式里排名从 1 开始，故 +1
+			score := 1.0 / float64(rrfK+rank+1)
+
+			i, ok := index[id]
+			if !ok {
+				index[id] = len(out)
+				out = append(out, FusedResult{
+					ID:    id,
+					Score: score,
+					// 容量给路数：一个 ID 最多被每路各命中一次
+					Sources: append(make([]string, 0, len(rankings)), r.Name),
+				})
+				lastSeen = append(lastSeen, ri)
 				continue
 			}
-			seen[id] = true
-
-			// rank 从 0 开始，公式里排名从 1 开始，故 +1
-			scores[id] += 1.0 / float64(rrfK+rank+1)
-			sources[id] = append(sources[id], r.Name)
+			if lastSeen[i] == ri {
+				continue // 同一路内重复，跳过
+			}
+			lastSeen[i] = ri
+			out[i].Score += score
+			out[i].Sources = append(out[i].Sources, r.Name)
 		}
 	}
 
-	out := make([]FusedResult, 0, len(scores))
-	for id, score := range scores {
-		out = append(out, FusedResult{ID: id, Score: score, Sources: sources[id]})
-	}
-
-	sort.Slice(out, func(i, j int) bool {
-		if out[i].Score != out[j].Score {
-			return out[i].Score > out[j].Score
+	slices.SortFunc(out, func(a, b FusedResult) int {
+		if a.Score != b.Score {
+			// 降序：分数高的在前
+			if a.Score > b.Score {
+				return -1
+			}
+			return 1
 		}
-		return out[i].ID < out[j].ID // 分数相同时定序，保证可复现
+		return cmp.Compare(a.ID, b.ID) // 分数相同时定序，保证可复现
 	})
 	return out
 }
