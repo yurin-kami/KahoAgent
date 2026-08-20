@@ -1793,10 +1793,10 @@ var (
 
 | 指标 | 实测值 | 测量方式 |
 |------|--------|---------|
-| Recall@5 (hybrid) | 0.348 | 77 条 golden set（规划写 50，实际扩到 77） |
-| Recall@5 (hybrid+rerank) | 0.442 | 同上 |
-| MRR (hybrid+rerank) | 0.809 | 同上 |
-| 向量检索 P50 / P99 | 139ms / 428ms | 同上，nearest-rank |
+| Recall@5 (hybrid) | 0.346 | 77 条 golden set（规划写 50，实际扩到 77） |
+| Recall@5 (hybrid+rerank) | 0.444 | 同上 |
+| MRR (hybrid+rerank) | 0.798 | 同上 |
+| 向量检索 P50 / P99 | 151ms / 267ms | 同上，nearest-rank |
 | 端到端首字延迟 P50 / P99 | 409ms / 1388ms | SSE 边收边计时，300 请求 |
 | HTTP 吞吐 | ~10 req/s ⚠️ | 开环压测；**瓶颈是 DashScope 配额，非本服务** |
 | MCP 工具调用吞吐 | 69.7 call/s | 并发 50，300 次调用 |

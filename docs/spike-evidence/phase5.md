@@ -4,10 +4,10 @@
 
 | 指标 | 实测值 | 测量方式 |
 |------|--------|---------|
-| Recall@5 (hybrid) | **0.348** | 50 条 golden set，`scripts/eval/eval.go` |
-| Recall@5 (hybrid+rerank) | **0.442** | 同上 |
-| MRR (hybrid+rerank) | **0.809** | 同上 |
-| 向量检索 P50 / P99 | **139ms / 428ms** | 同上，nearest-rank |
+| Recall@5 (hybrid) | **0.346** | 77 条 golden set，`scripts/eval/eval.go` |
+| Recall@5 (hybrid+rerank) | **0.444** | 同上 |
+| MRR (hybrid+rerank) | **0.798** | 同上 |
+| 向量检索 P50 / P99 | **151ms / 267ms** | 同上，nearest-rank |
 | RRF 融合耗时 (recallN=50) | **8.5–10.3 µs** | `go test -bench`，6 次采样 |
 | 端到端首字延迟 P50 | **409ms** | SSE 边收边计时，300 请求 |
 | 端到端首字延迟 P99 | **1388ms** | 同上 |
@@ -16,6 +16,13 @@
 | MCP 调用 P50 / P99 | **9ms / 4100ms** | 同上（P50 是缓存命中） |
 | 缓存命中率 | **94.8%**（1137/1200） | Prometheus `kaho_cache_ops_total` |
 | 常驻内存 | **23.9 MB** | pprof heap，990 请求之后 |
+
+⚠️ **检索类指标于 2026-08-20 清理 346 行孤儿数据后重测**。
+清理前的旧值（Recall@5 0.442 / MRR 0.809 等）保留在
+`docs/eval-results.before-cleanup.md` 以便对照。
+除 `confusable` 一列外，各项变动均在 ±0.011 以内，属噪声量级；
+`confusable` 从 0.629 降到 0.546，但该列仅 8 条样本、且精排走 LLM 不确定输出，
+单条查询即可造成 0.125 的摆动 —— 这是采样噪声，不是清理导致的退化。
 
 ⚠️ **每个数字的适用范围见下文**。脱离条件的单个数字没有意义。
 

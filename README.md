@@ -9,8 +9,8 @@
 
 | 指标 | 实测值 |
 |---|---|
-| Recall@5（hybrid + rerank） | 0.442 |
-| MRR（hybrid + rerank） | 0.809 |
+| Recall@5（hybrid + rerank） | 0.444 |
+| MRR（hybrid + rerank） | 0.798 |
 | 端到端首字延迟 P50 / P99 | 409ms / 1388ms |
 | 检索缓存命中率 | 94.8% |
 | 常驻内存 | 23.9 MB |
