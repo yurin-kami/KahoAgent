@@ -12,15 +12,15 @@ import (
 )
 
 type Config struct {
-	Debug      bool             `toml:"debug"`
-	Server     ServerConfig     `toml:"server"`
-	DB         DBConfig         `toml:"db"`
-	Redis      RedisConfig      `toml:"redis"`
-	Milvus     MilvusConfig     `toml:"milvus"`
-	Kafka      KafkaConfig      `toml:"kafka"`
-	LLM        LLMConfig        `toml:"llm"`
-	MCP        MCPConfig        `toml:"mcp"`
-	CloudKaho  CloudKahoConfig  `toml:"cloudkaho"`
+	Debug     bool            `toml:"debug"`
+	Server    ServerConfig    `toml:"server"`
+	DB        DBConfig        `toml:"db"`
+	Redis     RedisConfig     `toml:"redis"`
+	Milvus    MilvusConfig    `toml:"milvus"`
+	Kafka     KafkaConfig     `toml:"kafka"`
+	LLM       LLMConfig       `toml:"llm"`
+	MCP       MCPConfig       `toml:"mcp"`
+	CloudKaho CloudKahoConfig `toml:"cloudkaho"`
 }
 
 // CloudKahoConfig 是云盘服务的连接配置。

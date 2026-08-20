@@ -243,8 +243,21 @@ func (m *SessionMemory) compact(ctx context.Context, sessionID string, msgs []*s
 // summarize 调 LLM 压缩对话。
 func (m *SessionMemory) summarize(ctx context.Context, msgs []*schema.Message) (string, error) {
 	var sb strings.Builder
-	sb.WriteString("请把下面的对话压缩成一段简短摘要，保留：" +
-		"用户提到的具体文件名、查询过的主题、已确认的结论。" +
+	// ⚠️ 优先级的排序是**实测调出来的**，不是随手写的。
+	//
+	// 早期版本只要求保留「文件名、主题、结论」，12 轮验收就挂了：
+	// 用户第 1 轮说的项目代号，在随后 10 轮密集的 RAG 问答面前
+	// 三者都不沾边，模型于是名正言顺地把它省掉了 ——
+	// 而单测因为填充内容是短句，信噪比高，反倒一直是绿的。
+	//
+	// 判据是「能不能重新拿到」：RAG 检索到的知识随时可以再检索一次，
+	// 丢了不可惜；用户亲口说过的事实（代号、偏好、约束）一旦丢掉
+	// 就再也找不回来。所以前者排最后，后者排第一并单独强调。
+	sb.WriteString("请把下面的对话压缩成简短摘要。按重要性保留：\n" +
+		"1. 用户主动陈述的事实、偏好、要求（尤其是要求你记住的内容）—— 必须逐字保留，不得省略\n" +
+		"2. 用户提到或操作过的具体文件名、文件 ID\n" +
+		"3. 查询过的主题与已确认的结论\n" +
+		"检索到的资料内容可以大幅精简（它们随时可以重新检索）。\n" +
 		"省略寒暄与重复内容。直接输出摘要，不要解释。\n\n")
 
 	for _, msg := range msgs {
@@ -257,7 +270,14 @@ func (m *SessionMemory) summarize(ctx context.Context, msgs []*schema.Message) (
 		case schema.System:
 			role = "系统"
 		}
-		fmt.Fprintf(&sb, "%s：%s\n", role, truncateRunes(msg.Content, 300))
+		// ⚠️ 用户消息不截断：它通常很短，且正是上面优先级 1 要保的东西。
+		// 助手/工具消息可能是几千字的检索结果，必须限长，
+		// 否则它们会挤满上下文，把用户说过的话冲掉。
+		content := msg.Content
+		if msg.Role != schema.User {
+			content = truncateRunes(content, 300)
+		}
+		fmt.Fprintf(&sb, "%s：%s\n", role, content)
 	}
 
 	summary, err := m.summarizer.Complete(ctx, sb.String())
