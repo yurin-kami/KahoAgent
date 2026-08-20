@@ -343,6 +343,33 @@ func TestE2E_MultiTurnContext(t *testing.T) {
 	}
 }
 
+// 验收 2b：file_metadata 本身可被 Agent 调用。
+//
+// ⚠️ 计划的验收项写的是「第二个文件多大」→ 调用 file_metadata，
+// 但实测模型**不会**调 —— 因为 CloudKaho 的 file_search 响应里
+// 已经带了 file_size，上一轮的列表里就有答案，再查一次纯属浪费。
+// 这是正确行为，不该为了凑验收去把它逼出来。
+//
+// 但那样一来 file_metadata 就完全没被端到端跑过了。所以这里用一个
+// **没有前序搜索**的新会话，直接按 ID 问 —— 此时模型只能调它。
+func TestE2E_FileMetadataIsReachable(t *testing.T) {
+	e := setup(t)
+
+	r := e.ask(t, e.session(t), "查一下 file_id 为 103 的那个文件，它多大？")
+
+	if len(r.errs) > 0 {
+		t.Fatalf("the stream reported errors: %v", r.errs)
+	}
+	if !r.usedTool("file_metadata") {
+		t.Errorf("expected file_metadata to be called when no prior search "+
+			"could supply the answer, got tools=%v", r.tools)
+	}
+	// 8192 B = 8.0 KB，milvus-hnsw.md
+	if !strings.Contains(r.text, "8") {
+		t.Errorf("expected the size of file 103 (8.0 KB / 8192 B), got: %s", r.text)
+	}
+}
+
 // 验收 3：「给我一个分享链接」→ 调用 file_share → 返回 URL
 func TestE2E_FileShareReturnsURL(t *testing.T) {
 	e := setup(t)

@@ -26,12 +26,13 @@ share 收绝对时间戳），因此验证的仍是真实的协议假设。
 
 ## 验收结果
 
-全部 6 项通过（`ok github.com/yurin-kami/KahoAgent/internal/app 65.253s`）。
+全部 7 项通过（验收 6 项 + 补的 file_metadata 覆盖）（`ok github.com/yurin-kami/KahoAgent/internal/app 65.253s`）。
 
 | 验收项 | 测试 | 实测结果 |
 |---|---|---|
 | rag_query → 答案 + 引用来源 | `TestE2E_RAGQueryWithCitations` | ✅ 调用 `rag_query`，回答带 `来源：...md` |
 | 「第二个文件多大」→ 多轮上下文 | `TestE2E_MultiTurnContext` | ✅ 答 `kafka-guide.md，24.0 KB` |
+| file_metadata 可被调用 | `TestE2E_FileMetadataIsReachable` | ✅ 无前序搜索时按 ID 直查，答 `8.0 KB` |
 | 分享链接 → 返回 URL | `TestE2E_FileShareReturnsURL` | ✅ 返回 presigned URL |
 | 12 轮不 OOM、不丢上下文 | `TestE2E_TwelveTurnsKeepContext` | ✅ 22 条压缩至 13 条，第 1 轮事实仍可追溯 |
 | SSE 逐 token，首字 <1.5s | `TestE2E_FirstTokenLatency` | ✅ **502ms**，6 个 chunk |
