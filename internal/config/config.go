@@ -12,14 +12,25 @@ import (
 )
 
 type Config struct {
-	Debug  bool         `toml:"debug"`
-	Server ServerConfig `toml:"server"`
-	DB     DBConfig     `toml:"db"`
-	Redis  RedisConfig  `toml:"redis"`
-	Milvus MilvusConfig `toml:"milvus"`
-	Kafka  KafkaConfig  `toml:"kafka"`
-	LLM    LLMConfig    `toml:"llm"`
-	MCP    MCPConfig    `toml:"mcp"`
+	Debug      bool             `toml:"debug"`
+	Server     ServerConfig     `toml:"server"`
+	DB         DBConfig         `toml:"db"`
+	Redis      RedisConfig      `toml:"redis"`
+	Milvus     MilvusConfig     `toml:"milvus"`
+	Kafka      KafkaConfig      `toml:"kafka"`
+	LLM        LLMConfig        `toml:"llm"`
+	MCP        MCPConfig        `toml:"mcp"`
+	CloudKaho  CloudKahoConfig  `toml:"cloudkaho"`
+}
+
+// CloudKahoConfig 是云盘服务的连接配置。
+//
+// Token 优先读环境变量：它是用户凭证，写进配置文件容易误提交。
+// 留空时文件类工具会被禁用（而不是报错退出）——
+// 检索能力不依赖云盘，没配也应该能正常问答。
+type CloudKahoConfig struct {
+	BaseURL string `toml:"base_url"`
+	Token   string `toml:"token"`
 }
 
 type ServerConfig struct {
@@ -119,18 +130,25 @@ func (c *Config) applyDefaults() {
 	if c.MCP.Port == 0 {
 		c.MCP.Port = 3000
 	}
+	if c.CloudKaho.BaseURL == "" {
+		// CloudKaho 硬编码监听 :8080（cmd/main.go），不可配置
+		c.CloudKaho.BaseURL = "http://127.0.0.1:8080"
+	}
 }
 
 // resolveAPIKey 在配置未提供 api_key 时按序尝试环境变量。
 func (c *Config) resolveAPIKey() {
-	if c.LLM.APIKey != "" {
-		return
-	}
-	for _, name := range apiKeyEnvVars {
-		if v := os.Getenv(name); v != "" {
-			c.LLM.APIKey = v
-			return
+	if c.LLM.APIKey == "" {
+		for _, name := range apiKeyEnvVars {
+			if v := os.Getenv(name); v != "" {
+				c.LLM.APIKey = v
+				break
+			}
 		}
+	}
+	// CloudKaho token 同理：它是用户凭证，优先从环境变量取
+	if c.CloudKaho.Token == "" {
+		c.CloudKaho.Token = os.Getenv("CLOUDKAHO_TOKEN")
 	}
 }
 
