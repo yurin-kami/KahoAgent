@@ -1,8 +1,11 @@
 package tokenizer
 
 import (
+	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/yanyiwu/gojieba"
 )
 
 func TestTokenize_SplitsChineseCompounds(t *testing.T) {
@@ -140,4 +143,50 @@ func TestTokenize_IsConcurrencySafe(t *testing.T) {
 			t.Fatalf("concurrent tokenization differs:\n  %q\n  %q", first, got)
 		}
 	}
+}
+
+// 下面两个测试守护 KAHO_JIEBA_DICT_DIR 这个开关。
+//
+// 背景：gojieba 默认从**编译机源码路径**加载词典，容器里没有 Go module
+// 缓存，NewJieba 直接 panic。这个故障编译期毫无征兆，本地跑测试也永远
+// 复现不了 —— 只有真正启动容器才暴露（Phase 6 实测踩到）。
+// 所以必须有测试在本地就能证明「切换目录这件事真的生效」，
+// 否则下次有人重构掉这段逻辑，仍然要等到部署才发现。
+//
+// 不测 Shared()：它有 sync.Once 缓存，一旦被别的测试先调用过就没法
+// 再观察不同环境变量下的行为，所以直接测 newSegmenter。
+
+func TestNewSegmenter_UsesCustomDictDir(t *testing.T) {
+	// 用 gojieba 自己暴露的默认目录当「自定义目录」：
+	// 路径确实存在，于是能验证「显式传五个路径」这条分支拼得对 ——
+	// 拼错任何一个文件名都会 panic。
+	t.Setenv(dictDirEnv, gojieba.DICT_DIR)
+
+	seg := newSegmenter()
+	defer seg.Free()
+
+	got := strings.Join(seg.CutForSearch("Redis缓存穿透怎么解决", true), " ")
+	for _, want := range []string{"Redis", "缓存", "穿透"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("expected token %q in %q", want, got)
+		}
+	}
+}
+
+func TestNewSegmenter_HonorsTheEnvVar(t *testing.T) {
+	// 反证：指向一个不存在的目录必须失败。
+	// 少了这条，上一个测试无法区分「环境变量生效了」和
+	// 「环境变量被忽略、走的还是默认路径」—— 两种情况结果完全一样。
+	//
+	// gojieba 用 panic 而非返回 error 报告词典缺失，所以只能用 recover 断言。
+	t.Setenv(dictDirEnv, filepath.Join(t.TempDir(), "nonexistent"))
+
+	defer func() {
+		if recover() == nil {
+			t.Error("expected a panic: the env var was silently ignored")
+		}
+	}()
+
+	seg := newSegmenter()
+	seg.Free()
 }

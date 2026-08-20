@@ -1786,25 +1786,34 @@ var (
 
 ## ✅ Phase 5 验收
 
-- [ ] `/metrics` 端点能看到全部指标
-- [ ] `docs/bench/` 下有 4 个压测结果文件
-- [ ] `docs/optimization.md` 记录至少 1 个优化的前后对比
-- [ ] **填表**（这张表直接抄进简历）：
+- [x] `/metrics` 端点能看到全部指标
+- [x] `docs/bench/` 下有 4 个压测结果文件（实际 6 个，含 pprof）
+- [x] `docs/optimization.md` 记录至少 1 个优化的前后对比（FuseRRF −68%）
+- [x] **填表**（这张表直接抄进简历）：
 
-```markdown
 | 指标 | 实测值 | 测量方式 |
 |------|--------|---------|
-| Recall@5 (hybrid) | ___ | 50 条 golden set |
-| MRR (hybrid+rerank) | ___ | 同上 |
-| 向量检索 P99 | ___ ms | go bench |
-| 端到端首字延迟 | ___ ms | SSE 实测 |
-| QPS (带缓存) | ___ | vegeta 60s |
-| 缓存命中率 | ___ % | Prometheus |
-| Tool 调用 P99 | ___ ms | MCP 压测 |
-| 常驻内存 | ___ MB | pprof heap |
-```
+| Recall@5 (hybrid) | 0.348 | 77 条 golden set（规划写 50，实际扩到 77） |
+| Recall@5 (hybrid+rerank) | 0.442 | 同上 |
+| MRR (hybrid+rerank) | 0.809 | 同上 |
+| 向量检索 P50 / P99 | 139ms / 428ms | 同上，nearest-rank |
+| 端到端首字延迟 P50 / P99 | 409ms / 1388ms | SSE 边收边计时，300 请求 |
+| HTTP 吞吐 | ~10 req/s ⚠️ | 开环压测；**瓶颈是 DashScope 配额，非本服务** |
+| MCP 工具调用吞吐 | 69.7 call/s | 并发 50，300 次调用 |
+| Tool 调用 P50 / P99 | 9ms / 4100ms | 同上（P50 是缓存命中） |
+| 缓存命中率 | 94.8%（1137/1200） | Prometheus `kaho_cache_ops_total` |
+| 常驻内存 | 23.9 MB | pprof heap，990 请求之后 |
 
-- [ ] `git tag phase5-done`
+> 与规划的两处偏差，记录在此不掩盖：
+> 1. **QPS 那一行原计划用 vegeta**，改成了自写的开环压测器
+>    （`scripts/bench/load.go`）。vegeta 是闭环模型，会自动降速迁就被测方，
+>    过载时反而看不出问题。
+> 2. **HTTP 吞吐不能单独引用**。三组独立证据表明 10 req/s 的天花板来自上游
+>    账号配额（完成延迟在 3/10/20 req/s 下恒为 ~7.2s；吞吐卡在 10；
+>    187 次失败全是上游 `429 Throttling.Concurrency`）。
+>    脱离这个前提引用这个数字，等于把外部限流说成自己的架构容量。
+
+- [x] `git tag phase5-done`
 
 ---
 
@@ -1813,10 +1822,19 @@ var (
 **分支**：`phase6-polish`
 
 ## 必做
-- [ ] `Dockerfile`（多阶段构建，最终镜像 <30MB）
-- [ ] `.github/workflows/ci.yml`（lint + build + test）
-- [ ] README 加架构图 + demo.gif
-- [ ] **简历数字用 Phase 5 实测值替换**
+- [x] `Dockerfile`（多阶段构建，~~最终镜像 <30MB~~ → **实测 110MB**）
+      ⚠️ 未达标，且不打算硬压。30MB 是在选定 gojieba（cgo）之前定的估算，
+      cgo 锁死了 scratch 基础镜像、二进制压不到纯 Go 水平，加上 13.8MB 中文词典，
+      「跑得起来」的地板就是 26.5MB。完整取舍与分层实测见 `docs/deployment.md`。
+      记在这里而不是悄悄改掉验收标准。
+- [x] `.github/workflows/ci.yml`（gofmt + vet + build + test -race + 镜像构建与启动验证）
+- [x] README 加架构图 ~~+ demo.gif~~
+      ⚠️ demo.gif 需要人工录屏（Claude Desktop 里的交互无法脚本化生成）。
+      同一条代码路径已由 `cmd/mcp/e2e_test.go` 覆盖（真实二进制走 stdio），
+      但 GIF 本身仍待补录。
+- [x] **简历数字用 Phase 5 实测值替换** → `docs/resume-material.md`
+      （原计划只是「替换数字」，实际发现没有承载它们的文档，
+      于是补了一份个人素材文档）
 
 ## 可选（按优先级，时间够才做）
 1. Query 改写 / HyDE

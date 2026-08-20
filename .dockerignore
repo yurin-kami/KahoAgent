@@ -1,0 +1,32 @@
+# ⚠️ 排除 config.toml —— 它含 API Key。
+# 不排除的话密钥会随构建上下文进入镜像层，即使 Dockerfile 里没 COPY 它，
+# 也可能被中间层缓存下来。
+config.toml
+*.local.toml
+
+# 版本控制与开发环境
+.git
+.gitignore
+.github
+.omc
+.claude
+
+# 测试与压测产物
+docs/bench/*.pprof
+*.test
+*.exe
+*.out
+coverage.*
+
+# 依赖缓存（容器内会重新下载）
+vendor
+
+# 编辑器
+.vscode
+.idea
+*.swp
+
+# 文档不参与构建，排除可缩小上下文、加快构建
+docs
+*.md
+!README.md
