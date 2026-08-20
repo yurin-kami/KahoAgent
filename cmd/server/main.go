@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/yurin-kami/KahoAgent/internal/app"
 	"github.com/yurin-kami/KahoAgent/internal/config"
@@ -57,6 +60,18 @@ func run() error {
 		_, _ = w.Write([]byte("ok"))
 	})
 
+	// Prometheus 抓取端点
+	mux.Handle("/metrics", promhttp.Handler())
+
+	// ⚠️ pprof 手动注册到本 mux，而不是 import _ net/http/pprof。
+	//
+	// 那个包会在 init() 里往 http.DefaultServeMux 注册 —— 而任何
+	// 第三方库若也用了 DefaultServeMux，profile 端点就会跟着
+	// 业务端口一起暴露出去。pprof 能拉取堆内存、goroutine 栈，
+	// 里面可能有密钥和用户数据，绝不能无意中公开。
+	// 显式注册则完全可控，将来要加鉴权也只改这一处。
+	registerPprof(mux)
+
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler: mux,
@@ -91,4 +106,18 @@ func run() error {
 	}
 	logger.Info("stopped cleanly")
 	return nil
+}
+
+// registerPprof 把 profile 端点挂到指定 mux。
+//
+// 采集方式：
+//
+//	go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
+//	go tool pprof http://localhost:8080/debug/pprof/heap
+func registerPprof(mux *http.ServeMux) {
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 }

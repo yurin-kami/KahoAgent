@@ -1,0 +1,20 @@
+File: server.exe
+Build ID: D:\Temps\go-build681584173\b001\exe\server.exe2026-08-20 10:47:16.0135292 +0800 CST
+Type: inuse_space
+Time: 2026-08-20 10:52:47 CST
+Showing nodes accounting for 17723.97kB, 74.26% of 23868.51kB total
+Showing top 12 nodes out of 172
+      flat  flat%   sum%        cum   cum%
+ 4357.33kB 18.26% 18.26%  6405.74kB 26.84%  github.com/yurin-kami/KahoAgent/pkg/llm.(*EinoChatModel).pumpSSE
+    3591kB 15.04% 33.30%     3591kB 15.04%  runtime.allocm
+ 2068.17kB  8.66% 41.97%  2068.17kB  8.66%  bufio.NewWriterSize
+ 2048.41kB  8.58% 50.55%  2048.41kB  8.58%  github.com/yurin-kami/KahoAgent/pkg/llm.toSchemaMessage (inline)
+ 1029.63kB  4.31% 54.86%  1029.63kB  4.31%  encoding/json.Marshal
+    1028kB  4.31% 59.17%     1028kB  4.31%  strings.(*Builder).Write
+ 1025.56kB  4.30% 63.46%  1025.56kB  4.30%  google.golang.org/protobuf/internal/filedesc.(*Message).unmarshalFull
+  518.65kB  2.17% 65.64%   518.65kB  2.17%  time.map.init.1
+  516.01kB  2.16% 67.80%  1031.01kB  4.32%  net/http.(*http2clientStream).writeRequestBody
+     515kB  2.16% 69.96%      515kB  2.16%  crypto/tls.(*halfConn).encrypt
+  513.69kB  2.15% 72.11%   513.69kB  2.15%  github.com/milvus-io/milvus-proto/go-api/v2/commonpb.map.init.7
+  512.50kB  2.15% 74.26%   512.50kB  2.15%  net/http.init.func1
+
