@@ -150,6 +150,14 @@ func (c *Config) resolveAPIKey() {
 	if c.CloudKaho.Token == "" {
 		c.CloudKaho.Token = os.Getenv("CLOUDKAHO_TOKEN")
 	}
+	// ⚠️ 环境变量**覆盖**配置文件里的 base_url，与上面几项「留空才回退」
+	// 的规则相反。理由：指向哪个 CloudKaho 是**部署环境**的属性，
+	// 不是代码的属性 —— 容器里、CI 里、测试里各不相同，
+	// 而 config.toml 是同一份。若沿用「留空才回退」，
+	// 配置文件一旦写了值就再也没法从外部改。
+	if v := os.Getenv("CLOUDKAHO_BASE_URL"); v != "" {
+		c.CloudKaho.BaseURL = v
+	}
 }
 
 // validate 检查缺失会导致运行时才暴露的必填项。

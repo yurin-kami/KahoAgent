@@ -33,6 +33,11 @@ import (
 type App struct {
 	Handler http.Handler
 
+	// Tools 是注册给 Agent 的工具集，MCP Server 直接复用同一份 ——
+	// 各自装配一套的话，两边的检索配置与降级策略迟早分叉，
+	// 而 MCP 路径平时没人盯着，分叉了也不会有人发现。
+	Tools []tool.BaseTool
+
 	// Memory 暴露出来供测试清理会话；生产代码不需要碰它。
 	Memory *agent.SessionMemory
 
@@ -146,6 +151,7 @@ func (a *App) build(ctx context.Context, cfg *config.Config, logger *slog.Logger
 	if err != nil {
 		return err
 	}
+	a.Tools = agentTools
 
 	ag, err := agent.New(ctx, agent.Config{
 		Model: llm.NewEinoChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model),
