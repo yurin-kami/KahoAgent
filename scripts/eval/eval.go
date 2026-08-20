@@ -451,7 +451,6 @@ func writeFindings(w func(string, ...any), results []result, byKindCount map[str
 	w("> 其余所有数字均由本次运行实测生成。\n\n")
 }
 
-
 // abs 用于比较差距与分辨率，不关心方向。
 func abs(f float64) float64 {
 	if f < 0 {

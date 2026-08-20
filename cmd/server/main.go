@@ -2,53 +2,93 @@ package main
 
 import (
 	"context"
-	"log"
+	"errors"
+	"fmt"
+	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"go.uber.org/zap"
-
+	"github.com/yurin-kami/KahoAgent/internal/app"
 	"github.com/yurin-kami/KahoAgent/internal/config"
 )
 
+const (
+	shutdownGrace = 10 * time.Second
+	startupGrace  = 60 * time.Second
+)
+
 func main() {
-	// 加载配置
+	if err := run(); err != nil {
+		fmt.Fprintf(os.Stderr, "fatal: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	cfg, err := config.Load("config.toml")
 	if err != nil {
-		log.Fatalf("failed to load config: %v", err)
+		return fmt.Errorf("load config: %w", err)
 	}
 
-	// 初始化日志
-	logger, _ := zap.NewProduction()
+	level := slog.LevelInfo
 	if cfg.Debug {
-		logger, _ = zap.NewDevelopment()
+		level = slog.LevelDebug
 	}
-	defer logger.Sync()
-	sugar := logger.Sugar()
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
+	slog.SetDefault(logger)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	// 这个 ctx 只覆盖启动期的连接建立
+	startCtx, cancelStart := context.WithTimeout(context.Background(), startupGrace)
+	defer cancelStart()
 
-	sugar.Info("KahoAgent starting...",
-		"port", cfg.Server.Port,
-		"debug", cfg.Debug,
-	)
+	a, err := app.New(startCtx, cfg, logger)
+	if err != nil {
+		return err
+	}
+	defer a.Close()
 
-	// TODO: 初始化各组件
-	// 1. 向量数据库连接 (Milvus)
-	// 2. Redis 缓存
-	// 3. PostgreSQL (BM25)
-	// 4. Kafka consumer (文档处理管道)
-	// 5. Eino Agent 编排
-	// 6. MCP Server
-	// 7. HTTP Server (Gin)
+	mux := http.NewServeMux()
+	mux.Handle("/api/chat", a.Handler)
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	})
 
-	_ = ctx
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
+		Handler: mux,
+		// ⚠️ 不设 WriteTimeout：SSE 是长连接，一个回答可能生成几十秒，
+		// 设了会在写到一半时被掐断。超时由 handler 内部的
+		// context 控制，粒度更合适。
+		ReadHeaderTimeout: 10 * time.Second,
+	}
 
-	// 优雅退出
+	errCh := make(chan error, 1)
+	go func() {
+		logger.Info("KahoAgent listening", "port", cfg.Server.Port, "debug", cfg.Debug)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			errCh <- err
+		}
+	}()
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	sugar.Info("KahoAgent shutting down...")
+
+	select {
+	case err := <-errCh:
+		return fmt.Errorf("server failed: %w", err)
+	case sig := <-quit:
+		logger.Info("shutting down", "signal", sig.String())
+	}
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownGrace)
+	defer cancel()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("graceful shutdown failed: %w", err)
+	}
+	logger.Info("stopped cleanly")
+	return nil
 }
