@@ -164,6 +164,10 @@ curl -N -X POST http://127.0.0.1:8080/api/chat \
 后三个需要 CloudKaho 凭证（`CLOUDKAHO_TOKEN`）；未配置时会自动禁用，
 `rag_query` 仍可正常使用。
 
+> 未配凭证时 MCP 的 `tools/list` 只会返回 **1 个**工具，启动日志里也会有
+> `tools=1` 与一条 WARN。这是预期的降级行为，不是握手失败 ——
+> 在 Claude Desktop 里看到只有一个工具可用时，先检查这个环境变量。
+
 ## MCP 集成（Claude Desktop）
 
 在 `claude_desktop_config.json` 中添加：
