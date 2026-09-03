@@ -103,6 +103,7 @@ KahoAgent/
 │   └── spike/           # 技术验证脚本
 └── docs/
     ├── IMPLEMENTATION.md   # 分阶段实施方案
+    ├── LEARNING.md          # 完整学习清单（计划认知 + 实测修正）
     ├── eval-results.md     # 检索策略评估结果
     ├── optimization.md     # pprof 定位与优化前后对比
     ├── deployment.md       # 容器化与部署
