@@ -224,7 +224,7 @@ overlap 让后块包含前块结尾，保证语义完整。
          > 知识点总结（2026-6-13-interview-redis-cache-problems.md）
 ```
 
-## ⚠️⚠️ L1.1 附：Milvus 的 `max_length` 单位是**字节**不是字符
+## L1.1 附：Milvus 的 `max_length` 单位是**字节**不是字符
 
 这个坑值得单列，因为它**只在中文场景炸**。
 
@@ -253,7 +253,7 @@ length: 24576, max length: 8192
 **后写的静默覆盖先写的** —— 表现为「数据莫名其妙少了」，
 比直接报错难查一个数量级。所以 ID 超长改为**直接报错**。
 
-## ⚠️ L1.1 附：Milvus SDK 在零命中时返回**伪造的**错误
+## L1.1 附：Milvus SDK 在零命中时返回**伪造的**错误
 
 对空 collection 检索，SDK 报的是：
 
@@ -359,7 +359,7 @@ Phase 5 压测实测：20 req/s 时 **187 次失败全部是上游
 「先同步后异步」这个顺序实测非常正确，值得作为通用原则：
 **任何时候都不要同时引入两个可能出错的新东西**。
 
-## ⚠️ L1.4 附：kafka-go 的 `DefaultTransport` 是**包级共享缓存**
+## L1.4 附：kafka-go 的 `DefaultTransport` 是**包级共享缓存**
 
 **现象**：3 个 Kafka 集成测试**单独跑全过，一起跑后两个必挂**，
 报 `[3] Unknown Topic Or Partition` —— 而日志明确显示
@@ -393,7 +393,7 @@ Phase 5 压测实测：20 req/s 时 **187 次失败全部是上游
 **生产影响**：线上若动态创建 topic（如按租户分 topic），
 创建后立刻写入同样会撞这 6 秒缓存。本项目 topic 固定，不受影响 —— 但记录在案。
 
-## ⚠️⚠️ L1.5 最重要的一课：Phase 1 自己的结论后来被推翻了
+## L1.5 最重要的一课：Phase 1 自己的结论后来被推翻了
 
 **这是整个项目里「假设被推翻」力度最强的一条 —— 因为推翻的是我自己的阶段性结论。**
 
@@ -543,7 +543,7 @@ B: 1/62        = 0.0161
 D: 1/63        = 0.0159
 ```
 
-## ⚠️⚠️ 实测修正：RRF 融合后 MRR 反而**低于**纯 BM25
+## 实测修正：RRF 融合后 MRR 反而**低于**纯 BM25
 
 这是整个项目最重要的一课。计划里 L2.3 讲的是「融合取长补短」，
 实测结果直接相反：
@@ -683,7 +683,7 @@ RAG 场景是值得的，但**必须知道自己付了什么代价** ——
 也正因为 P99 到了 2.3s，Prometheus 的 Histogram 桶边界才必须铺到 2.5s
 （见 [L5.1](#l51-prometheus-三种指标类型)）。
 
-## ⚠️⚠️ L2.6 兜底路径与主路径的**量纲不一致**
+## L2.6 兜底路径与主路径的**量纲不一致**
 
 这个坑最阴 —— **没有任何现象**。不报错、不挂测试、不影响正常流程，
 只在 LLM 打分失败时悄悄把可能相关的块踢到最后。
@@ -719,7 +719,7 @@ RAG 场景是值得的，但**必须知道自己付了什么代价** ——
 2. **测试断言要写「应该怎样」而不是「现在怎样」。**
    新断言改成「不能垫底」，描述的才是真正要保证的性质。
 
-## ⚠️⚠️ L2.7 `temperature=0` **不等于**可复现
+## L2.7 `temperature=0` **不等于**可复现
 
 同一份代码、同一份语料，连跑三次：
 
@@ -882,7 +882,7 @@ MCP 那边可以直接复用** —— MCP 桥接读取工具自带的 JSON Schem
 **规则**：最大 10 轮，超出保留最近 6 轮完整 + 前面压缩成摘要，
 单次请求 Token 上限 8000。
 
-## ⚠️⚠️ 实测修正：压缩摘要的**优先级**决定成败
+## 实测修正：压缩摘要的**优先级**决定成败
 
 12 轮对话验收失败 —— Agent 记不住第 1 轮用户说的话。
 排查过程值得完整记录：
@@ -1133,7 +1133,7 @@ lastSeen := make([]int, 0, total)   // 代替「每路一个 seen map」
 「正确性**依赖遍历顺序**」（这是真实的重构隐患，
 比如将来改成并发融合就会破坏它），而不是宣称一个不存在的 bug。
 
-## ⚠️⚠️ 压测最重要的一课：分清谁的瓶颈
+## 压测最重要的一课：分清谁的瓶颈
 
 **HTTP 吞吐实测 ~10 req/s。这个数字不能单独引用。**
 
@@ -1365,6 +1365,106 @@ internal\rag\tokenizer\jieba.go:40:15: undefined: gojieba.Jieba
 | 22 | `undefined: xxx` 是代码问题 | CGO 被静默关闭，包被 build constraint 排除 | P6 | 两个 shell 结果不同 |
 | 23 | shell + curl 能做 e2e 验收 | 计时精度、跨进程状态比对、Windows 兼容全不行 | P3 | 改 Go test，65.253s 全过 |
 | 24 | 首字延迟可以用任意问题测 | 带工具的请求首字含一整轮检索，测的是检索速度 | P3 | 502ms（无工具）vs 338~927ms |
+
+---
+
+# 附：学习资料
+
+> 计划里原本只在 Phase 0 挂了 4 条链接，Phase 1-6 一条没有。
+> 这里按阶段补全，**全部实测可访问**（2026-08-21）。
+>
+> 排序原则：**先读一手材料**（论文、官方文档），
+> 二手教程只在一手材料太重或太散时才推荐。
+> 标 ⭐ 的是我实际读过且直接帮上忙的。
+
+## Phase 0：基础认知
+
+| 资料 | 时长 | 为什么读 |
+|---|---|---|
+| ⭐ [吴恩达 Building & Evaluating Advanced RAG](https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/) | 1.5h（看前 3 节即可） | 免费。建立「RAG 效果取决于检索」这个基本判断 |
+| [RAG 原论文（Lewis et al., 2020）](https://arxiv.org/abs/2005.11401) | 1h | 知道 RAG 最初是端到端训练的，和现在业界的「检索+拼 prompt」不是一回事 —— 面试问到「RAG 是什么」时这个区分能加分 |
+| ⭐ [Milvus Quickstart](https://milvus.io/docs/quickstart.md) | 1h | 只需要跑通，概念看 [L0.3](#l03-milvus-基本概念) 的表就够 |
+| ⭐ [MCP 官方介绍](https://modelcontextprotocol.io/introduction) | 1h | 三种原语只用 Tools，Resources/Prompts 可跳过 |
+| ⭐ [MCP Go SDK Quick Start](https://go.sdk.modelcontextprotocol.io/quick_start/) | 0.5h | 直接对应本项目的实现 |
+| ⭐ [eino-examples/quickstart](https://github.com/cloudwego/eino-examples/tree/main/quickstart) | 1.5h | Eino 文档偏少，例子比文档有用 |
+
+## Phase 1：文档处理
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐ [Pinecone: Chunking Strategies](https://www.pinecone.io/learn/chunking-strategies/) | 分块策略讲得最系统，覆盖 [L1.1](#l11-分块策略) 那张表的全部五种。**读完记得回来看 L1.1 的实测修正** —— 它没讲字节/字符这个坑 |
+| [Kafka 官方：Message Delivery Semantics](https://kafka.apache.org/documentation/#semantics) | 「至少一次 / 至多一次 / 恰好一次」的权威定义。[L1.4](#l14-kafka-的作用与关键概念) 手动提交 offset 的理由在这里 |
+| [Go 官方：`unicode/utf8`](https://pkg.go.dev/unicode/utf8) | 特别是 `RuneStart` —— 按字节截断后回退到 rune 边界必须用它，否则切出非法 UTF-8 |
+
+> ⚠️ 这一阶段三个坑（字节/字符、SDK 伪造错误、kafka 共享缓存）
+> **在任何教程里都找不到**。它们只能靠「连真实服务跑一次」暴露出来 ——
+> 这本身就是 [L1.5](#l15-最重要的一课phase-1-自己的结论后来被推翻了) 的教训。
+
+## Phase 2：混合检索（这一阶段最值得投入时间）
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐⭐ [RRF 原论文（Cormack et al., SIGIR 2009）](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) | **只有 2 页，一定要读原文。**关键是看清它的实验设定：在**质量相当**的检索系统上调出 k=60。[L2.3 的实测修正](#️️-实测修正rrf-融合后-mrr-反而低于纯-bm25) 就是这个前提不成立时会发生什么 |
+| [Wikipedia: Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) | 公式够用即可。重点理解 TF 的**饱和上限**和文档长度归一化 |
+| [PostgreSQL: Controlling Text Search](https://www.postgresql.org/docs/current/textsearch-controls.html) | `ts_rank` / `to_tsquery` 的确切语义，以及为什么中文需要预分词 |
+| [gojieba](https://github.com/yanyiwu/gojieba) | 看 `CutForSearch` 和 `Cut` 的区别（[L2.2](#l22-bm25-原理)）。**另外一定看一眼 `config.go`** —— 那个 `runtime.Caller` 就是 [L6.1 坑三](#l61-cgo-项目容器化) 的根源 |
+
+**这一阶段的核心资料其实是本项目自己的文档**：
+
+- ⭐⭐ `docs/eval-results.md` —— 完整的排查过程（recall@50 分层 → 机制定位 → 权重扫描证否）
+- ⭐ `docs/spike-evidence/phase2-pitfalls.md` —— 三个「不报错但指标变差」的坑
+
+## Phase 3：Agent 编排
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐⭐ [ReAct 原论文（Yao et al., 2022）](https://arxiv.org/abs/2210.03629) | Reasoning + Acting 交替的原始思路。读它是为了理解**为什么需要 Observation 这一步** —— 而不是把它当成黑盒 |
+| ⭐ [MDN: Using server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) | SSE 的 wire 格式（`data: xxx\n\n`）和自动重连语义 |
+| [Go: `net/http` Flusher](https://pkg.go.dev/net/http#Flusher) | 不 Flush 数据就积在 buffer 里 —— 流式的关键 |
+| [Anthropic: Prompt engineering — 工具定义](https://docs.anthropic.com/en/docs/build-with-claude/tool-use) | 对应 [L3.2](#l32-tool-description-的重要性)。「Description 要回答什么情况下该用我」这条在这里有官方表述 |
+
+> ⚠️ [L3.3 的上下文压缩优先级](#️️-实测修正压缩摘要的优先级决定成败)
+> 没有现成资料 —— 「按能不能重新拿到排优先级」是这个项目自己调出来的。
+
+## Phase 4：MCP 暴露
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐ [MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18) | 需要查 `tools/list`、`tools/call` 的确切 schema 时看这个，不要靠猜 |
+| ⭐ [MCP: Tools](https://modelcontextprotocol.io/docs/concepts/tools) | 特别是 `isError` 的语义 —— [L4.2](#l42-mcp-的安全模型) 里「工具失败不能返回协议错误」的依据 |
+| [Go: `golang.org/x/sync/semaphore`](https://pkg.go.dev/golang.org/x/sync/semaphore) | `Acquire` 在 ctx 取消时的行为，是「排队而非拒绝」能成立的前提 |
+| [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | [L4.2](#l42-mcp-的安全模型) 那张风险表的方法论来源。「把内部 API 暴露给不可信客户端」是老问题 |
+
+## Phase 5：可观测性与压测
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐⭐ [Prometheus: Histograms and summaries](https://prometheus.io/docs/practices/histograms/) | **必读**。桶边界怎么定、为什么 `histogram_quantile` 是近似值 —— [L5.1](#l51-prometheus-三种指标类型) 桶铺到 2.5s 的理由 |
+| ⭐ [Prometheus: Metric types](https://prometheus.io/docs/concepts/metric_types/) | Counter / Gauge / Histogram 的准确定义 |
+| ⭐ [Go Blog: Profiling Go Programs](https://go.dev/blog/pprof) | pprof 的经典入门 |
+| ⭐ [pprof README](https://github.com/google/pprof/blob/main/doc/README.md) | `top` / `list` / `web` 的用法速查 |
+| [Go: Benchmarks](https://pkg.go.dev/testing#hdr-Benchmarks) | `b.ReportAllocs()` / `b.ResetTimer()` 的正确用法 —— 位置错了数字就废了 |
+| ⭐ [Gil Tene: How NOT to Measure Latency](https://www.youtube.com/watch?v=lJ8ydIuPFeU) | **开环 vs 闭环压测**的经典演讲（coordinated omission）。[L5 为什么弃用 vegeta](#️️-压测最重要的一课分清谁的瓶颈) 的理论依据，比我自己摸出来的讲得清楚得多 |
+
+## Phase 6：容器化
+
+| 资料 | 为什么读 |
+|---|---|
+| ⭐ [Go: cgo 官方文档](https://pkg.go.dev/cmd/cgo) | 重点：`CGO_ENABLED` 的**自动探测**行为 —— 找不到编译器就静默降级为 0，这是 [L6.1 坑四](#l61-cgo-项目容器化) 的根因 |
+| ⭐ [Docker: Multi-stage builds](https://docs.docker.com/build/building/multi-stage/) | 多阶段构建的标准做法 |
+| [Docker: Dockerfile 最佳实践](https://docs.docker.com/build/building/best-practices/) | 层缓存顺序（先拷 go.mod 再拷源码）的理由 |
+| [Alpine: 关于 musl 与 glibc](https://wiki.alpinelinux.org/wiki/Running_glibc_programs) | 为什么 cgo 二进制不能放进 scratch |
+
+## 如果只读三样
+
+按投入产出比排：
+
+1. ⭐⭐ **[RRF 原论文](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)（2 页）+ 本项目的 `docs/eval-results.md`**
+   —— 一手材料 + 它的前提不成立时会发生什么。这个组合是整个项目最有价值的部分。
+2. ⭐⭐ **[Gil Tene: How NOT to Measure Latency](https://www.youtube.com/watch?v=lJ8ydIuPFeU)**
+   —— 改变你看所有性能数字的方式。
+3. ⭐⭐ **[Prometheus: Histograms and summaries](https://prometheus.io/docs/practices/histograms/)**
+   —— 「平均值骗人」这件事的完整论证。
 
 ---
 
