@@ -22,6 +22,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -250,7 +251,17 @@ var criteria = []criterion{
 	{Query: "消息重复消费怎么处理", Kind: "semantic", Rationale: "讲重复消费与去重", AnyOf: []string{"重复消费"}},
 	{Query: "Saga 模式", Kind: "keyword", Rationale: "讲 Saga 分布式事务", AnyOf: []string{"Saga", "SAGA"}},
 	{Query: "本地消息表", Kind: "keyword", Rationale: "讲本地消息表方案", AnyOf: []string{"本地消息表"}},
-	{Query: "CAP 定理", Kind: "keyword", Rationale: "讲 CAP 三选二", AnyOf: []string{"CAP"}},
+	// ⚠️ CAP 不能只靠 AnyOf{"CAP"}。match() 用的是 ILIKE（大小写不敏感），
+	// 而语料里 slice 的容量 `cap`、逃逸分析 `Escape`、C++ 的 `hex escape`
+	// 都含子串 cap —— 实测 ILIKE 命中 17 块，其中只有 5 块真讲 CAP 定理，
+	// 误标率近 70%。这违反本文件开头的「宁严勿松」：多标的块会让所有策略
+	// 的分数一起虚高，掩盖真实差距。
+	//
+	// 不改用大小写敏感匹配，因为那会误伤别的谓词 ——
+	// 同一批里 Saga 在语料中全部写作 `Saga`，大写精确匹配会让它归零。
+	// 正确做法是靠共现收紧：CAP 定理必然与一致性/可用性/分区同时出现。
+	{Query: "CAP 定理", Kind: "keyword", Rationale: "讲 CAP 三选二",
+		AllOf: []string{"CAP"}, AnyOf: []string{"一致性", "可用性", "分区容错"}},
 	{Query: "缓存和数据库怎么保证一致", Kind: "semantic", Rationale: "讲双写一致性方案", AnyOf: []string{"延迟双删", "双写一致"}},
 	{Query: "布隆过滤器误判率", Kind: "keyword", Rationale: "讲布隆过滤器原理与误判", AllOf: []string{"布隆"}, AnyOf: []string{"误判", "哈希函数", "位数组"}},
 	{Query: "MySQL 慢查询怎么排查", Kind: "semantic", Rationale: "讲慢查询排查流程", AnyOf: []string{"慢查询日志", "EXPLAIN"}},
@@ -266,17 +277,30 @@ type goldenEntry struct {
 }
 
 func main() {
-	if err := run(); err != nil {
+	// ⚠️ 输出路径必须可指定，且默认值不能是「就地覆盖」以外的惊喜。
+	//
+	// 原先写死 scripts/eval/golden_set.json：在 PDF 语料库上跑一次，
+	// 主语料那份 638 条标注的 golden set 就被 284 个 PDF chunk 的 ID
+	// 覆盖了 —— 而它是所有已发布评估数字的基准，重建要重跑全量标注。
+	// 加 flag 的成本是三行，覆盖掉的代价是一整轮返工。
+	out := flag.String("out", "scripts/eval/golden_set.json", "golden set 输出路径")
+	flag.Parse()
+
+	if err := run(*out); err != nil {
 		fmt.Fprintf(os.Stderr, "❌ %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
+func run(outPath string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
-	cfg, err := config.Load("config.toml")
+	// 用 DefaultPath：golden set 的 relevant_chunk_ids 是**语料相关**的 ——
+	// ChunkID = sha256(docID#index)，换一份语料就全是另一批 ID。
+	// PDF 语料必须在它自己的库上重新构建，写死 config.toml 会让
+	// 生成的 golden set 指向主语料的 chunk，评估直接全 0。
+	cfg, err := config.Load(config.DefaultPath())
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)
 	}
@@ -347,7 +371,7 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
-	if err := os.WriteFile("scripts/eval/golden_set.json", out, 0o644); err != nil {
+	if err := os.WriteFile(outPath, out, 0o644); err != nil {
 		return fmt.Errorf("write golden set: %w", err)
 	}
 

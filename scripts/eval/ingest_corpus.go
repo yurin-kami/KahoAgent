@@ -39,6 +39,7 @@ func main() {
 		reset   = flag.Bool("reset", false, "入库前清空两个存储")
 		dryRun  = flag.Bool("dry-run", false, "只分块统计，不调用 embedding API")
 		maxDocs = flag.Int("max-docs", 0, "最多处理几篇（0 = 不限）")
+		exclude = flag.String("exclude", "", "排除的文件名，逗号分隔（匹配 basename，不含路径）")
 	)
 	flag.Parse()
 
@@ -46,22 +47,49 @@ func main() {
 		*dir = flag.Arg(0)
 	}
 	if *dir == "" {
-		fmt.Fprintln(os.Stderr, "usage: ingest_corpus [-reset] [-dry-run] <dir>")
+		fmt.Fprintln(os.Stderr, "usage: ingest_corpus [-reset] [-dry-run] [-exclude a.md,b.md] <dir>")
 		os.Exit(1)
 	}
 
-	if err := run(*dir, *reset, *dryRun, *maxDocs); err != nil {
+	if err := run(*dir, *reset, *dryRun, *maxDocs, splitExclude(*exclude)); err != nil {
 		fmt.Fprintf(os.Stderr, "\n❌ %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(dir string, reset, dryRun bool, maxDocs int) error {
+// splitExclude 把逗号分隔的排除列表解析成集合。
+//
+// 存在意义：重跑评估时必须能锁定与历史完全一致的语料子集。
+// 语料目录会随时间新增文件，而「重灌是为了验证某处改动无害」这种场景下，
+// 语料多一篇少一篇都会让新旧数字失去可比性 —— 变量必须一次只动一个。
+func splitExclude(s string) map[string]bool {
+	if s == "" {
+		return nil
+	}
+	out := make(map[string]bool)
+	for _, name := range strings.Split(s, ",") {
+		if name = strings.TrimSpace(name); name != "" {
+			out[name] = true
+		}
+	}
+	return out
+}
+
+func run(dir string, reset, dryRun bool, maxDocs int, exclude map[string]bool) error {
 	// 入库耗时随文档数线性增长，超时给足
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Minute)
 	defer cancel()
 
-	cfg, err := config.Load("config.toml")
+	// 用 DefaultPath 而非写死 "config.toml"：支持 KAHO_CONFIG 换配置文件。
+	// 这是为了语料隔离 —— 把 PDF 灌进独立 collection 时，
+	//   KAHO_CONFIG=config.pdf.toml go run -tags=corpus ...
+	// 主语料的 config.toml 全程不动。
+	//
+	// 备选方案是临时改 config.toml 再改回来，被否决：中途任何一步失败、
+	// 或忘了恢复，后续入库就会静默写进错误的 collection —— 而 Milvus 是
+	// upsert，写错地方不报错。让「灌哪个库」由命令行显式决定，
+	// 比依赖「记得把文件改回去」可靠得多。
+	cfg, err := config.Load(config.DefaultPath())
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)
 	}
@@ -69,6 +97,19 @@ func run(dir string, reset, dryRun bool, maxDocs int) error {
 	files, err := findMarkdown(dir)
 	if err != nil {
 		return err
+	}
+	// 排除在扫描之后、截断之前：否则 -max-docs 的名额会被排除项占掉
+	if len(exclude) > 0 {
+		kept := files[:0]
+		for _, f := range files {
+			if exclude[filepath.Base(f)] {
+				fmt.Printf("排除 %s\n", filepath.Base(f))
+				continue
+			}
+			kept = append(kept, f)
+		}
+		files = kept
+		fmt.Println()
 	}
 	if maxDocs > 0 && len(files) > maxDocs {
 		files = files[:maxDocs]
@@ -268,6 +309,16 @@ func findMarkdown(dir string) ([]string, error) {
 // （getting-started、hello-world 等各出现 3 次），只用 basename 会让
 // 它们撞成同一个 docID，后写的静默覆盖先写的 —— 实测因此丢了 62 个 chunk。
 //
+// ⚠️ 扩展名也必须保留，理由与上一条完全相同。早期版本用
+// TrimSuffix(rel, Ext(rel)) 剥掉了扩展名，那在只支持 .md 时是安全的，
+// 但支持第二种格式后 guide.md 与 guide.pdf 会撞成同一个 docID：
+// ChunkID = sha256(docID#index)，两边逐位相同，而 Milvus 与 PG 都是
+// upsert —— 后入库的静默覆盖先入库的，且两篇块数不同时会残留前一篇的
+// 尾部，拼成一篇内容来自两个文件的文档。
+// 这与 2026-08-20 清理的 346 行孤儿数据是同一类 bug，只是触发条件不同。
+//
+// 点号换成短横线只为可读，不影响唯一性（Ext 已经保证了区分度）。
+//
 // Milvus 的 doc_id 字段上限 64 字节，而带目录的中文路径极易超出，
 // 故超长时改用「前缀 + 全路径哈希」保证既唯一又不超限。
 func docIDFor(root, path string) string {
@@ -277,15 +328,18 @@ func docIDFor(root, path string) string {
 	if err != nil {
 		rel = filepath.Base(path)
 	}
-	rel = strings.TrimSuffix(filepath.ToSlash(rel), filepath.Ext(rel))
-	// 目录分隔符换成短横线，便于阅读
+	rel = filepath.ToSlash(rel)
+	// 目录分隔符与扩展名的点都换成短横线，便于阅读
 	name := strings.ReplaceAll(rel, "/", "-")
+	name = strings.ReplaceAll(name, ".", "-")
 
 	if len(name) <= maxBytes {
 		return name
 	}
 
-	// 超长：保留可读前缀 + 全路径哈希，避免截断导致的碰撞
+	// 超长：保留可读前缀 + 全路径哈希，避免截断导致的碰撞。
+	// ⚠️ 哈希基准是带扩展名的 rel —— 若用剥掉扩展名的值，
+	// 超长路径下 .md 与 .pdf 的哈希会再次相同，比原 bug 更隐蔽。
 	sum := sha256.Sum256([]byte(rel))
 	suffix := "-" + hex.EncodeToString(sum[:])[:8]
 

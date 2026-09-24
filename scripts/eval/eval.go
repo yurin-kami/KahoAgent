@@ -90,7 +90,10 @@ func run(goldenPath, outPath string, withRerank bool) error {
 		return fmt.Errorf("golden set is empty")
 	}
 
-	cfg, err := config.Load("config.toml")
+	// 与 ingest_corpus 一致用 DefaultPath：评估必须能指向入库时的同一个
+	// collection。两处若不一致，会出现「灌进 A 库、评估 B 库」——
+	// 结果是一片零分，而且看不出是配置错了还是检索坏了。
+	cfg, err := config.Load(config.DefaultPath())
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)
 	}
@@ -497,6 +500,51 @@ func writeReport(path string, results []result, golden []goldenEntry, withRerank
 			r.p50.Round(time.Millisecond), r.p99.Round(time.Millisecond))
 	}
 	w("\n")
+
+	// ⚠️ 上界必须由脚本算出来，不能在文档里写死。
+	//
+	// Recall@K 的分母是该查询的**全部**相关块，当相关块数 > K 时
+	// 前 K 个位置装不下，上界天然低于 1.0。不标出来的话，
+	// 「0.441 是不是太低了」这个问题永远答不清 —— 而它取决于
+	// golden set 的标注密度，换一份语料就是另一个数（PDF 语料实测就不同）。
+	//
+	// 早期文档里写的是「golden set 按一条查询只有一个正确答案块标注」，
+	// 实算才发现平均 8.18 个 —— 那个说法还把结论引向反面：
+	// 真按单块标注上界就是 1.0，0.441 反倒说明系统差。
+	// 所以这个数必须随语料自动重算。
+	var ubSum float64
+	for _, e := range golden {
+		n := len(e.RelevantChunkIDs)
+		if n == 0 {
+			continue
+		}
+		ubSum += float64(min(evalTopK, n)) / float64(n)
+	}
+	upper := ubSum / float64(len(golden))
+	var relSum, relMax int
+	for _, e := range golden {
+		relSum += len(e.RelevantChunkIDs)
+		relMax = max(relMax, len(e.RelevantChunkIDs))
+	}
+	avgRel := float64(relSum) / float64(len(golden))
+
+	w("### ⚠️ Recall@%d 的上界是 %.3f，不是 1.0\n\n", evalTopK, upper)
+	w("分母是该查询的**全部**相关块（`internal/eval/metrics.go`），"+
+		"而 golden set 平均每条查询 **%.2f 个**相关块"+
+		"（%d 标注 / %d 查询，最多 %d）—— 前 %d 个位置装不下。\n\n",
+		avgRel, relSum, len(golden), relMax, evalTopK)
+	w("```\n上界 = mean(min(%d, n) / n) = %.3f\n", evalTopK, upper)
+	for _, r := range results {
+		w("%-20s %.3f / %.3f = 上界的 %.0f%%\n",
+			r.name, r.recall, upper, r.recall/upper*100)
+	}
+	w("```\n\n")
+	w("数字偏低是**分母诚实**的结果 —— 用 hit rate"+
+		"（top-%d 命中 ≥1 即记 1.0）冒充 Recall 的话会高得多。\n\n", evalTopK)
+	w("> **MRR 与 Recall 不共享分母，不能互相推上下界。**\n")
+	w("> Recall 的分母是相关块总数，MRR 的分母是首个命中的位次。\n")
+	w("> 某查询 12 个相关块、检索器把 1 个排在第 1 位 →\n")
+	w("> Recall@%d = 0.083 而 RR = 1.000，同一次检索一个极低一个满分。\n\n", evalTopK)
 
 	w("## 分类型 MRR\n\n")
 	w("三类查询的设计目的是看清各策略的**强弱边界**，而非只看一个总分：\n\n")

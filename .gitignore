@@ -23,6 +23,13 @@ coverage.html
 
 # Config (secrets)
 config.toml
+# ⚠️ 通配而非只列 config.toml：PDF 语料引入了 config.pdf.toml，
+# 后续再加隔离配置时很容易忘记补 .gitignore —— 而漏一次就是
+# API Key 进仓库。用模式匹配把「新增配置文件」这个失误堵死，
+# .example 结尾的模板不含密钥，显式放行。
+config*.toml
+!config*.example.toml
+!config*.toml.example
 .env
 
 # OS
@@ -39,3 +46,15 @@ AUX
 
 # Temp
 /tmp/
+
+# PDF 离线预处理（scripts/pdf/）
+# venv 含 MinerU 模型，数 GB；中间产物与生成的测试数据都可重新生成，不入库。
+scripts/pdf/.venv/
+scripts/pdf/out/
+scripts/pdf/testdata/
+scripts/pdf/converted/
+__pycache__/
+
+# 个人材料（面试问答稿）。本地保留、不入公开仓库 ——
+# 已用 git filter-repo 从全部历史中清除，这一行防止再次误加。
+docs/resume-material.md

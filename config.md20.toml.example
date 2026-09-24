@@ -1,0 +1,59 @@
+# 对照组配置：与 PDF 组**同样那 20 篇文档**，以原始 Markdown 入库。
+#
+#   podman exec kaho-postgres createdb -U kaho -O kaho kahoagent_md20
+#   cp config.md20.toml.example config.md20.toml
+#   KAHO_CONFIG=config.md20.toml go run -tags=corpus ./scripts/eval/ingest_corpus.go <20篇md目录>
+#
+# 为什么必须有这个对照组：
+# PDF-20 的评估数字**不能和主语料 77 篇比** —— 语料规模不同、
+# golden set 不同（38 vs 78 条查询），差多少都无法归因，
+# 分不清是「PDF 转换损失」还是「语料本来就不一样」。
+# 只有同样这 20 篇的 Markdown 版本，才让「有没有经过 PDF 往返」
+# 成为唯一变量。
+#
+# 那 20 篇怎么确定：按 scripts/pdf/converted/pdf-*.md 的文件名去掉
+# pdf- 前缀反查博客目录 —— 不要手工列表，列错一篇对照就不成立。
+#
+# 与 config.pdf.toml 的差异只有 database 名和 collection 名，
+# 其余必须逐字一致 —— 尤其 embedding_model 与 embedding_dim：
+# 换了模型，两组的向量就不在同一个空间里，指标无法对比。
+
+debug = true
+
+[server]
+port = 8080
+
+[db]
+# ⚠️ 独立 database，与主语料和 PDF 组三方隔离。
+# 共用 chunks 表会让 BM25 的 IDF（全表统计量）互相污染，
+# 详见 docs/pdf-plan-b.md §5 的修正框。
+dsn = "host=127.0.0.1 port=5432 user=kaho password=kaho_dev_pw dbname=kahoagent_md20 sslmode=disable"
+
+[redis]
+addr = "127.0.0.1:6379"
+password = ""
+db = 0
+
+[milvus]
+addr = "127.0.0.1:19530"
+# ⚠️ 与主语料的 kaho_documents 隔离。混进去的话 eval-results.md 里
+# 所有已发布的数字全部失效，且无法回退 —— Milvus 是 upsert，
+# 灌进去就没有「撤销」这回事，只能 Drop 整个 collection 重灌。
+collection = "kaho_documents_md20"
+
+[kafka]
+brokers = ["127.0.0.1:9092"]
+topic = "document-processing"
+group_id = "kahoagent-worker"
+
+[llm]
+provider = "dashscope"
+api_key = ""                                                        # 留空则读环境变量
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+model = "qwen-plus"
+embedding_model = "text-embedding-v3"
+embedding_dim = 1024
+
+[mcp]
+transport = "stdio"
+port = 3000

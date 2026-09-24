@@ -4,8 +4,8 @@
     "kind": "confusable",
     "rationale": "必须讲缓存穿透的解法（布隆过滤器/缓存空值），排除只讲击穿或雪崩的块",
     "relevant_chunk_ids": [
-      "6e7f106c5304fb9a81df02292bfad9d4",
-      "f549fc91d7e9af22c52431c2eaf7858b"
+      "07cb82867343ef4480f3649c94eee349",
+      "6c4ef997468c339c429c74832d11727f"
     ]
   },
   {
@@ -13,12 +13,12 @@
     "kind": "confusable",
     "rationale": "必须讲缓存击穿的解法（互斥锁/逻辑过期）",
     "relevant_chunk_ids": [
-      "22e3c7d3f306075041bbed33cd6fdc95",
-      "661bbd3db7ab8f35a0bdc43899537317",
-      "6e7f106c5304fb9a81df02292bfad9d4",
-      "94df4d5f059e5d9ba021df4808348439",
-      "a0c45ac4e5f32bd302edb317ae8381eb",
-      "f549fc91d7e9af22c52431c2eaf7858b"
+      "07cb82867343ef4480f3649c94eee349",
+      "3a163eb566d5dd7e509b04161fb9a696",
+      "5d62e11513192c40d297b17d01dc3883",
+      "6c4ef997468c339c429c74832d11727f",
+      "79c644b6ff285ef66c279d630e3c5474",
+      "cb939b7dc291c0b6214c2cb28e33ef57"
     ]
   },
   {
@@ -26,12 +26,12 @@
     "kind": "confusable",
     "rationale": "必须讲缓存雪崩的解法（随机TTL/多级缓存）",
     "relevant_chunk_ids": [
-      "22e3c7d3f306075041bbed33cd6fdc95",
-      "6e7f106c5304fb9a81df02292bfad9d4",
-      "94df4d5f059e5d9ba021df4808348439",
-      "9f8f585a44dbf6af537573ccdf0c420a",
-      "eccccbd1825ac0cba25fb8d87be00928",
-      "f549fc91d7e9af22c52431c2eaf7858b"
+      "07cb82867343ef4480f3649c94eee349",
+      "3a163eb566d5dd7e509b04161fb9a696",
+      "4edcc3b9f82d0f155d2327d6b553dd6d",
+      "6c4ef997468c339c429c74832d11727f",
+      "c009a36975d9a4b53a1d8974be06904c",
+      "cb939b7dc291c0b6214c2cb28e33ef57"
     ]
   },
   {
@@ -39,10 +39,10 @@
     "kind": "confusable",
     "rationale": "必须提到脏读概念",
     "relevant_chunk_ids": [
-      "72dcbf365ad419d556320dbbfa2374bb",
-      "9057f2688f14756f31da000f50e1bcb8",
-      "ce850442e05b34a6b34ef8fe4ca041d6",
-      "d961770e375c030b39934f56f9dac125"
+      "276c6a00c80758e0667105b4d9109843",
+      "4d1910b6585676bcab188c8357fa6dd8",
+      "c94c36b9cdd2cabf49d104493fd163b6",
+      "f55d8ed27c72524c0b3b933870936bc2"
     ]
   },
   {
@@ -50,12 +50,12 @@
     "kind": "confusable",
     "rationale": "必须提到不可重复读",
     "relevant_chunk_ids": [
-      "1e68113ce170faa589ffa05c13a2abce",
-      "72dcbf365ad419d556320dbbfa2374bb",
-      "74ef2dbda8e822c08bf3404bacffbd04",
-      "9057f2688f14756f31da000f50e1bcb8",
-      "c2737c8f7f29a31dbe9e2cd906f3e19f",
-      "d961770e375c030b39934f56f9dac125"
+      "181482ce882c61bdee289ce25e1e6f56",
+      "19885be81ac008d4a41626903e43d3be",
+      "276c6a00c80758e0667105b4d9109843",
+      "56c9b059994989d3f3ebae372b9570d2",
+      "c94c36b9cdd2cabf49d104493fd163b6",
+      "f55d8ed27c72524c0b3b933870936bc2"
     ]
   },
   {
@@ -63,16 +63,16 @@
     "kind": "confusable",
     "rationale": "讲幻读及其解决（间隙锁），排除只顺带提一句幻读的块",
     "relevant_chunk_ids": [
-      "01d0750c5e824914e84526b6467a29fe",
-      "042e28e3bc20a07b1ab5c370e88df294",
-      "13293b39d1253650e91bde770715756f",
-      "19c70913d2ef348bbdaf99abe3b49321",
-      "44152818ed7469fcb6aa3cd95cff0022",
-      "44dd3923241403342fab54a69348e3f5",
-      "74ef2dbda8e822c08bf3404bacffbd04",
-      "bb02099fdf18054afb4a2567840f1612",
-      "db34b39dcb084148fbf4b919d8fce213",
-      "e2972cb7801322c35e4af6f111c1f9f2"
+      "19885be81ac008d4a41626903e43d3be",
+      "4780cfbb3ee89ea3ed4e308cb8f54967",
+      "75871f6c2843755a372aef9c06948293",
+      "95b79897527e64c93d1262e5fd780d11",
+      "9b4c1e3ab6c1aeeb72ead1e7603bed3a",
+      "c058a32326aa998962ed4f59cfa17eed",
+      "c190cde4a1132b38357dc6bcb10a3bc2",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "f02eb5d78a6e9891ce5bf4832752f5ee",
+      "f8920a8390e771cb4f6fde32b1ca895c"
     ]
   },
   {
@@ -80,17 +80,17 @@
     "kind": "confusable",
     "rationale": "讲 goroutine 与线程的具体差异（栈大小/调度开销）",
     "relevant_chunk_ids": [
-      "07690ee7ac1bcbce9c5fe33f141389c8",
-      "1dffd650b7f64a5f9e75f2c4725b4380",
-      "3f1cd301859f95bbba3a2533ca4890d4",
-      "4a138d9fcb0214a6d603c4d8badd56b9",
-      "5ca03a2943852ce0422e88ede744e0c8",
-      "8177fc5bb057a529cfeab105603149fc",
-      "920ef57522ffe88a5470bb4c836d3b33",
-      "98ea4231e1b4b0a1ce400035736c9046",
-      "9ca54d5d0552db5184de9e618a1d53e8",
-      "ad48d77ef91e0f50c3d842d5678a9bae",
-      "ed04b9e546c921e1c9fc837b3fe87dc4"
+      "04003adb1936918b9e2b8c6f95cfebfd",
+      "0aaed9c499705496fde6e318f8af2c17",
+      "2109fe5e4fac77add38d5a81daf1fcbe",
+      "2fe5a19aca211ac836b5b52d247d3608",
+      "4257b3bb67cb7787a54f41e1621fc869",
+      "67b480c5ad83e419119f5189a6397942",
+      "9d3d25ece3d37f3855f2926476e5600a",
+      "9e83ed966ca04cb5392d0efb203cfef3",
+      "ddf53c0f3f38ea7d86badd833bcba29f",
+      "df0d60c745568bdda83b7bfacb505c2b",
+      "ea03cc178bf00decf2ff7f79c0bc878b"
     ]
   },
   {
@@ -98,20 +98,20 @@
     "kind": "semantic",
     "rationale": "讲慢查询定位方法",
     "relevant_chunk_ids": [
-      "08f338a6147e6a3195fa1fdf5a30698f",
-      "0a692c757b9486e13c62a8a25735c4bc",
-      "0c7cdcdbfeb47a3580c40b1271dc27e0",
-      "0df3bac5ad2ae14cc8554d123d069f69",
-      "13293b39d1253650e91bde770715756f",
-      "3b5602f43440257de81885a6678e1fd1",
-      "9e634880a8277a6f49ebc6a446781134",
-      "b1e08e759f609aa37116efea5df6fd31",
-      "bfdcd35873495c1ce081097e843547e1",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "d84df8f7987dc5f661532ea2e1388970",
-      "da091350e0f2e49a97966f9b9c8a4641",
-      "ec502e29a2a63bb73232817cc31eba4e",
-      "f54210fecd4ddac3cce6ed41e24124d2"
+      "039e53246a50d423b3b77638460a5f23",
+      "0fb951ff89fc340617888f42d3570f6b",
+      "13d82ead73e432869ebfbc19fdbd9ced",
+      "1f65b519f77b383b07c718888f773fae",
+      "42a5c21c639f23082527652c855f72ca",
+      "51d87a657f8041b046960ce7eec8f68a",
+      "706d6bd132c37c59fe53261685e9ecff",
+      "8db38980b200fb6e9a699fd4c3a43f8c",
+      "a31fdb1d8f460cf093190b9d95b6444d",
+      "a57970f4689c60564ed9d4e4a45d4e1f",
+      "b07db2858398afa154326db309911864",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "d750984e401c4784352963a11ec50961",
+      "f66067a919ed06f2f7b4dd76f93b62e9"
     ]
   },
   {
@@ -119,21 +119,21 @@
     "kind": "semantic",
     "rationale": "讲消息可靠投递的具体机制",
     "relevant_chunk_ids": [
-      "053a8ff553a6f61760364309ac38cd86",
-      "22171d09752e92c552bd7588508fb611",
-      "6cf929386f0013b159911009769b9d2b",
-      "6f9721c06dcdce9be46d6bfa725cb52b",
-      "701629acb076f09911f6eb7524bcdb1e",
-      "77447aac577ef8d6b0d7af3d985cfb09",
-      "80fe08b746ef1843f6ad815ac1a8399c",
-      "8d48f783706db69a93ca16d4d2eff97d",
-      "92b1cfae52395f2c7027aace9e06da3b",
-      "b1822c42c980d6a144138475c78fb12c",
-      "b3172744563fb695172a4249bd45caf3",
-      "b5fa647b0c7c72d5556fa1da7e255a16",
-      "d0fb097b4ac346717ae09fdc1432c5da",
-      "ed6f8a334057f14000899b3f02a4e9d8",
-      "f5051f544cd818446781fcfe203d1311"
+      "28e8361c2cadd1918489084473414129",
+      "2b3636059b2ada581e36c9e6aae0b3d9",
+      "3e4424b0cfc5e0391340bc06159748b6",
+      "4390e468b927081caa271b53858c0a57",
+      "4b09bc02ccd36760272b5d12032c195d",
+      "51bc0ef6821048871b76f534949ca39b",
+      "692db833af024760d9f5525a5af9f599",
+      "7f1a8738adab262ab8cabb0b99daf770",
+      "8f68091eaf4ccdf89d2ec691783dc85f",
+      "b66b5297e92082866f2237c801e4fe19",
+      "b70202b9e996fe4326b2de27ea1d3d00",
+      "c5c8438d42fe59431782eb9ad27dd783",
+      "dc433469bc90060c0716449720412cc3",
+      "e626070514e05d53408ca2b79bb0dced",
+      "ef891f005dd92170a5eef8724938d141"
     ]
   },
   {
@@ -141,14 +141,14 @@
     "kind": "semantic",
     "rationale": "讲重连与退避策略",
     "relevant_chunk_ids": [
-      "135e2892399ef3daa53561b9f63dcebb",
-      "2e2f61ca387a31148de63161a5e72151",
-      "33cd6970295a55d381e8133aad4d7f7d",
-      "49f37ba5aff1efd6c73882aa6f7c7a36",
-      "86aa663707ce4c7726373e02f23006e2",
-      "eccccbd1825ac0cba25fb8d87be00928",
-      "f376d99a54dfe0a4e018d67885a4cdf4",
-      "fd86071f330e0ab17cffda3275acd3bc"
+      "366f7c32401e4e4deea719ee8265598a",
+      "68d76fa40c74c6b1f029f8c9dea74c3a",
+      "a39937bcab92072492f54e0dbc107701",
+      "a492ceae796e6a219fac378932df49c2",
+      "bbe74fa5da7c8d2c9e8f75d666457be4",
+      "c009a36975d9a4b53a1d8974be06904c",
+      "ee322121ea4a333d15460a0bbd6fa0ff",
+      "ef1a782e709184c8aa41465e571f3937"
     ]
   },
   {
@@ -156,13 +156,13 @@
     "kind": "semantic",
     "rationale": "讲分布式锁的具体实现",
     "relevant_chunk_ids": [
-      "1350f9b9486dac2869b156c987591965",
-      "65d78e26ccee752ef2b1012df06cc335",
-      "661bbd3db7ab8f35a0bdc43899537317",
-      "c103474c9ab62525a2003b42ca79d7b8",
-      "c627e02e9339c4514187ec67c1c07016",
-      "dd30b9a92a0aeb1e49712ce139fa8935",
-      "fab863b1ff525dafb3a050b3bbe901f0"
+      "03e1a9dd4fe079aed039f0e8bcf8f111",
+      "442a168c22b2440aa84ae25bbaeb6278",
+      "5d62e11513192c40d297b17d01dc3883",
+      "603736808605d319eb9b60547d10e343",
+      "b5993f79e0cc4c3a2da5dff990baabc9",
+      "bfbc1667bb0924a797bf1ad16c2da7b1",
+      "f64f73fb2da83627bbe062d2995fc37f"
     ]
   },
   {
@@ -170,15 +170,15 @@
     "kind": "semantic",
     "rationale": "讲雪花算法的位分配结构",
     "relevant_chunk_ids": [
-      "2e3a6d312e832bc579a9b1a523fa92b2",
-      "9546416842b7e3e4f8a7ba4063920eb4",
-      "9bb1ed73fb9de43bd983a68458bca3b2",
-      "a3d404a1b77dd99ca17b4cb1f8734ef2",
-      "b6615e194ce9d83889b55c79d49dcb2c",
-      "b75f86d53612c01a189e9a2dc434cab7",
-      "ef2108f0e8d6d2ea08254077153f7546",
-      "f1faf68f1a7d938f8510286a0c163189",
-      "ff91a33c26a5d2ae4b775d247e171c1a"
+      "28e10e7668f4039e35a149340f23949a",
+      "5c4f5cb433abc154b79b1c8cf7a41ea3",
+      "61b93a8beb3ea2da35291109aa27d8fa",
+      "6b388349b30a6edaeb15c246f36ad5b5",
+      "c0638622918dc0a2c02986b3ce94d751",
+      "d1c42609d6f384ba99d45fa58a7bf2d0",
+      "dfc250e03cd9d54fed9d61b7dea5e2ba",
+      "e695eb40203775d170d5a1b583558343",
+      "fb0edd32f1ab5f95e32cc205e37c1bac"
     ]
   },
   {
@@ -186,11 +186,11 @@
     "kind": "semantic",
     "rationale": "讲 JWT 或 Session 认证机制",
     "relevant_chunk_ids": [
-      "0203750891a5e1a7143ed7edd651e570",
-      "0ebc506a1bfa451d49f75d0ee9f261ba",
-      "3270fc943bf5a4da948abfcc119e8c8b",
-      "a0011ba114afd1596e059a4f4af5d1c1",
-      "d06c03d139239e58c2c468f6d1776d4b"
+      "08b73b23eb72c2e2520b4ecbef17eb65",
+      "4c7d2c175615b46f2167e964380a33ce",
+      "73a972225d39ed5b67b8475a277bfa52",
+      "8ce5b3b1af8fc5a7931ef499065f59f5",
+      "a7c406c1f598fcd5e97d44ca8b947738"
     ]
   },
   {
@@ -198,13 +198,13 @@
     "kind": "semantic",
     "rationale": "讲内存泄漏或 GC 行为",
     "relevant_chunk_ids": [
-      "00cc62bd49e542b325da72dd00d5ca57",
-      "0f31b8f32296d18ce1602b41d995835c",
-      "1e6cc3bf7ad7333433777e0028ea5eea",
-      "6b1b2c94d2d1d83487ed39ccdf3dbf15",
-      "6d73dea2f0a67e212cdc36bd42a566a6",
-      "be1da7965f0f5bfad0949d8f1813ceff",
-      "f240d478e5a7560f2fead681db854e59"
+      "1eedb3cc4ce78af1f7b52df322151077",
+      "2a0df66323fc9623a098136a019123f1",
+      "7d4bda5194bf7e1dfb7e07ef7bda3887",
+      "8a9488068368d618a17ddd7605d82da3",
+      "9d4a61346855f7e2e401b4475330a1ba",
+      "c084faa607c9cb34753b4bf2ef9d8292",
+      "eaa306dc11ffe92a40acb7bda8ea3436"
     ]
   },
   {
@@ -212,8 +212,8 @@
     "kind": "semantic",
     "rationale": "讲具体的性能优化手段而非泛泛提到缓存",
     "relevant_chunk_ids": [
-      "3f43ade259179dcc801cb18e3f4981a2",
-      "45f68810de9f9eb79f6dbc00a08d5b94"
+      "44bfe4e73c86dadd9b2e5979acf0f379",
+      "46bdc89370f7710307ba77b207d45289"
     ]
   },
   {
@@ -221,10 +221,10 @@
     "kind": "semantic",
     "rationale": "讲通信协议选型权衡",
     "relevant_chunk_ids": [
-      "27eff2b56f52cbdb79d7e51caca503e2",
-      "5a0a80c73c3981072b834a62685227ef",
-      "5c7fe9cd2da1eb3b426dba16a3a86318",
-      "ac20a6429ba1c051a1199e95579c98d1"
+      "11c7c0760e0063ce8b153e6b68f928aa",
+      "47ae589926913f8eb0aa9a314ed3bcdc",
+      "5b7e08e17eb4faefae4b0f7f1651f428",
+      "905491af4a92455e04d89cab9c66f89e"
     ]
   },
   {
@@ -232,17 +232,17 @@
     "kind": "semantic",
     "rationale": "讲分片上传",
     "relevant_chunk_ids": [
-      "0ebc506a1bfa451d49f75d0ee9f261ba",
-      "57d7f47f898f27f68045928082cddb54",
-      "71dbb5adb830719ce88208f436c6aff1",
-      "992e8349d5ee536881c037a68826d27e",
-      "a0011ba114afd1596e059a4f4af5d1c1",
-      "b641b46a93dfc3d10dadc276895128fc",
-      "ba1cf2a5c479771016139f630834b712",
-      "e12b5dd5591f34fc9bc74642548cca1e",
-      "e73edc72fcf30011b96f76dbbe4e62c6",
-      "ea03d16a530904ba1e4215c44b9125b8",
-      "ed08bc9d679ca61a6f40ee06baa9065c"
+      "3a2506f8ee4b198a8c592bf66e3992d6",
+      "41aba3526b7348e31eb5a59a0c5f5493",
+      "4c7d2c175615b46f2167e964380a33ce",
+      "573e4ccce05f59cf685329055d7ee373",
+      "6e1aa34f0593d3931a2b1e22ebd38051",
+      "7ce20eaec344963187f1d2e78ae572f7",
+      "86e708e614fde96b985221dbf7701994",
+      "a7c406c1f598fcd5e97d44ca8b947738",
+      "aaceb07eccafd4fe9c7a9e709206e221",
+      "b3509d1932be0eb9cdfd32fb62eac435",
+      "beafc84cac8b1686acc8692b1a1bc738"
     ]
   },
   {
@@ -250,18 +250,18 @@
     "kind": "semantic",
     "rationale": "讲 bcrypt 等密码哈希方案",
     "relevant_chunk_ids": [
-      "055a7ff4f808afe9fd6d59c66a3117ef",
-      "16a85700710d008adeff48a84d4f171e",
-      "3c300b3c4b22dce307b536bb864e64bc",
-      "4e4decd1f97f35921da8e95932e1381c",
-      "555c649d3671ed0510cc8d259a0800eb",
-      "750457374d858d61e6c0dc23630c9317",
-      "85c4e2226a5b42cadb2a05b0efe3c340",
-      "8d58f13650d39ced8e5cbb37b2cedf9e",
-      "9eb2a3adc8a31bcda8ddd8c320cc8fd6",
-      "b985411d36118e1c1e86d6716104fa1d",
-      "c1572ae88c659f55d1786dd606f9004c",
-      "e56d55b4b2d810a99af2dcf9ea0b4e36"
+      "143bdba14d08f3a16136362bd8720a1e",
+      "2c29014f371686e83f7946ad16ac7ddd",
+      "3159d0863615e6a6e75a97831d0fd03c",
+      "501ab1a68de8a5ff41e3730958622c7a",
+      "57c74edd1a38f849846ad90f77597dcf",
+      "613999bb25951ff4d3b6963d0a8d09c4",
+      "67ef8552562805c08ccd9440592710c3",
+      "6d81ff0c5559b4dd8e7f359327d58945",
+      "78fa5b3987ec31071e91b3ca228406f9",
+      "9a5e1ad03487c09216fc4975054ca4da",
+      "d0980437606ef1fe5fa54f280aab80d4",
+      "ffd7f253598a9bdcda14edba1808428a"
     ]
   },
   {
@@ -269,15 +269,15 @@
     "kind": "semantic",
     "rationale": "讲秒传或文件指纹去重",
     "relevant_chunk_ids": [
-      "0dadf211aa19bfdee0a25222d5589366",
-      "26c229760e56c02915b190c7fc466768",
-      "447d9cae65adb52c041fc40a658f5044",
-      "787548738b464dccf79e0e0d00629f54",
-      "88e605376eda3cb19ee27d4e49cdb7b5",
-      "9f89d19c56393f76703d58abf5f21c57",
-      "c0df5e077ef0722882d354f1dc8e66cc",
-      "dadb48ce7014abf2d8343789dcfde50c",
-      "e6f69f5481ca1f43533e8eec8d1f852e"
+      "036ab12ba541065db5a4c0524b21b925",
+      "2d2ce24187f52b9aba19fe3d0256c4bc",
+      "95d83d6d39cb879bc3d3eebb4549ff21",
+      "9b38648270c591f64b488b880a03cc0d",
+      "9d95562c2b9b6ce6dae448e8b2e34bf7",
+      "a45a81426d39e475c9a97e70edf3e347",
+      "ddf731ca73a3927e75287f0881de9c54",
+      "e3c72562dc3ccab277dc203f4128be8b",
+      "e58f8954415d6d7b35cd99c86ce36a10"
     ]
   },
   {
@@ -285,19 +285,19 @@
     "kind": "semantic",
     "rationale": "讲死锁的成因与处理",
     "relevant_chunk_ids": [
-      "0dadf211aa19bfdee0a25222d5589366",
-      "0e370201c041f439ac32db098178556d",
-      "44dd3923241403342fab54a69348e3f5",
-      "766bdf8ce2992923e10e0438eb54d349",
-      "7f2866ee26d2333f4ca280a4723bbbdc",
-      "82ac88b087221db877a73dde0433f947",
-      "959cdf374d91b847149b8ab53d14dc44",
-      "9f89d19c56393f76703d58abf5f21c57",
-      "bb02099fdf18054afb4a2567840f1612",
-      "c5a2623df40145f4f65dff9cf67babe8",
-      "d3d3c24fd59648a066a423e5fd521346",
-      "e9732e96194fd91cb11bc1633ec400dd",
-      "fe45b79a092dba81679b15b38409d88c"
+      "06eb660c581548fe06178f5b1abeb9da",
+      "0923b679ef1fcf467aad69f8f579d0f7",
+      "2057a0fcc5eb8e424f208bb64cfad7f2",
+      "3328b6596eedb10652debb7586131a03",
+      "881482c707ebde6f38797d05230232a8",
+      "99f28eac9204fec3b915c3f586e354ca",
+      "9b38648270c591f64b488b880a03cc0d",
+      "9b4c1e3ab6c1aeeb72ead1e7603bed3a",
+      "9d95562c2b9b6ce6dae448e8b2e34bf7",
+      "bd42bcebe89ac221fd9614a5ab9dfdf3",
+      "c190cde4a1132b38357dc6bcb10a3bc2",
+      "cfad0a2036780d843bd4a4a3652dfb1e",
+      "da34df3e523fb4fe0c18637dc146d119"
     ]
   },
   {
@@ -305,18 +305,18 @@
     "kind": "semantic",
     "rationale": "讲限流算法",
     "relevant_chunk_ids": [
-      "0566c093cfdd0bbace447a024685357b",
-      "3d6685c5f82e57cb549b50cb524dcf71",
-      "447ff12d8ef1f25f405d21207f2698e6",
-      "61b57331a1b04bf844eb6619eb4d50a7",
-      "7b42553470827b03d0fb87608572acc7",
-      "9d20bb9716747c922041d4c5162c82ec",
-      "bdab109a1c0f8268d2a2bc1ce4b250f2",
-      "d466b42f61706b0965d01715e5f43cb4",
-      "e3bfa5d4cd543885e5f84530d743fffa",
-      "edc77f3dc833c732a19170285581dfaf",
-      "f061d42eb037b33e0e916af95f7fe994",
-      "f376d99a54dfe0a4e018d67885a4cdf4"
+      "1d88ea7067d0df184427e9fe1ab2330d",
+      "56c598fbe7fa63e64819f0bde57bf637",
+      "6802d2d20882a48ec175373a04cc1f7f",
+      "6d246880f48640976e192976f24567f8",
+      "808f63d0004774972b0418a6645b500d",
+      "bf6bc684e508c29d2b4f73f613b01b25",
+      "c23607b6e220e338a636994ed591186d",
+      "c89eb3cd15ebf33ba781fe94a0cf1090",
+      "d2e91389b9450d8981cfe914b4792af2",
+      "d8c095838f7f574c25d60c787ea91fdc",
+      "e7bd4d732f1f2687514f2a2e930f8427",
+      "ee322121ea4a333d15460a0bbd6fa0ff"
     ]
   },
   {
@@ -324,9 +324,9 @@
     "kind": "semantic",
     "rationale": "讲乐观 UI",
     "relevant_chunk_ids": [
-      "54d1de97e586810f1c6dae7a33962e08",
-      "578563bf0d0a5bc3b4e3a51eb2d8f742",
-      "fb3b0ed1d15cf1b7013bca4d5bb76484"
+      "20929d9ec9cf5120b57246f63a79b956",
+      "66ee70b2181a1cc9ed928054ad0f94a2",
+      "72f3f5ce8d6072a8fe06a63662bc6c85"
     ]
   },
   {
@@ -334,16 +334,16 @@
     "kind": "semantic",
     "rationale": "讲离线消息补发或重传机制",
     "relevant_chunk_ids": [
-      "02533e9482204f6dbedc606fa8d84c19",
-      "0de20c52c09b7c16298b28dba36980db",
-      "0f109b4b193bf36eaa28c08105a3596b",
-      "12db64066ff1302f8e8130d4bc3c0020",
-      "3dc1a2dff3649628f58fab89d8b65bab",
-      "49f37ba5aff1efd6c73882aa6f7c7a36",
-      "5ac180e380940d8857d926e21b78c0ab",
-      "700dde4b6709630107c9ceb764ff2bb1",
-      "905253ff8b18d712f4dd53ddf724759b",
-      "b5deec015e414576aded0f41018e2522"
+      "22b34d06d12df49eec5ff0b9ddf046aa",
+      "2a03c5e8f40d4b5e51bdfb978573b563",
+      "2b3bf503d22be89f118a3b528345f65b",
+      "39d30b913d3ec9104f68ab5254d309d2",
+      "5997bba5cf5af430dc498d5aa24a0ea9",
+      "6eddc0643152aefe417ad7b61139de65",
+      "a39937bcab92072492f54e0dbc107701",
+      "e21e946b001dc4a066d1909d35813be6",
+      "e44c5cc1ab2412e1c04cd360340b4dbe",
+      "eb9103cea4f0672eb498d9c05441da47"
     ]
   },
   {
@@ -351,14 +351,14 @@
     "kind": "keyword",
     "rationale": "讲 MVCC 实现机制",
     "relevant_chunk_ids": [
-      "0726f930481453bf84d9965589aacf6a",
-      "13293b39d1253650e91bde770715756f",
-      "9057f2688f14756f31da000f50e1bcb8",
-      "c2737c8f7f29a31dbe9e2cd906f3e19f",
-      "d07a121d01d343827db104060e26f798",
-      "db34b39dcb084148fbf4b919d8fce213",
-      "ec502e29a2a63bb73232817cc31eba4e",
-      "fb7559db15f4d6a6f2bc18c2124350c5"
+      "276c6a00c80758e0667105b4d9109843",
+      "4780cfbb3ee89ea3ed4e308cb8f54967",
+      "56c9b059994989d3f3ebae372b9570d2",
+      "5fd5ff68f38ff12ba68be87c5c9396a7",
+      "b555c20c02cab7c446f6adc89aba826a",
+      "cf9ceadd366c15b478bd20281237dfaa",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "f66067a919ed06f2f7b4dd76f93b62e9"
     ]
   },
   {
@@ -366,10 +366,10 @@
     "kind": "keyword",
     "rationale": "讲 GMP 三者关系与队列",
     "relevant_chunk_ids": [
-      "236e93e1d78781657a52ddbd29ad692f",
-      "8177fc5bb057a529cfeab105603149fc",
-      "87b39a76c4835eab1cce7e4297ae7a10",
-      "98ea4231e1b4b0a1ce400035736c9046"
+      "04003adb1936918b9e2b8c6f95cfebfd",
+      "2fe5a19aca211ac836b5b52d247d3608",
+      "4a94e6785f9800fd5a3ff0367f157efa",
+      "b50a2d0ce9a5e93540292091ee358885"
     ]
   },
   {
@@ -377,11 +377,11 @@
     "kind": "keyword",
     "rationale": "讲 B+ 树叶子节点结构",
     "relevant_chunk_ids": [
-      "0b246d9c4f799de1e6d6cc94bbe077d4",
-      "1b2738de3c9bd3ea1e7fde8f04a283fc",
-      "2da1e2f21b90c3d59bd25dab7a2763bc",
-      "509c74629f629a4c9bb60663b88b3f25",
-      "c212c24cb4e732ab60d79a6e75ac5cd6"
+      "80049cd28371e1628c8dc6d840f6bce7",
+      "a30cd2fd0f2c3fd5f455e55e5cfd07ab",
+      "b4a618bda79e10ff0d5088092be5f0aa",
+      "bef699e81ae588096aec8ef2c8ffd27f",
+      "c9e80ba96ee37cce158e65f06d2b3fed"
     ]
   },
   {
@@ -389,8 +389,8 @@
     "kind": "keyword",
     "rationale": "讲 sync.Pool",
     "relevant_chunk_ids": [
-      "3dfec09ddcecbe42ef253c54101fb937",
-      "6328b0b1fae1be2535ce8eca391e9a1c"
+      "cc3772b4e117ac178360efabfd4d2cf3",
+      "d27579c461f02e3417ff5af98f9c48da"
     ]
   },
   {
@@ -398,15 +398,15 @@
     "kind": "keyword",
     "rationale": "讲 context 取消传播",
     "relevant_chunk_ids": [
-      "25598f460fceb50d59260c1008405d50",
-      "58cbf40af1abe5da624f0a8fe297bb47",
-      "60da1420446cfbbb605484e97feed2ee",
-      "7ce8fefab53398ae792d343ebbbf7839",
-      "bdab109a1c0f8268d2a2bc1ce4b250f2",
-      "d5d50c0f05bca2d145b2e8e9e4507bdc",
-      "dae3972d1b5f84b05fc0bba14f741a84",
-      "e1a59454b2bc740785ff0c17757928ec",
-      "e833c723420ae35fad594878ca6ce11e"
+      "30d3b26b61e88ea248962567d4442249",
+      "33da13f0a1865160bb2aa22f097a3f6b",
+      "43816dbdff7f13b4dcdf7e50f3bbfe4d",
+      "69c621067c47da5e42f2a9722bc0ad4b",
+      "78d4846c5e3529b97da4fbb92ef3d6ed",
+      "bc7496222da336c5bc99719efe71bfd1",
+      "c20afcfff676ca6bf44de25d5cbeb894",
+      "d8c095838f7f574c25d60c787ea91fdc",
+      "e0e882d6c54d125bd6e2434939447557"
     ]
   },
   {
@@ -414,19 +414,19 @@
     "kind": "keyword",
     "rationale": "讲 AOF 重写或混合持久化",
     "relevant_chunk_ids": [
-      "0ba24f2627fb64f7dce3a4230ad78b1f",
-      "1bbfcc9ea6349ae71bf239459ff4baee",
-      "2f4f5bb210c8724f791e52dfe9aef2e5",
-      "55809e418acdb67337528eb0c223135d",
-      "56602c0e25b131cfd52297f359df120f",
-      "79d49e1a15b6ecb5355bcd26d0e6dabb",
-      "7a23b26ccb8e7b172c0e0576deac00bf",
-      "8c25eb96885a197228eb0c7347ef82b0",
-      "a6bd3a74a5e54f5ff2a520683e88fd43",
-      "ac8b86f611f477dc5f2d35ab06a94ef1",
-      "d73a2449cbb495e2c271c1f34ba4f5b0",
-      "e6f38126669f6a8b397865bc36069e7e",
-      "eabe54bd7da5b687c924e1f3e80d7c0a"
+      "1b88cd14e24980ee44c8674dea345389",
+      "2552eb82f17f1b48f5c360a414a486af",
+      "2b2969687fca76045dd209147ab7ac04",
+      "4c843e53fbe4d525d209d2a4564030fc",
+      "617fedb5cb0007612145096cfbc4b50a",
+      "821c13d7c0ddc6a93843790543b929d8",
+      "854e8c6dc5ae9b6712e29455b3612751",
+      "959af3abc95136e9ae4733f78342f2d0",
+      "98de5f32bcabdeb626d76789600c2ec0",
+      "98ed47ef24dcdacb9f99f16b288dfefd",
+      "b0daa25ab93c0504ddcc1f80928b361c",
+      "f4c622876d7656da15eada909828a2ee",
+      "f62f8daab5f7931eef9b14cf972f9fbb"
     ]
   },
   {
@@ -434,17 +434,17 @@
     "kind": "keyword",
     "rationale": "讲集群分片槽位",
     "relevant_chunk_ids": [
-      "0debe7b946e9aad21f31bc73b86f41aa",
-      "11a9b879c0eba96714dd66f7ab5b6d31",
-      "15b764b9ce20ddce0a3133b6e59d1ee9",
-      "35738a1f8fdffd046b1681d74d2ce5af",
-      "3f39123f5e697f07c1e1bc2dbb9bd6d5",
-      "63e8a3b35a793eb5cdbef75ff3577bd0",
-      "68b3d701fed7bed24ed817d39616742d",
-      "85dc9cdad82d6bb493ce2db162296cce",
-      "921f0de591335ca014f5b22825ae369d",
-      "cd05bb8e76ceb60697a65f147eb436c4",
-      "e828eafbc48172215a4c0de62ec77c9d"
+      "0b6a271f164cb915ef2169b7fca6bafa",
+      "0f3a50960e270bfacb1a6488d1f03f29",
+      "60986f9491ac912700f9822f1b7f7a50",
+      "6b50defcf04a56ca063d1b8f6bd732b9",
+      "b67ce8a07234e0b6b90a152dae6ef713",
+      "b97f8871700ab17d488de0f2795c600d",
+      "c258269101a5a01ecbab40e085e9a519",
+      "cb657ef59e7ce188e6698d3a9510b25a",
+      "cc19d768684ee04b6223060dfa7ec38c",
+      "fe0de13229a9202a4384c9d2fd6f0766",
+      "fee8d063f02ab167e2f7dc3b7f4e4a15"
     ]
   },
   {
@@ -452,18 +452,18 @@
     "kind": "keyword",
     "rationale": "讲跳表结构",
     "relevant_chunk_ids": [
-      "0566c093cfdd0bbace447a024685357b",
-      "0b246d9c4f799de1e6d6cc94bbe077d4",
-      "1e93505eca44ab4cb58bfa176806c9fb",
-      "2bb82f5f716afc28244e9b019de6902c",
-      "375f783efd93e5e9e3e63e689df2c4d8",
-      "571a7156fdefa209a5ac3c26cdeb64ec",
-      "5e487203e45f2cf7c0e1aee49c7d6493",
-      "5ef9354c2e13ce94578707b11e1e310a",
-      "9a2d8ab458457fd766d7f04544f2aabc",
-      "a0a68870733e388d7f3786447f6942c4",
-      "a7678ce772308c7751c5ed52c706db55",
-      "ce368eb22f81fcac39c146138262d78c"
+      "0f8e775f38aff6876262e12e08f6ef3f",
+      "2e3a549bcfb11e48e9a7da56e098705d",
+      "3857b408ede0872742a83ae3058c12bc",
+      "4480045c287aca217174917d86fd73a6",
+      "504f31cd7fe08194d36c37f86575f692",
+      "577e54a9bea9cd0996963d3850d14c7a",
+      "6d246880f48640976e192976f24567f8",
+      "80049cd28371e1628c8dc6d840f6bce7",
+      "9c2ef6f429f9b687fcdb578b40cc14ea",
+      "ab4cef466574e650d8258b3de461d8a4",
+      "c3a9089d05b612dced921da4720db844",
+      "d00b1406129d3170567016d05c404bd1"
     ]
   },
   {
@@ -471,14 +471,14 @@
     "kind": "keyword",
     "rationale": "讲 ISR 副本同步",
     "relevant_chunk_ids": [
-      "053a8ff553a6f61760364309ac38cd86",
-      "22171d09752e92c552bd7588508fb611",
-      "5f8a1cd9645b8987e19f8065d3e293f5",
-      "6f9721c06dcdce9be46d6bfa725cb52b",
-      "80fe08b746ef1843f6ad815ac1a8399c",
-      "8f3c52f3c56a8a108e18b509fdaa18fd",
-      "92b1cfae52395f2c7027aace9e06da3b",
-      "b3172744563fb695172a4249bd45caf3"
+      "4b09bc02ccd36760272b5d12032c195d",
+      "4ccecf11ca4d27cfb31a81181985804d",
+      "51bc0ef6821048871b76f534949ca39b",
+      "692db833af024760d9f5525a5af9f599",
+      "7f1a8738adab262ab8cabb0b99daf770",
+      "b4516f6c55bd8100b2ef9237c8259275",
+      "b66b5297e92082866f2237c801e4fe19",
+      "e626070514e05d53408ca2b79bb0dced"
     ]
   },
   {
@@ -486,17 +486,17 @@
     "kind": "keyword",
     "rationale": "讲零拷贝原理",
     "relevant_chunk_ids": [
-      "002427f5649205bbdc582e72d3c7cc94",
-      "0f6a71e85a1182ba2a3aaa719f8780e9",
-      "3f43ade259179dcc801cb18e3f4981a2",
-      "7bfb8e0636c3df9c5beeca532e6a223f",
-      "85dc9cdad82d6bb493ce2db162296cce",
-      "9336215838199e5e534af3156ee10d5e",
-      "992feb9c8aedd7201dc3e66bc7a5c5b4",
-      "d0c2083e32a441bf4dee5310ad3ba71d",
-      "d6383ecd1dda716fc0e79dabfb138dfc",
-      "e00c518efa75a9a96bfe72af56d141b2",
-      "fb96119afc9ec83fc5a738f0f5c992d4"
+      "06b001927ae10bbcd5985a5d8caaceb5",
+      "0f3a50960e270bfacb1a6488d1f03f29",
+      "31de7041907ef9df65f5cda453b0d46b",
+      "46bdc89370f7710307ba77b207d45289",
+      "6b834aade6a73b3c228423e23e9156aa",
+      "7d68848b2537d65fa91054b8cf5e90a7",
+      "9ce9c3fb1533ba358ad4cba435ace8f7",
+      "a1ae977cb60f03b6f555849997933877",
+      "b87e1c39b52fd8bdb1ed05c47c4f07bb",
+      "bf23ece588c0778c4d9ca720f9e44c7f",
+      "f5d10c0be51462b30bfa5ad4a2bdee45"
     ]
   },
   {
@@ -504,15 +504,15 @@
     "kind": "keyword",
     "rationale": "讲三次握手过程",
     "relevant_chunk_ids": [
-      "20a5b687a193f0d12ad0efa1fa65a549",
-      "23e4b0d33ca57f2fca650e7e6c02c08f",
-      "2f1afefce5ecfbb3612d17b38f040274",
-      "3dc1a2dff3649628f58fab89d8b65bab",
-      "726d1763c18cc7191c1c34170a58e912",
-      "ae100a850b5dbec57d6e284b33b3cf7e",
-      "b212abd6c60739d8ef4094a42bdb0d28",
-      "bb9659200d937d18f2e2dee1c96099ab",
-      "d01fce3d0872274cb144f4ccb0bb8759"
+      "174aa130b37a414f9f6a0c5d9b7d84ff",
+      "2a03c5e8f40d4b5e51bdfb978573b563",
+      "2f8b29cfb93d03e741a41bbacd9e30ad",
+      "2fe277cee9ef0d2a38383196f5f66f94",
+      "52f205976ca50be5329f89bcc917b14b",
+      "7c94d06b201f5bf63347086d3defad92",
+      "a036aa77e313bf197dc98f1abdfb803e",
+      "ba23de06d2be101e2bf07bd449d0ed26",
+      "f1ec3446d63dfa1f6635574918f071b6"
     ]
   },
   {
@@ -520,19 +520,19 @@
     "kind": "keyword",
     "rationale": "讲 HTTP/2 的多路复用与头部压缩",
     "relevant_chunk_ids": [
-      "27eff2b56f52cbdb79d7e51caca503e2",
-      "427cabcfb35ca07a33dd2621847a3a9a",
-      "4ff6f23b878978e7bd51f5dee71e09a0",
-      "50757400bee13a3844a6a3e98a3c2c08",
-      "5a0a80c73c3981072b834a62685227ef",
-      "61b57331a1b04bf844eb6619eb4d50a7",
-      "673af92889f734b89ab006a5c0a24a60",
-      "9ada5ff420ce77b8caf8f9590ef79352",
-      "be2e86f13048d940615895a91611d12d",
-      "c3f51f07bacd17669f2da5a22de0a1c4",
-      "c610d76bba59b8aa343bf1973c29a15a",
-      "cc5b4b0105291b0c1548d9f4fa164c6b",
-      "de0cbc4f8759658c520f9f45bce4c683"
+      "403dde030a4a67053cb8c3a64d811512",
+      "45056287955827521e9d58ad7b06a646",
+      "47ae589926913f8eb0aa9a314ed3bcdc",
+      "57fe31abe21f05d0479052e9a3dfe0d1",
+      "8f413bf1dec762ce648701dfab9e9382",
+      "905491af4a92455e04d89cab9c66f89e",
+      "a731527abe360a09e9c73168070066a5",
+      "b6bfc40ed12eec15705094a22d790291",
+      "babda51ecc1a09adc92290d8045d6ae9",
+      "c23607b6e220e338a636994ed591186d",
+      "c973821c3beea2d1f3d350a1d9cbec75",
+      "d299eaeb7f9a2c5a06bf9334e9903135",
+      "f7fe1b9b95eb7154b612795982f7c909"
     ]
   },
   {
@@ -540,18 +540,18 @@
     "kind": "keyword",
     "rationale": "讲 bcrypt 参数",
     "relevant_chunk_ids": [
-      "055a7ff4f808afe9fd6d59c66a3117ef",
-      "16a85700710d008adeff48a84d4f171e",
-      "3c300b3c4b22dce307b536bb864e64bc",
-      "4e4decd1f97f35921da8e95932e1381c",
-      "555c649d3671ed0510cc8d259a0800eb",
-      "750457374d858d61e6c0dc23630c9317",
-      "85c4e2226a5b42cadb2a05b0efe3c340",
-      "8d58f13650d39ced8e5cbb37b2cedf9e",
-      "9eb2a3adc8a31bcda8ddd8c320cc8fd6",
-      "b985411d36118e1c1e86d6716104fa1d",
-      "c1572ae88c659f55d1786dd606f9004c",
-      "e56d55b4b2d810a99af2dcf9ea0b4e36"
+      "143bdba14d08f3a16136362bd8720a1e",
+      "2c29014f371686e83f7946ad16ac7ddd",
+      "3159d0863615e6a6e75a97831d0fd03c",
+      "501ab1a68de8a5ff41e3730958622c7a",
+      "57c74edd1a38f849846ad90f77597dcf",
+      "613999bb25951ff4d3b6963d0a8d09c4",
+      "67ef8552562805c08ccd9440592710c3",
+      "6d81ff0c5559b4dd8e7f359327d58945",
+      "78fa5b3987ec31071e91b3ca228406f9",
+      "9a5e1ad03487c09216fc4975054ca4da",
+      "d0980437606ef1fe5fa54f280aab80d4",
+      "ffd7f253598a9bdcda14edba1808428a"
     ]
   },
   {
@@ -559,16 +559,16 @@
     "kind": "keyword",
     "rationale": "讲 S3 分片上传",
     "relevant_chunk_ids": [
-      "0ebc506a1bfa451d49f75d0ee9f261ba",
-      "57d7f47f898f27f68045928082cddb54",
-      "992e8349d5ee536881c037a68826d27e",
-      "a0011ba114afd1596e059a4f4af5d1c1",
-      "b641b46a93dfc3d10dadc276895128fc",
-      "ba1cf2a5c479771016139f630834b712",
-      "e12b5dd5591f34fc9bc74642548cca1e",
-      "e73edc72fcf30011b96f76dbbe4e62c6",
-      "ea03d16a530904ba1e4215c44b9125b8",
-      "ed08bc9d679ca61a6f40ee06baa9065c"
+      "3a2506f8ee4b198a8c592bf66e3992d6",
+      "41aba3526b7348e31eb5a59a0c5f5493",
+      "4c7d2c175615b46f2167e964380a33ce",
+      "573e4ccce05f59cf685329055d7ee373",
+      "6e1aa34f0593d3931a2b1e22ebd38051",
+      "7ce20eaec344963187f1d2e78ae572f7",
+      "86e708e614fde96b985221dbf7701994",
+      "a7c406c1f598fcd5e97d44ca8b947738",
+      "b3509d1932be0eb9cdfd32fb62eac435",
+      "beafc84cac8b1686acc8692b1a1bc738"
     ]
   },
   {
@@ -576,22 +576,22 @@
     "kind": "keyword",
     "rationale": "讲 gRPC 双向流式通信",
     "relevant_chunk_ids": [
-      "0ed98da0e776883677cf2f6c56dc1842",
-      "21c86b7add07f7b9386d4c1fa22f2f60",
-      "27aa1566f0a24703ce71b5589bb1ec67",
-      "27eff2b56f52cbdb79d7e51caca503e2",
-      "427cabcfb35ca07a33dd2621847a3a9a",
-      "4ce93da71ab84d5c5730ba91fff86ea8",
-      "5a0a80c73c3981072b834a62685227ef",
-      "5c7fe9cd2da1eb3b426dba16a3a86318",
-      "780521276b4603194fbf5dbeed3a33d9",
-      "9ada5ff420ce77b8caf8f9590ef79352",
-      "9baa6981b9220096fa0a5c2fe1142961",
-      "ac20a6429ba1c051a1199e95579c98d1",
-      "b4470b77d0799a8a53c56e67ff12cb55",
-      "c610d76bba59b8aa343bf1973c29a15a",
-      "cc5b4b0105291b0c1548d9f4fa164c6b",
-      "e38f32615fab4ad40f40ecf87e9d2a79"
+      "11c7c0760e0063ce8b153e6b68f928aa",
+      "3f7a7f8fe73155a3b8c5651f3b8f44c0",
+      "47ae589926913f8eb0aa9a314ed3bcdc",
+      "512a911d2cc293dca5803051a7017a9f",
+      "55ef58d41b6880e2f021fbd92e1ce5fa",
+      "5b7e08e17eb4faefae4b0f7f1651f428",
+      "7962c485b2664d302c349e7a023b3f19",
+      "8ba8bf240bbf754d4f2d98fa724bd82d",
+      "8f413bf1dec762ce648701dfab9e9382",
+      "905491af4a92455e04d89cab9c66f89e",
+      "a7b507dcb9470aeac51250831c60340f",
+      "babda51ecc1a09adc92290d8045d6ae9",
+      "ccfc7766ffc4f3843079df13ad1563e2",
+      "d299eaeb7f9a2c5a06bf9334e9903135",
+      "f716ed7258191339d50c6d6700fc54f8",
+      "f7fe1b9b95eb7154b612795982f7c909"
     ]
   },
   {
@@ -599,17 +599,17 @@
     "kind": "keyword",
     "rationale": "讲 select 的阻塞与随机选择行为",
     "relevant_chunk_ids": [
-      "25598f460fceb50d59260c1008405d50",
-      "4d7a415c5bb7325c01da51f1262fc2b1",
-      "5951c46f8a1e27bd264e136f9e193b1f",
-      "59d5790de4269e12fc9703dd02c1eba3",
-      "60ffefeb44426cf734fc6b4e6a95554f",
-      "7bfa0b715cb5c64753f20f47d85b3a5d",
-      "7ec68ceb36f431ec4a1082f02ed422b5",
-      "92121283bad3a35cd714555e9b401618",
-      "b56df03109648b8a88bef1e1439e5d48",
-      "c2737c8f7f29a31dbe9e2cd906f3e19f",
-      "ec2805a2960ec1ecdc7c9008f9f8a68f"
+      "1e44b57634539e2ca062d73d35da2b12",
+      "4c911a366b2d701268d553c56fb3c68f",
+      "4d77195d48479f5ffd37ec06b58d370f",
+      "52bbf9c5cbad0030cc47387c2c71d194",
+      "5564a85e08bd33c5f694dff389415136",
+      "56c9b059994989d3f3ebae372b9570d2",
+      "5c753c5d38dcb37f959e69a1ef86712a",
+      "78d4846c5e3529b97da4fbb92ef3d6ed",
+      "a7d0d1ffb10cf5914fc0766b04fc7f6a",
+      "ada3afc01236112c6a2d03032eec9fcf",
+      "f700dbabd2c4bf28ea7d6cfa39bdb4f1"
     ]
   },
   {
@@ -617,7 +617,7 @@
     "kind": "keyword",
     "rationale": "讲 Go panic 恢复",
     "relevant_chunk_ids": [
-      "12db64066ff1302f8e8130d4bc3c0020"
+      "eb9103cea4f0672eb498d9c05441da47"
     ]
   },
   {
@@ -625,8 +625,8 @@
     "kind": "keyword",
     "rationale": "讲 slice 底层扩容策略",
     "relevant_chunk_ids": [
-      "1fac0f83d34771d463daf5b9db4f8470",
-      "2f8afb85f3665ad6551d672132216e26"
+      "38846eceab02f43be14e2546f2d282b1",
+      "873616a9ef12584e6d5bd6a73b4cf400"
     ]
   },
   {
@@ -634,12 +634,12 @@
     "kind": "keyword",
     "rationale": "讲 map 并发问题",
     "relevant_chunk_ids": [
-      "1fac0f83d34771d463daf5b9db4f8470",
-      "3b612e945c1d79b612c5861ce099dc1d",
-      "3dfec09ddcecbe42ef253c54101fb937",
-      "4b0cb3d4cefa563fdfb8452225d038a7",
-      "63e8a3b35a793eb5cdbef75ff3577bd0",
-      "a63cce845a08178b63eedee92f5c4dad"
+      "0b6a271f164cb915ef2169b7fca6bafa",
+      "162c63f76c9c0e4d067cf33d20075232",
+      "38846eceab02f43be14e2546f2d282b1",
+      "451701c68f16e610953c122fa0c9a354",
+      "d04c3e0650a9dc1acda0963f316581ae",
+      "d27579c461f02e3417ff5af98f9c48da"
     ]
   },
   {
@@ -647,17 +647,17 @@
     "kind": "keyword",
     "rationale": "讲 2PC 协议",
     "relevant_chunk_ids": [
-      "20ba3279913f69f6f0cdee37ee643e16",
-      "2a2b2fbe50e15a17968aa065cfe28cbd",
-      "3dcff598a37882df09bff36f0258ba44",
-      "4c755e4e81a5ce9f95a7bb9e4b281954",
-      "8d1cf7b791b417bea6782e78f11ef894",
-      "9a262d4f3d9d73ec5c937840a82f0f3f",
-      "9ed23d48753345757e438fc873283f3b",
-      "bf958dfbb49c20246a9f8736d8e101b2",
-      "cefa672dfa9b5029b89fef4ec1812e06",
-      "f5bafed8544772f7ad66ae4f211db054",
-      "f65b39e4cff6fb5b7ef3a9018e508417"
+      "0d957d37f847a80af98e1cdcbe0db1a0",
+      "13eb9fb1354223e89d2fe74127e1006b",
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "7080b73f02399d397c043663e7aa6b28",
+      "792906b76e36509605459fb9432b958a",
+      "81da4532c601b3ab02507d3fb48c727e",
+      "b49f6f6774eaa6359fc8334b288423ca",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
     ]
   },
   {
@@ -665,17 +665,17 @@
     "kind": "keyword",
     "rationale": "讲 TCC 模式",
     "relevant_chunk_ids": [
-      "081e97d976781aafa795038446a2705c",
-      "20ba3279913f69f6f0cdee37ee643e16",
-      "3dcff598a37882df09bff36f0258ba44",
-      "447d9cae65adb52c041fc40a658f5044",
-      "4c755e4e81a5ce9f95a7bb9e4b281954",
-      "7f2866ee26d2333f4ca280a4723bbbdc",
-      "92afff68e8e873501b34b92b69d7e84e",
-      "9a262d4f3d9d73ec5c937840a82f0f3f",
-      "9ed23d48753345757e438fc873283f3b",
-      "bf958dfbb49c20246a9f8736d8e101b2",
-      "cefa672dfa9b5029b89fef4ec1812e06"
+      "06eb660c581548fe06178f5b1abeb9da",
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "59a574cd26fd990838ec2c4ee785aaac",
+      "7080b73f02399d397c043663e7aa6b28",
+      "81da4532c601b3ab02507d3fb48c727e",
+      "95d83d6d39cb879bc3d3eebb4549ff21",
+      "9f8b45459aa73b8cc3a42a2faf6894c5",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
     ]
   },
   {
@@ -683,13 +683,13 @@
     "kind": "keyword",
     "rationale": "讲时钟回拨处理",
     "relevant_chunk_ids": [
-      "5c19d55adceb2c31404093ff50382ed8",
-      "7ed44eb1e2dd905132f8eb8056fc988b",
-      "a3d404a1b77dd99ca17b4cb1f8734ef2",
-      "b75f86d53612c01a189e9a2dc434cab7",
-      "f1faf68f1a7d938f8510286a0c163189",
-      "f5ebbabb32a914c9c6f0262dfb359d44",
-      "ff91a33c26a5d2ae4b775d247e171c1a"
+      "28e10e7668f4039e35a149340f23949a",
+      "5c4f5cb433abc154b79b1c8cf7a41ea3",
+      "5f43826e1f14539cae7b0ea98582ea38",
+      "6b388349b30a6edaeb15c246f36ad5b5",
+      "7d9c27a8c9b7d6db5f55be8979e37c72",
+      "c31a09e0f1459829287fab99e88fd633",
+      "d1c42609d6f384ba99d45fa58a7bf2d0"
     ]
   },
   {
@@ -697,12 +697,12 @@
     "kind": "keyword",
     "rationale": "讲 Redlock 算法",
     "relevant_chunk_ids": [
-      "1350f9b9486dac2869b156c987591965",
-      "65d78e26ccee752ef2b1012df06cc335",
-      "771d847002e596cee952620f09c14f1c",
-      "cebfcd1e709f38cecea43142020f8d39",
-      "dd30b9a92a0aeb1e49712ce139fa8935",
-      "fab863b1ff525dafb3a050b3bbe901f0"
+      "03e1a9dd4fe079aed039f0e8bcf8f111",
+      "1aaeaa52f8bc288e2f549e632340b8d2",
+      "442a168c22b2440aa84ae25bbaeb6278",
+      "603736808605d319eb9b60547d10e343",
+      "b3ab6bfc996a99adedc0bc528aa6faaf",
+      "f64f73fb2da83627bbe062d2995fc37f"
     ]
   },
   {
@@ -710,21 +710,21 @@
     "kind": "keyword",
     "rationale": "讲间隙锁如何防幻读",
     "relevant_chunk_ids": [
-      "01d0750c5e824914e84526b6467a29fe",
-      "042e28e3bc20a07b1ab5c370e88df294",
-      "13293b39d1253650e91bde770715756f",
-      "19c70913d2ef348bbdaf99abe3b49321",
-      "44dd3923241403342fab54a69348e3f5",
-      "74ef2dbda8e822c08bf3404bacffbd04",
-      "959cdf374d91b847149b8ab53d14dc44",
-      "bb02099fdf18054afb4a2567840f1612",
-      "bfdcd35873495c1ce081097e843547e1",
-      "c0df5e077ef0722882d354f1dc8e66cc",
-      "db34b39dcb084148fbf4b919d8fce213",
-      "e2972cb7801322c35e4af6f111c1f9f2",
-      "e9732e96194fd91cb11bc1633ec400dd",
-      "fb7559db15f4d6a6f2bc18c2124350c5",
-      "fe45b79a092dba81679b15b38409d88c"
+      "0923b679ef1fcf467aad69f8f579d0f7",
+      "19885be81ac008d4a41626903e43d3be",
+      "4780cfbb3ee89ea3ed4e308cb8f54967",
+      "75871f6c2843755a372aef9c06948293",
+      "95b79897527e64c93d1262e5fd780d11",
+      "99f28eac9204fec3b915c3f586e354ca",
+      "9b4c1e3ab6c1aeeb72ead1e7603bed3a",
+      "b555c20c02cab7c446f6adc89aba826a",
+      "bd42bcebe89ac221fd9614a5ab9dfdf3",
+      "c190cde4a1132b38357dc6bcb10a3bc2",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "d750984e401c4784352963a11ec50961",
+      "e58f8954415d6d7b35cd99c86ce36a10",
+      "f02eb5d78a6e9891ce5bf4832752f5ee",
+      "f8920a8390e771cb4f6fde32b1ca895c"
     ]
   },
   {
@@ -732,11 +732,11 @@
     "kind": "keyword",
     "rationale": "讲 WezTerm 具体问题",
     "relevant_chunk_ids": [
-      "008ef2a863b82f1bd8e6c18ce277bba4",
-      "1cf5733fb115eb3b108bbd50d1f4c798",
-      "2cd859018413844c58e9c961a5d443e9",
-      "a8d9c9c297b3c939548b7a5aa55e8ef9",
-      "fc9a7b8b9dc3e08d7c12a4468eacdb60"
+      "22629f4fe85072b4fe1acd488889769c",
+      "4dd714d0c47a7bdea84aefc0fa3d4aab",
+      "88cf4e7b9f8c4cf09f8eb6604a2979e8",
+      "8b20e22d6f75e0eb36d98bddd7f0e3cc",
+      "fad7a2e3963e49a15d7095854565f308"
     ]
   },
   {
@@ -744,14 +744,14 @@
     "kind": "keyword",
     "rationale": "讲 ImGui 版本升级问题",
     "relevant_chunk_ids": [
-      "21a555cd9816752c7ccbb1b24b8a6fae",
-      "3a79996e2155f468d29b8fda17ca5ee3",
-      "5fbe2524d5bd0b06d2100f7806fae778",
-      "85a85e04a5377e033970e921503e1ff4",
-      "d447772f14e065d3e3d5f4c05a2a0ab3",
-      "e6a9851dc0d0363f617c1cb21b207c3e",
-      "e7ae060a7cc681c64340c0864b246ff0",
-      "f112c7089eb766f96b425870a6421e95"
+      "06235e6cf5beec6f5ce83744e2298c85",
+      "0a239ebc3c9d74ebbc54bf264b0fd213",
+      "40a391c09f3e72447f66785826f82275",
+      "64687c6a872dadd60282a8b1a7e7f0a1",
+      "b0d2bbf1214bda04bb9dc02cb5e29136",
+      "be6be96703f7f2e276cce5ec2c9b26f3",
+      "e1edce66c37eedcc8147b381850ca0de",
+      "f90ca32d8bd93d47954ddb34f469793f"
     ]
   },
   {
@@ -759,15 +759,15 @@
     "kind": "keyword",
     "rationale": "讲 UTF-8 导致的具体编译报错",
     "relevant_chunk_ids": [
-      "1b08566f7a01c20292b266d66f9fd7d3",
-      "3ee8ab9f6ad834627f1fce307d7ff477",
-      "59fb489c03401f8a31ffa8b27edeaffc",
-      "5b7a3194ab34f81b7847bc2744847a2b",
-      "9e37dc5c3d087eaa497cdd50939c8563",
-      "ac53c65f9955d6ae43dcd1383f1ba1f7",
-      "b08c96a537981a2cf26ff85adf48a547",
-      "c4d25c89e0289b8678d0cfa24067b020",
-      "cd55966f9cf7869457f0527c8bbfdf5a"
+      "1e5cd3ddbabc59198d877635714b9759",
+      "6edc663b580fab3c1cfa8fb52d8ee386",
+      "71c5264e0e3b631e637b88060215e46f",
+      "91a6505782bb7fd74ae2fa2b98e053cc",
+      "acdfa3386efe6e62835cdb0628aa5519",
+      "c6286f0331f80a2ca58e2888e6d325f9",
+      "e3d0196f09c955953c0c19d537a1e527",
+      "e6fc9661905648b9113bf475883f529b",
+      "fa67e5f6f3366694b44da2bc4c30dbc2"
     ]
   },
   {
@@ -775,20 +775,19 @@
     "kind": "keyword",
     "rationale": "讲 CJK 字形范围加载",
     "relevant_chunk_ids": [
-      "13820b27aed7f56f02e5e27d431e3cfb",
-      "14c60c5364cacf5568b93f06e723bb8e",
-      "19773bb52009dc56321fc80c5dfec92e",
-      "23405f084641b6a285d38c413ee59f73",
-      "379fa08f965854a199ccbcab4184d3a8",
-      "720936e9aebebc0513ab0f154f9405e6",
-      "73e1c4680d7cb7c84c9c737ef301efb1",
-      "7b838c546311be7a6c2d95ef1df2bdfc",
-      "8669fbc72c0904505711d58bae3f51fe",
-      "88c66334e9158c10633872c3a14fef0e",
-      "9e37dc5c3d087eaa497cdd50939c8563",
-      "9f30ebf52620654254e6ad8842a1aefc",
-      "a46e9d394a64798a7765f119b9c550e0",
-      "e54c22042ee3ef67bee7e3624951c53d"
+      "26bc2f781e8116fc3276bbafcb2b6b14",
+      "3a92a1d79b7359e3043b3ef86bad5b57",
+      "3e5aa0eb0bf9da3208e4133cc082e16c",
+      "6edc663b580fab3c1cfa8fb52d8ee386",
+      "77f5ac098dee8b5f44cc2cdfedf29d1a",
+      "78b91bf66d8becf608a06f92071b8ebd",
+      "945efe48cb0ddd33595738db3ef92fa9",
+      "a2a81056fb866ed93cd8d454d74d0f54",
+      "c0297ebe2e28937bb08a704bdcc0b2ff",
+      "c9f6993cff7306e6a97724facdbe47ce",
+      "e8e8b62ab303d7e44bb3e0a546726af6",
+      "e9aae6423d2bff6eed6ad6824f4291b2",
+      "e9cf64df363ecd7dc057e5e110980f80"
     ]
   },
   {
@@ -796,10 +795,10 @@
     "kind": "keyword",
     "rationale": "讲 pgx 用法",
     "relevant_chunk_ids": [
-      "0c4057bad65093cd96fa7334a088c91e",
-      "3961b95a163f46e1f45badc06744a9f8",
-      "43ec6915facecfa95381181454e40cac",
-      "5d79a60430f2491f591bce85219d4755"
+      "017f8ab0df885e78f15a28f4d54043b3",
+      "24927f97d25fe84889673b4bce2fa3b3",
+      "380dcd65bc5992a1fc59eab1b087d6c2",
+      "88237d4edc91c794469fe8ca82dd6934"
     ]
   },
   {
@@ -807,7 +806,7 @@
     "kind": "keyword",
     "rationale": "讲微服务拆分原则",
     "relevant_chunk_ids": [
-      "d466b42f61706b0965d01715e5f43cb4"
+      "e7bd4d732f1f2687514f2a2e930f8427"
     ]
   },
   {
@@ -815,17 +814,17 @@
     "kind": "keyword",
     "rationale": "讲具体设计模式",
     "relevant_chunk_ids": [
-      "0884543f697eaca8ae394ef1125b39c6",
-      "2a3db83399d0161c559002f083f615b3",
-      "3efaf1789311e84700c596d4abf90ab1",
-      "4de7a32072fc3290b869d1426b51cd97",
-      "588dd38a0873d206142538b9794c65a5",
-      "5951c46f8a1e27bd264e136f9e193b1f",
-      "71dbb5adb830719ce88208f436c6aff1",
-      "b56df03109648b8a88bef1e1439e5d48",
-      "c1ccb3f6c3b35e83d81701cdc769a0e2",
-      "e73edc72fcf30011b96f76dbbe4e62c6",
-      "e7efe9e0afac87bf5f53c80d1602d8b7"
+      "049ebf4969998ae7fdb0f0e5e9257c1e",
+      "136fdcbf49dbf26c91357ea66926776c",
+      "3a2506f8ee4b198a8c592bf66e3992d6",
+      "3e9b8273c9d7fac98be4b306987815e6",
+      "4d77195d48479f5ffd37ec06b58d370f",
+      "5564a85e08bd33c5f694dff389415136",
+      "679a652161ebe5f9bdbcd10be150a4f1",
+      "96851ee4fca945283a9382151a0614bf",
+      "9ef6c3b5fc39e2f899e2376e5ccafc45",
+      "aaceb07eccafd4fe9c7a9e709206e221",
+      "e153d31912f6570012015aa040158248"
     ]
   },
   {
@@ -833,9 +832,9 @@
     "kind": "semantic",
     "rationale": "讲 Redis 高性能的具体原因",
     "relevant_chunk_ids": [
-      "94df4d5f059e5d9ba021df4808348439",
-      "a621899246cb5f7d015c6cf30eea5a93",
-      "ecdc94a22af291e0ac35444036c2332c"
+      "8b7ddd74e51b3cfddaf59488e5aac450",
+      "b94eac7dea8985096bc68b2ec0fc7b36",
+      "cb939b7dc291c0b6214c2cb28e33ef57"
     ]
   },
   {
@@ -843,14 +842,14 @@
     "kind": "semantic",
     "rationale": "讲 Kafka 高吞吐设计",
     "relevant_chunk_ids": [
-      "0f6a71e85a1182ba2a3aaa719f8780e9",
-      "3f43ade259179dcc801cb18e3f4981a2",
-      "85dc9cdad82d6bb493ce2db162296cce",
-      "992feb9c8aedd7201dc3e66bc7a5c5b4",
-      "d0c2083e32a441bf4dee5310ad3ba71d",
-      "d6383ecd1dda716fc0e79dabfb138dfc",
-      "e828eafbc48172215a4c0de62ec77c9d",
-      "fb96119afc9ec83fc5a738f0f5c992d4"
+      "06b001927ae10bbcd5985a5d8caaceb5",
+      "0f3a50960e270bfacb1a6488d1f03f29",
+      "46bdc89370f7710307ba77b207d45289",
+      "7d68848b2537d65fa91054b8cf5e90a7",
+      "9ce9c3fb1533ba358ad4cba435ace8f7",
+      "bf23ece588c0778c4d9ca720f9e44c7f",
+      "cb657ef59e7ce188e6698d3a9510b25a",
+      "f5d10c0be51462b30bfa5ad4a2bdee45"
     ]
   },
   {
@@ -858,19 +857,19 @@
     "kind": "semantic",
     "rationale": "讲索引失效场景",
     "relevant_chunk_ids": [
-      "08f338a6147e6a3195fa1fdf5a30698f",
-      "13293b39d1253650e91bde770715756f",
-      "1b2738de3c9bd3ea1e7fde8f04a283fc",
-      "5ef9354c2e13ce94578707b11e1e310a",
-      "6813f7848c0a11a113d14b57ec71501b",
-      "a7678ce772308c7751c5ed52c706db55",
-      "b1e08e759f609aa37116efea5df6fd31",
-      "cbfc50f98a65b72d812827a627d6091e",
-      "d36cb6d8bd0d7abf654608da1f312571",
-      "d5d7bb41ded7c7d6433019d34a612ba0",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "d84df8f7987dc5f661532ea2e1388970",
-      "ec502e29a2a63bb73232817cc31eba4e"
+      "1f65b519f77b383b07c718888f773fae",
+      "2e3a549bcfb11e48e9a7da56e098705d",
+      "31aea6d6417a9753bc865333584e5cc7",
+      "4480045c287aca217174917d86fd73a6",
+      "706d6bd132c37c59fe53261685e9ecff",
+      "8db38980b200fb6e9a699fd4c3a43f8c",
+      "a31fdb1d8f460cf093190b9d95b6444d",
+      "a7b443eb14231465b3773f2ea5531226",
+      "c9e80ba96ee37cce158e65f06d2b3fed",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "de62203784acbb14d7dc3344cfe93d83",
+      "dfef53705c4283a92e3c33586ab82cc0",
+      "f66067a919ed06f2f7b4dd76f93b62e9"
     ]
   },
   {
@@ -878,24 +877,24 @@
     "kind": "keyword",
     "rationale": "讲回表概念",
     "relevant_chunk_ids": [
-      "08f338a6147e6a3195fa1fdf5a30698f",
-      "0a692c757b9486e13c62a8a25735c4bc",
-      "0c7cdcdbfeb47a3580c40b1271dc27e0",
-      "13293b39d1253650e91bde770715756f",
-      "1b2738de3c9bd3ea1e7fde8f04a283fc",
-      "39f58be3519d7c98edf8c2cdcd4723a0",
-      "3bcc9096777afb2d0313ca55e2c3f424",
-      "5a85838280c6c0209d0485bb0d217fbd",
-      "5ef9354c2e13ce94578707b11e1e310a",
-      "62120b704931e5c04f6c3988888f4c6b",
-      "b1e08e759f609aa37116efea5df6fd31",
-      "c212c24cb4e732ab60d79a6e75ac5cd6",
-      "d5d7bb41ded7c7d6433019d34a612ba0",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "d84df8f7987dc5f661532ea2e1388970",
-      "da091350e0f2e49a97966f9b9c8a4641",
-      "ec502e29a2a63bb73232817cc31eba4e",
-      "edee9ddf3207e20ceb6f72df505725d4"
+      "1b869937ece196c6e3c6eb7fad3fb52f",
+      "1f65b519f77b383b07c718888f773fae",
+      "37cc0c58cb04f81eb29299646d8a2a41",
+      "42a5c21c639f23082527652c855f72ca",
+      "4480045c287aca217174917d86fd73a6",
+      "51d87a657f8041b046960ce7eec8f68a",
+      "5d9f6fdcee7ace61111499ca12321bd8",
+      "706d6bd132c37c59fe53261685e9ecff",
+      "70782aedb0d6bf6b7d9b2230f4f0a80e",
+      "8db38980b200fb6e9a699fd4c3a43f8c",
+      "a31fdb1d8f460cf093190b9d95b6444d",
+      "a57970f4689c60564ed9d4e4a45d4e1f",
+      "bef699e81ae588096aec8ef2c8ffd27f",
+      "c9e80ba96ee37cce158e65f06d2b3fed",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "dfef53705c4283a92e3c33586ab82cc0",
+      "f66067a919ed06f2f7b4dd76f93b62e9",
+      "f809c90127582274c5d7005b995096ce"
     ]
   },
   {
@@ -903,19 +902,19 @@
     "kind": "keyword",
     "rationale": "讲覆盖索引优化",
     "relevant_chunk_ids": [
-      "08f338a6147e6a3195fa1fdf5a30698f",
-      "0b246d9c4f799de1e6d6cc94bbe077d4",
-      "13293b39d1253650e91bde770715756f",
-      "1b2738de3c9bd3ea1e7fde8f04a283fc",
-      "3bcc9096777afb2d0313ca55e2c3f424",
-      "5a85838280c6c0209d0485bb0d217fbd",
-      "5ef9354c2e13ce94578707b11e1e310a",
-      "62120b704931e5c04f6c3988888f4c6b",
-      "797d417fc3959296925f15a53ea2f061",
-      "9b461e1b5482d5e3785f33182c173e56",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "d84df8f7987dc5f661532ea2e1388970",
-      "ec502e29a2a63bb73232817cc31eba4e"
+      "1b869937ece196c6e3c6eb7fad3fb52f",
+      "1f65b519f77b383b07c718888f773fae",
+      "4480045c287aca217174917d86fd73a6",
+      "706d6bd132c37c59fe53261685e9ecff",
+      "70782aedb0d6bf6b7d9b2230f4f0a80e",
+      "80049cd28371e1628c8dc6d840f6bce7",
+      "a31fdb1d8f460cf093190b9d95b6444d",
+      "c69d435b1f29ed975aa47b3553752635",
+      "c9e80ba96ee37cce158e65f06d2b3fed",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "df0faaed7741fbcf34e0f71bc53d5f51",
+      "f66067a919ed06f2f7b4dd76f93b62e9",
+      "f809c90127582274c5d7005b995096ce"
     ]
   },
   {
@@ -923,16 +922,16 @@
     "kind": "semantic",
     "rationale": "讲分库分表策略",
     "relevant_chunk_ids": [
-      "08122b67b2667c7561b89c4ccc4f6a3b",
-      "13293b39d1253650e91bde770715756f",
-      "304c3d42a78fdc06c1dc99532eb008f9",
-      "5bc78dea4300e7e9f3be9c1e109cae15",
-      "b8dbe1d911a66de9df4da97a02f805f8",
-      "c39a85c815a4697089f291f0fc99de9a",
-      "d5d7bb41ded7c7d6433019d34a612ba0",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "e8226d2f6412d36044836f2812cffa3b",
-      "ec502e29a2a63bb73232817cc31eba4e"
+      "1f65b519f77b383b07c718888f773fae",
+      "45b6356746d8ec2e197b0992b937eb6f",
+      "4ac1a40dd73d5234c893f32d66f201d8",
+      "b5794cb86c142d9ab0205ea8c0e1a1b8",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "dfef53705c4283a92e3c33586ab82cc0",
+      "ef18381299eff1a3d8f83a280cacf5fc",
+      "f5200007e89de91c85d612a1a7e17976",
+      "f66067a919ed06f2f7b4dd76f93b62e9",
+      "f80bacc380d14add092d76bbda06b366"
     ]
   },
   {
@@ -940,8 +939,8 @@
     "kind": "semantic",
     "rationale": "讲主从同步机制",
     "relevant_chunk_ids": [
-      "87647068f3e66da82f5ca5dba1836f8d",
-      "c72c18179fb7200a1f99ddf67f63f738"
+      "2ec49a7f54fc6af2564f3833eeeb2f26",
+      "dcebf07f39e1ae86bc2099b4a24dcc2c"
     ]
   },
   {
@@ -949,8 +948,8 @@
     "kind": "semantic",
     "rationale": "讲过期删除策略",
     "relevant_chunk_ids": [
-      "661bbd3db7ab8f35a0bdc43899537317",
-      "caa373e3f905eb90567f536ab5e9dd7f"
+      "5d62e11513192c40d297b17d01dc3883",
+      "d02ca660e8981b13e657022d08566412"
     ]
   },
   {
@@ -958,11 +957,11 @@
     "kind": "semantic",
     "rationale": "讲内存淘汰策略",
     "relevant_chunk_ids": [
-      "37871cf3041a396f454ff0fc1ed83117",
-      "661bbd3db7ab8f35a0bdc43899537317",
-      "736ff5f999845604ac32d09341801f11",
-      "8c25eb96885a197228eb0c7347ef82b0",
-      "94df4d5f059e5d9ba021df4808348439"
+      "4c0509738253ee720ac5de56fec3af8f",
+      "5d62e11513192c40d297b17d01dc3883",
+      "821c13d7c0ddc6a93843790543b929d8",
+      "cb939b7dc291c0b6214c2cb28e33ef57",
+      "fa49353e366680a0b754068bc4eceedc"
     ]
   },
   {
@@ -970,11 +969,11 @@
     "kind": "keyword",
     "rationale": "讲 goroutine 泄漏成因",
     "relevant_chunk_ids": [
-      "0df70127a86cb21328a0b8e4f443dcc1",
-      "21c86b7add07f7b9386d4c1fa22f2f60",
-      "60da1420446cfbbb605484e97feed2ee",
-      "e10e956a8f1f23052c631d53b5265b8c",
-      "ec2805a2960ec1ecdc7c9008f9f8a68f"
+      "d43a06830d6155baa7ce546719d24ad9",
+      "e0e882d6c54d125bd6e2434939447557",
+      "e21c57fb46e2d86ac81e09fee4565e23",
+      "f700dbabd2c4bf28ea7d6cfa39bdb4f1",
+      "f716ed7258191339d50c6d6700fc54f8"
     ]
   },
   {
@@ -982,16 +981,16 @@
     "kind": "keyword",
     "rationale": "讲三色标记与写屏障",
     "relevant_chunk_ids": [
-      "00cc62bd49e542b325da72dd00d5ca57",
-      "0f31b8f32296d18ce1602b41d995835c",
-      "1e6cc3bf7ad7333433777e0028ea5eea",
-      "6b1b2c94d2d1d83487ed39ccdf3dbf15",
-      "6d73dea2f0a67e212cdc36bd42a566a6",
-      "7d6396f627665c1fe74f4569b3184c1d",
-      "88893c0edfefac0bd7f11e0058f4b0f6",
-      "927490c357c405dfb986fb601cdb386f",
-      "df19e401cd73fb51f135143bf4d2d96e",
-      "f240d478e5a7560f2fead681db854e59"
+      "1eedb3cc4ce78af1f7b52df322151077",
+      "2a0df66323fc9623a098136a019123f1",
+      "2fa744deeae115a75bb52d21b5752668",
+      "5ef63950e62d6275ac99058eaf51d3c1",
+      "6368bdf06711faa8d1f22cd7358e32a2",
+      "76a8350b5d5a8752ac27b3c7e572f613",
+      "7d4bda5194bf7e1dfb7e07ef7bda3887",
+      "8a9488068368d618a17ddd7605d82da3",
+      "9d4a61346855f7e2e401b4475330a1ba",
+      "eaa306dc11ffe92a40acb7bda8ea3436"
     ]
   },
   {
@@ -999,8 +998,8 @@
     "kind": "semantic",
     "rationale": "讲 channel 关闭语义",
     "relevant_chunk_ids": [
-      "7ec68ceb36f431ec4a1082f02ed422b5",
-      "9bcc09404a9cef2fe525d2b980f15e5d"
+      "5c753c5d38dcb37f959e69a1ef86712a",
+      "79780ce8a731aa9ce875c62b32054d0f"
     ]
   },
   {
@@ -1008,19 +1007,19 @@
     "kind": "keyword",
     "rationale": "讲 WaitGroup",
     "relevant_chunk_ids": [
-      "2293624b71a5b0891206369e8f717e6d",
-      "30b3f89741145cc11aa174c2d26388eb",
-      "3dfec09ddcecbe42ef253c54101fb937",
-      "447ff12d8ef1f25f405d21207f2698e6",
-      "4bc2a9200b3980eefbea7f77eca075eb",
-      "4de7a32072fc3290b869d1426b51cd97",
-      "79c3b4e270dc8617d58b62df76407e7a",
-      "96ba576947506e51bcb761e07966b568",
-      "a63cce845a08178b63eedee92f5c4dad",
-      "bdab109a1c0f8268d2a2bc1ce4b250f2",
-      "c564fbd86b27425fbf3328b539020fb9",
-      "e369d452af88d7001bdb0a034681ac1e",
-      "ebf04e26729e1a9860012f5ada2b233c"
+      "162c63f76c9c0e4d067cf33d20075232",
+      "267b2cb45196c0e968b4153a687be955",
+      "3be93a6b611ca7cb0010bc2752c52505",
+      "404c6f90ca9d74a9e885593824404e1b",
+      "471f73c8321e351b9ec9e7e1622eb68a",
+      "56c598fbe7fa63e64819f0bde57bf637",
+      "679a652161ebe5f9bdbcd10be150a4f1",
+      "8498343cf8af26fa1138a809c91afdbc",
+      "bf41cb69c34668fbd7aef837cbd2e833",
+      "c817e3d4e63345ea16546ffda5cc110c",
+      "d27579c461f02e3417ff5af98f9c48da",
+      "d8c095838f7f574c25d60c787ea91fdc",
+      "f6102df78b8a5895bcc54c4c34060986"
     ]
   },
   {
@@ -1028,19 +1027,19 @@
     "kind": "confusable",
     "rationale": "讲读写锁与互斥锁差异",
     "relevant_chunk_ids": [
-      "0c6b23900dd6d5858943af32a56b0c73",
-      "30b3f89741145cc11aa174c2d26388eb",
-      "3dfec09ddcecbe42ef253c54101fb937",
-      "447ff12d8ef1f25f405d21207f2698e6",
-      "4b0cb3d4cefa563fdfb8452225d038a7",
-      "4bc2a9200b3980eefbea7f77eca075eb",
-      "6f3a753b8712ca78829c1daeed9d2334",
-      "791abf22182a4ea8a69c693b8a2e47ef",
-      "a0e1fd3ac07667f17f22e52d7ac6ef8b",
-      "a63cce845a08178b63eedee92f5c4dad",
-      "e369d452af88d7001bdb0a034681ac1e",
-      "e7efe9e0afac87bf5f53c80d1602d8b7",
-      "ebf04e26729e1a9860012f5ada2b233c"
+      "162c63f76c9c0e4d067cf33d20075232",
+      "267b2cb45196c0e968b4153a687be955",
+      "37b830caf3d5fef462ff2e51853b7baf",
+      "404c6f90ca9d74a9e885593824404e1b",
+      "451701c68f16e610953c122fa0c9a354",
+      "471f73c8321e351b9ec9e7e1622eb68a",
+      "56c598fbe7fa63e64819f0bde57bf637",
+      "938e71da3031e21538d7d6ca33332bfa",
+      "9ef6c3b5fc39e2f899e2376e5ccafc45",
+      "a1e1b9f8341d50dad29432180f07b3f6",
+      "c0ee926092bfa96b1ec390574c031608",
+      "c817e3d4e63345ea16546ffda5cc110c",
+      "d27579c461f02e3417ff5af98f9c48da"
     ]
   },
   {
@@ -1048,21 +1047,21 @@
     "kind": "semantic",
     "rationale": "讲幂等设计",
     "relevant_chunk_ids": [
-      "053a8ff553a6f61760364309ac38cd86",
-      "22171d09752e92c552bd7588508fb611",
-      "447d9cae65adb52c041fc40a658f5044",
-      "4a41d8c842999eb26cb9d9d4b08cd5d3",
-      "6cf929386f0013b159911009769b9d2b",
-      "77447aac577ef8d6b0d7af3d985cfb09",
-      "7f2866ee26d2333f4ca280a4723bbbdc",
-      "92afff68e8e873501b34b92b69d7e84e",
-      "a85b143e02c5102cfcd083423945907f",
-      "a93f352c6649d51e69045c2c570c9143",
-      "b29bd59fb13dac16cc0e4af584ef0485",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "dc88b13202a0bf12b753e59883402e01",
-      "ecb73e66a285cf7c6f0a7f329d64c296",
-      "f5051f544cd818446781fcfe203d1311"
+      "00f181589741edf8688d1f5b9e83c748",
+      "06eb660c581548fe06178f5b1abeb9da",
+      "1f65b519f77b383b07c718888f773fae",
+      "6463f8fc6c1ca3c0eb7fd17dee2f68bb",
+      "8528d594d22712efb4cd7313835d83f7",
+      "8f68091eaf4ccdf89d2ec691783dc85f",
+      "95d83d6d39cb879bc3d3eebb4549ff21",
+      "976172fd2bfb27f1baef6a8249f9702b",
+      "9f8b45459aa73b8cc3a42a2faf6894c5",
+      "a28921d9fe180cad77a8b17f1efb5285",
+      "b66b5297e92082866f2237c801e4fe19",
+      "b70202b9e996fe4326b2de27ea1d3d00",
+      "c5c8438d42fe59431782eb9ad27dd783",
+      "df774bceb980a7e71c9538658d8a6fa9",
+      "e626070514e05d53408ca2b79bb0dced"
     ]
   },
   {
@@ -1070,14 +1069,14 @@
     "kind": "keyword",
     "rationale": "讲 rebalance 机制",
     "relevant_chunk_ids": [
-      "053a8ff553a6f61760364309ac38cd86",
-      "133d3f619c5e033e406981d2aff788da",
-      "3c6362e653d59daf6f1885912e3f13f9",
-      "614977393308b9d36c612482b73dd5d8",
-      "8f3c52f3c56a8a108e18b509fdaa18fd",
-      "a97d714bd1f566065a1791681947263f",
-      "c130881ed93e32aa6c9df9dd13b440e0",
-      "e2c4a965139301fd1fde2bca3246bf0c"
+      "1233a666e52f344822a8ef1286f63251",
+      "18c7dd0441af1038d2ebb24cb6309eb2",
+      "4a3e77d8826b682f07c27860d56d8848",
+      "4ccecf11ca4d27cfb31a81181985804d",
+      "5023f50cddebe50215910af7517a99e1",
+      "a7b1da1aedfb55e007ccdabb6ef3275b",
+      "dc5652604204d5bb60e759153038df95",
+      "e626070514e05d53408ca2b79bb0dced"
     ]
   },
   {
@@ -1085,9 +1084,9 @@
     "kind": "semantic",
     "rationale": "讲重复消费与去重",
     "relevant_chunk_ids": [
-      "053a8ff553a6f61760364309ac38cd86",
-      "1ccfb99110ddab8e065e2aa29fcd0932",
-      "77447aac577ef8d6b0d7af3d985cfb09"
+      "4e93fff0c6b763894b6d9b29bee30799",
+      "8f68091eaf4ccdf89d2ec691783dc85f",
+      "e626070514e05d53408ca2b79bb0dced"
     ]
   },
   {
@@ -1095,17 +1094,17 @@
     "kind": "keyword",
     "rationale": "讲 Saga 分布式事务",
     "relevant_chunk_ids": [
-      "19a46acb9a735d98a5c0187fad3b267d",
-      "20ba3279913f69f6f0cdee37ee643e16",
-      "3dcff598a37882df09bff36f0258ba44",
-      "447d9cae65adb52c041fc40a658f5044",
-      "4c755e4e81a5ce9f95a7bb9e4b281954",
-      "7f2866ee26d2333f4ca280a4723bbbdc",
-      "9a262d4f3d9d73ec5c937840a82f0f3f",
-      "9ed23d48753345757e438fc873283f3b",
-      "bf958dfbb49c20246a9f8736d8e101b2",
-      "ce850442e05b34a6b34ef8fe4ca041d6",
-      "cefa672dfa9b5029b89fef4ec1812e06"
+      "06eb660c581548fe06178f5b1abeb9da",
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4d1910b6585676bcab188c8357fa6dd8",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "5a7fe0b19b005c283c2ebfbffccebd38",
+      "7080b73f02399d397c043663e7aa6b28",
+      "81da4532c601b3ab02507d3fb48c727e",
+      "95d83d6d39cb879bc3d3eebb4549ff21",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
     ]
   },
   {
@@ -1113,9 +1112,18 @@
     "kind": "keyword",
     "rationale": "讲本地消息表方案",
     "relevant_chunk_ids": [
-      "3dcff598a37882df09bff36f0258ba44",
-      "4c755e4e81a5ce9f95a7bb9e4b281954",
-      "cefa672dfa9b5029b89fef4ec1812e06"
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "7080b73f02399d397c043663e7aa6b28"
+    ]
+  },
+  {
+    "query": "CAP 定理",
+    "kind": "keyword",
+    "rationale": "讲 CAP 三选二",
+    "relevant_chunk_ids": [
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "b52398af7125dbb2cf9eb4d43d53a9cd"
     ]
   },
   {
@@ -1123,10 +1131,10 @@
     "kind": "semantic",
     "rationale": "讲双写一致性方案",
     "relevant_chunk_ids": [
-      "0c6ffef0a263bf5f843f2c553e53f1d2",
-      "121c6e6262a6d74234ce5028213bf556",
-      "a0c45ac4e5f32bd302edb317ae8381eb",
-      "fac44f5d62033fef9802128eae1330eb"
+      "39845610061cd5b05b07bec9c13f908f",
+      "79c644b6ff285ef66c279d630e3c5474",
+      "8289c0f4d940ac2945c01acaf618a0ff",
+      "892d9dd978db102ed8b00edb37e98491"
     ]
   },
   {
@@ -1134,8 +1142,8 @@
     "kind": "keyword",
     "rationale": "讲布隆过滤器原理与误判",
     "relevant_chunk_ids": [
-      "0405c8b869a41d306ea71a8a85fad5de",
-      "9f8f585a44dbf6af537573ccdf0c420a"
+      "4edcc3b9f82d0f155d2327d6b553dd6d",
+      "c968d5e415d5c460130cb1b9b4fe7aab"
     ]
   },
   {
@@ -1143,20 +1151,20 @@
     "kind": "semantic",
     "rationale": "讲慢查询排查流程",
     "relevant_chunk_ids": [
-      "08f338a6147e6a3195fa1fdf5a30698f",
-      "0a692c757b9486e13c62a8a25735c4bc",
-      "0c7cdcdbfeb47a3580c40b1271dc27e0",
-      "0df3bac5ad2ae14cc8554d123d069f69",
-      "13293b39d1253650e91bde770715756f",
-      "3b5602f43440257de81885a6678e1fd1",
-      "9e634880a8277a6f49ebc6a446781134",
-      "b1e08e759f609aa37116efea5df6fd31",
-      "bfdcd35873495c1ce081097e843547e1",
-      "d6f57b8acfcabdac3399de0942ea8d32",
-      "d84df8f7987dc5f661532ea2e1388970",
-      "da091350e0f2e49a97966f9b9c8a4641",
-      "ec502e29a2a63bb73232817cc31eba4e",
-      "f54210fecd4ddac3cce6ed41e24124d2"
+      "039e53246a50d423b3b77638460a5f23",
+      "0fb951ff89fc340617888f42d3570f6b",
+      "13d82ead73e432869ebfbc19fdbd9ced",
+      "1f65b519f77b383b07c718888f773fae",
+      "42a5c21c639f23082527652c855f72ca",
+      "51d87a657f8041b046960ce7eec8f68a",
+      "706d6bd132c37c59fe53261685e9ecff",
+      "8db38980b200fb6e9a699fd4c3a43f8c",
+      "a31fdb1d8f460cf093190b9d95b6444d",
+      "a57970f4689c60564ed9d4e4a45d4e1f",
+      "b07db2858398afa154326db309911864",
+      "d44823eaadf6d786d8329632fa69ddfb",
+      "d750984e401c4784352963a11ec50961",
+      "f66067a919ed06f2f7b4dd76f93b62e9"
     ]
   },
   {
@@ -1164,15 +1172,15 @@
     "kind": "semantic",
     "rationale": "讲深分页优化",
     "relevant_chunk_ids": [
-      "08122b67b2667c7561b89c4ccc4f6a3b",
-      "0c7cdcdbfeb47a3580c40b1271dc27e0",
-      "39f58be3519d7c98edf8c2cdcd4723a0",
-      "3bcc9096777afb2d0313ca55e2c3f424",
-      "5bc78dea4300e7e9f3be9c1e109cae15",
-      "797d417fc3959296925f15a53ea2f061",
-      "d36cb6d8bd0d7abf654608da1f312571",
-      "d5d7bb41ded7c7d6433019d34a612ba0",
-      "d6f57b8acfcabdac3399de0942ea8d32"
+      "1f65b519f77b383b07c718888f773fae",
+      "37cc0c58cb04f81eb29299646d8a2a41",
+      "45b6356746d8ec2e197b0992b937eb6f",
+      "70782aedb0d6bf6b7d9b2230f4f0a80e",
+      "a57970f4689c60564ed9d4e4a45d4e1f",
+      "c69d435b1f29ed975aa47b3553752635",
+      "de62203784acbb14d7dc3344cfe93d83",
+      "dfef53705c4283a92e3c33586ab82cc0",
+      "f5200007e89de91c85d612a1a7e17976"
     ]
   }
 ]

@@ -1,0 +1,64 @@
+# PDF 语料专用配置 —— 与主语料**完全隔离**的存储。
+#
+#   cp config.pdf.toml.example config.pdf.toml
+#   KAHO_CONFIG=config.pdf.toml go run -tags=corpus ./scripts/eval/ingest_corpus.go scripts/pdf/converted
+#
+# 为什么要独立一份而不是临时改 config.toml：
+# 改文件依赖「记得改回去」，中途任何一步失败就会让后续入库静默写进
+# 错误的 collection —— 而 Milvus 是 upsert，写错地方不报错。
+# 让「灌哪个库」由 KAHO_CONFIG 显式决定，是唯一可靠的做法。
+#
+# 与主 config.toml 的差异只有两处（[milvus].collection 和 [db].dsn），
+# 其余必须保持一致 —— 尤其 embedding_model 与 embedding_dim：
+# 换了模型，两份语料的向量就不在同一个空间里，指标无法对比。
+
+debug = true
+
+[server]
+port = 8080
+
+[db]
+# ⚠️ 必须是独立的 database，不能只共用 kahoagent 库。
+#
+# 原方案（pdf-plan-b.md §5）打算共用 chunks 表、靠 doc_id LIKE 'pdf-%' 区分，
+# 执行时发现那与 §7 的停止条件「主语料评估数字发生变化就停」直接冲突：
+# BM25 的 IDF 是**全表统计量**，多灌 20 篇进去会改变每个词的
+# 文档频率，主语料的 BM25 分数必然漂移 —— 那不是隔离失效的信号，
+# 而是共用表的必然结果，会让停止条件永远误报。
+#
+# 换独立 database 的代价只是多一行 DSN，且不需要改任何 Go 代码
+#（applyMigration 里全是 CREATE ... IF NOT EXISTS，新库会自动建表）。
+#
+# 建库：
+#   podman exec kaho-postgres psql -U kaho -d postgres \
+#     -c "CREATE DATABASE kahoagent_pdf OWNER kaho;"
+dsn = "host=127.0.0.1 port=5432 user=kaho password=kaho_dev_pw dbname=kahoagent_pdf sslmode=disable"
+
+[redis]
+addr = "127.0.0.1:6379"
+password = ""
+db = 0
+
+[milvus]
+addr = "127.0.0.1:19530"
+# ⚠️ 与主语料的 kaho_documents 隔离。混进去的话 eval-results.md 里
+# 所有已发布的数字全部失效，且无法回退 —— Milvus 是 upsert，
+# 灌进去就没有「撤销」这回事，只能 Drop 整个 collection 重灌。
+collection = "kaho_documents_pdf"
+
+[kafka]
+brokers = ["127.0.0.1:9092"]
+topic = "document-processing"
+group_id = "kahoagent-worker"
+
+[llm]
+provider = "dashscope"
+api_key = ""                                                        # 留空则读环境变量
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+model = "qwen-plus"
+embedding_model = "text-embedding-v3"
+embedding_dim = 1024
+
+[mcp]
+transport = "stdio"
+port = 3000
