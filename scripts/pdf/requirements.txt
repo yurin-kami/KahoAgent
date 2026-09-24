@@ -1,0 +1,5 @@
+# 版本取自实际执行环境的 pip show 结果（2026-09-04），非最新版号。
+# 固定到补丁位：MinerU 的解析行为（字段名、text_level 语义、输出目录结构）
+# 在小版本间都有过变动，convert.py 按实测行为编写，升版本前必须重跑 verify.py。
+mineru[core]==3.4.5
+reportlab==5.0.1

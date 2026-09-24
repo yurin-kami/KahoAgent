@@ -1,0 +1,438 @@
+[
+  {
+    "query": "热点key突然失效导致数据库压力暴增怎么办",
+    "kind": "confusable",
+    "rationale": "必须讲缓存击穿的解法（互斥锁/逻辑过期）",
+    "relevant_chunk_ids": [
+      "6c7f5a1e4e0ff72a8b672c002b3bd63c",
+      "8010fc5c0271cd6076a5f2f9f62d1123"
+    ]
+  },
+  {
+    "query": "大量缓存同时过期怎么处理",
+    "kind": "confusable",
+    "rationale": "必须讲缓存雪崩的解法（随机TTL/多级缓存）",
+    "relevant_chunk_ids": [
+      "6c7f5a1e4e0ff72a8b672c002b3bd63c"
+    ]
+  },
+  {
+    "query": "MySQL 里读到别的事务没提交的数据是什么问题",
+    "kind": "confusable",
+    "rationale": "必须提到脏读概念",
+    "relevant_chunk_ids": [
+      "4d1910b6585676bcab188c8357fa6dd8",
+      "bcc89458a12bc644ed3f9db44c6605b9"
+    ]
+  },
+  {
+    "query": "同一个查询两次结果不一样是什么隔离级别问题",
+    "kind": "confusable",
+    "rationale": "必须提到不可重复读",
+    "relevant_chunk_ids": [
+      "bcc89458a12bc644ed3f9db44c6605b9"
+    ]
+  },
+  {
+    "query": "Go 里协程和线程有什么区别",
+    "kind": "confusable",
+    "rationale": "讲 goroutine 与线程的具体差异（栈大小/调度开销）",
+    "relevant_chunk_ids": [
+      "04003adb1936918b9e2b8c6f95cfebfd",
+      "0aaed9c499705496fde6e318f8af2c17",
+      "2109fe5e4fac77add38d5a81daf1fcbe",
+      "2fe5a19aca211ac836b5b52d247d3608",
+      "4257b3bb67cb7787a54f41e1621fc869",
+      "67b480c5ad83e419119f5189a6397942",
+      "9d3d25ece3d37f3855f2926476e5600a",
+      "9e83ed966ca04cb5392d0efb203cfef3",
+      "ddf53c0f3f38ea7d86badd833bcba29f",
+      "df0d60c745568bdda83b7bfacb505c2b",
+      "ea03cc178bf00decf2ff7f79c0bc878b"
+    ]
+  },
+  {
+    "query": "怎么保证消息不丢",
+    "kind": "semantic",
+    "rationale": "讲消息可靠投递的具体机制",
+    "relevant_chunk_ids": [
+      "3e4424b0cfc5e0391340bc06159748b6",
+      "dc433469bc90060c0716449720412cc3",
+      "ef891f005dd92170a5eef8724938d141"
+    ]
+  },
+  {
+    "query": "多台机器怎么保证同一时间只有一个在执行",
+    "kind": "semantic",
+    "rationale": "讲分布式锁的具体实现",
+    "relevant_chunk_ids": [
+      "442a168c22b2440aa84ae25bbaeb6278",
+      "603736808605d319eb9b60547d10e343",
+      "bfbc1667bb0924a797bf1ad16c2da7b1",
+      "f64f73fb2da83627bbe062d2995fc37f"
+    ]
+  },
+  {
+    "query": "用户登录状态怎么保存",
+    "kind": "semantic",
+    "rationale": "讲 JWT 或 Session 认证机制",
+    "relevant_chunk_ids": [
+      "08b73b23eb72c2e2520b4ecbef17eb65",
+      "73a972225d39ed5b67b8475a277bfa52",
+      "8ce5b3b1af8fc5a7931ef499065f59f5"
+    ]
+  },
+  {
+    "query": "程序内存一直涨是什么原因",
+    "kind": "semantic",
+    "rationale": "讲内存泄漏或 GC 行为",
+    "relevant_chunk_ids": [
+      "1eedb3cc4ce78af1f7b52df322151077",
+      "7d4bda5194bf7e1dfb7e07ef7bda3887",
+      "8a9488068368d618a17ddd7605d82da3",
+      "9d4a61346855f7e2e401b4475330a1ba",
+      "c084faa607c9cb34753b4bf2ef9d8292",
+      "eaa306dc11ffe92a40acb7bda8ea3436"
+    ]
+  },
+  {
+    "query": "大文件上传怎么做",
+    "kind": "semantic",
+    "rationale": "讲分片上传",
+    "relevant_chunk_ids": [
+      "3a2506f8ee4b198a8c592bf66e3992d6",
+      "aaceb07eccafd4fe9c7a9e709206e221"
+    ]
+  },
+  {
+    "query": "怎么做限流",
+    "kind": "semantic",
+    "rationale": "讲限流算法",
+    "relevant_chunk_ids": [
+      "56c598fbe7fa63e64819f0bde57bf637"
+    ]
+  },
+  {
+    "query": "网络断了消息怎么补发",
+    "kind": "semantic",
+    "rationale": "讲离线消息补发或重传机制",
+    "relevant_chunk_ids": [
+      "22b34d06d12df49eec5ff0b9ddf046aa",
+      "5997bba5cf5af430dc498d5aa24a0ea9"
+    ]
+  },
+  {
+    "query": "GMP 调度模型",
+    "kind": "keyword",
+    "rationale": "讲 GMP 三者关系与队列",
+    "relevant_chunk_ids": [
+      "04003adb1936918b9e2b8c6f95cfebfd",
+      "2fe5a19aca211ac836b5b52d247d3608",
+      "4a94e6785f9800fd5a3ff0367f157efa"
+    ]
+  },
+  {
+    "query": "sync.Pool",
+    "kind": "keyword",
+    "rationale": "讲 sync.Pool",
+    "relevant_chunk_ids": [
+      "bcc89458a12bc644ed3f9db44c6605b9",
+      "cc3772b4e117ac178360efabfd4d2cf3",
+      "d27579c461f02e3417ff5af98f9c48da"
+    ]
+  },
+  {
+    "query": "context.WithCancel",
+    "kind": "keyword",
+    "rationale": "讲 context 取消传播",
+    "relevant_chunk_ids": [
+      "30d3b26b61e88ea248962567d4442249",
+      "33da13f0a1865160bb2aa22f097a3f6b",
+      "43816dbdff7f13b4dcdf7e50f3bbfe4d",
+      "69c621067c47da5e42f2a9722bc0ad4b",
+      "78d4846c5e3529b97da4fbb92ef3d6ed",
+      "bc7496222da336c5bc99719efe71bfd1",
+      "c20afcfff676ca6bf44de25d5cbeb894",
+      "e0e882d6c54d125bd6e2434939447557"
+    ]
+  },
+  {
+    "query": "Kafka ISR",
+    "kind": "keyword",
+    "rationale": "讲 ISR 副本同步",
+    "relevant_chunk_ids": [
+      "4ccecf11ca4d27cfb31a81181985804d",
+      "b4516f6c55bd8100b2ef9237c8259275",
+      "bcc89458a12bc644ed3f9db44c6605b9"
+    ]
+  },
+  {
+    "query": "TCP 三次握手",
+    "kind": "keyword",
+    "rationale": "讲三次握手过程",
+    "relevant_chunk_ids": [
+      "2fe277cee9ef0d2a38383196f5f66f94"
+    ]
+  },
+  {
+    "query": "HTTP/2 多路复用",
+    "kind": "keyword",
+    "rationale": "讲 HTTP/2 的多路复用与头部压缩",
+    "relevant_chunk_ids": [
+      "57fe31abe21f05d0479052e9a3dfe0d1",
+      "a731527abe360a09e9c73168070066a5",
+      "b6bfc40ed12eec15705094a22d790291",
+      "c973821c3beea2d1f3d350a1d9cbec75",
+      "f7fe1b9b95eb7154b612795982f7c909"
+    ]
+  },
+  {
+    "query": "S3 multipart upload",
+    "kind": "keyword",
+    "rationale": "讲 S3 分片上传",
+    "relevant_chunk_ids": [
+      "3a2506f8ee4b198a8c592bf66e3992d6"
+    ]
+  },
+  {
+    "query": "gRPC 双向流",
+    "kind": "keyword",
+    "rationale": "讲 gRPC 双向流式通信",
+    "relevant_chunk_ids": [
+      "f7fe1b9b95eb7154b612795982f7c909"
+    ]
+  },
+  {
+    "query": "select case channel",
+    "kind": "keyword",
+    "rationale": "讲 select 的阻塞与随机选择行为",
+    "relevant_chunk_ids": [
+      "4c911a366b2d701268d553c56fb3c68f",
+      "4d77195d48479f5ffd37ec06b58d370f",
+      "52bbf9c5cbad0030cc47387c2c71d194",
+      "5564a85e08bd33c5f694dff389415136",
+      "5c753c5d38dcb37f959e69a1ef86712a",
+      "78d4846c5e3529b97da4fbb92ef3d6ed",
+      "a7d0d1ffb10cf5914fc0766b04fc7f6a"
+    ]
+  },
+  {
+    "query": "map 并发安全",
+    "kind": "keyword",
+    "rationale": "讲 map 并发问题",
+    "relevant_chunk_ids": [
+      "162c63f76c9c0e4d067cf33d20075232",
+      "451701c68f16e610953c122fa0c9a354",
+      "d27579c461f02e3417ff5af98f9c48da"
+    ]
+  },
+  {
+    "query": "两阶段提交 2PC",
+    "kind": "keyword",
+    "rationale": "讲 2PC 协议",
+    "relevant_chunk_ids": [
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "7080b73f02399d397c043663e7aa6b28",
+      "b49f6f6774eaa6359fc8334b288423ca",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
+    ]
+  },
+  {
+    "query": "TCC 补偿事务",
+    "kind": "keyword",
+    "rationale": "讲 TCC 模式",
+    "relevant_chunk_ids": [
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "59a574cd26fd990838ec2c4ee785aaac",
+      "7080b73f02399d397c043663e7aa6b28",
+      "9f8b45459aa73b8cc3a42a2faf6894c5",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
+    ]
+  },
+  {
+    "query": "Redlock",
+    "kind": "keyword",
+    "rationale": "讲 Redlock 算法",
+    "relevant_chunk_ids": [
+      "1aaeaa52f8bc288e2f549e632340b8d2",
+      "442a168c22b2440aa84ae25bbaeb6278",
+      "603736808605d319eb9b60547d10e343",
+      "b3ab6bfc996a99adedc0bc528aa6faaf",
+      "f64f73fb2da83627bbe062d2995fc37f"
+    ]
+  },
+  {
+    "query": "WezTerm tab 关闭",
+    "kind": "keyword",
+    "rationale": "讲 WezTerm 具体问题",
+    "relevant_chunk_ids": [
+      "22629f4fe85072b4fe1acd488889769c",
+      "4dd714d0c47a7bdea84aefc0fa3d4aab",
+      "88cf4e7b9f8c4cf09f8eb6604a2979e8",
+      "8b20e22d6f75e0eb36d98bddd7f0e3cc",
+      "fad7a2e3963e49a15d7095854565f308"
+    ]
+  },
+  {
+    "query": "pgx 连接池",
+    "kind": "keyword",
+    "rationale": "讲 pgx 用法",
+    "relevant_chunk_ids": [
+      "017f8ab0df885e78f15a28f4d54043b3",
+      "24927f97d25fe84889673b4bce2fa3b3",
+      "380dcd65bc5992a1fc59eab1b087d6c2",
+      "88237d4edc91c794469fe8ca82dd6934"
+    ]
+  },
+  {
+    "query": "设计模式 Go 实现",
+    "kind": "keyword",
+    "rationale": "讲具体设计模式",
+    "relevant_chunk_ids": [
+      "049ebf4969998ae7fdb0f0e5e9257c1e",
+      "136fdcbf49dbf26c91357ea66926776c",
+      "3a2506f8ee4b198a8c592bf66e3992d6",
+      "3e9b8273c9d7fac98be4b306987815e6",
+      "4d77195d48479f5ffd37ec06b58d370f",
+      "5564a85e08bd33c5f694dff389415136",
+      "679a652161ebe5f9bdbcd10be150a4f1",
+      "96851ee4fca945283a9382151a0614bf",
+      "9ef6c3b5fc39e2f899e2376e5ccafc45",
+      "aaceb07eccafd4fe9c7a9e709206e221",
+      "e153d31912f6570012015aa040158248"
+    ]
+  },
+  {
+    "query": "goroutine 泄漏",
+    "kind": "keyword",
+    "rationale": "讲 goroutine 泄漏成因",
+    "relevant_chunk_ids": [
+      "e0e882d6c54d125bd6e2434939447557",
+      "e21c57fb46e2d86ac81e09fee4565e23"
+    ]
+  },
+  {
+    "query": "GC 三色标记",
+    "kind": "keyword",
+    "rationale": "讲三色标记与写屏障",
+    "relevant_chunk_ids": [
+      "1eedb3cc4ce78af1f7b52df322151077",
+      "2fa744deeae115a75bb52d21b5752668",
+      "5ef63950e62d6275ac99058eaf51d3c1",
+      "6368bdf06711faa8d1f22cd7358e32a2",
+      "76a8350b5d5a8752ac27b3c7e572f613",
+      "7d4bda5194bf7e1dfb7e07ef7bda3887",
+      "8a9488068368d618a17ddd7605d82da3",
+      "9d4a61346855f7e2e401b4475330a1ba",
+      "eaa306dc11ffe92a40acb7bda8ea3436"
+    ]
+  },
+  {
+    "query": "channel 关闭后再读会怎样",
+    "kind": "semantic",
+    "rationale": "讲 channel 关闭语义",
+    "relevant_chunk_ids": [
+      "5c753c5d38dcb37f959e69a1ef86712a",
+      "79780ce8a731aa9ce875c62b32054d0f"
+    ]
+  },
+  {
+    "query": "WaitGroup 用法",
+    "kind": "keyword",
+    "rationale": "讲 WaitGroup",
+    "relevant_chunk_ids": [
+      "162c63f76c9c0e4d067cf33d20075232",
+      "267b2cb45196c0e968b4153a687be955",
+      "404c6f90ca9d74a9e885593824404e1b",
+      "471f73c8321e351b9ec9e7e1622eb68a",
+      "56c598fbe7fa63e64819f0bde57bf637",
+      "679a652161ebe5f9bdbcd10be150a4f1",
+      "8498343cf8af26fa1138a809c91afdbc",
+      "bf41cb69c34668fbd7aef837cbd2e833",
+      "d27579c461f02e3417ff5af98f9c48da"
+    ]
+  },
+  {
+    "query": "Mutex 和 RWMutex 区别",
+    "kind": "confusable",
+    "rationale": "讲读写锁与互斥锁差异",
+    "relevant_chunk_ids": [
+      "162c63f76c9c0e4d067cf33d20075232",
+      "267b2cb45196c0e968b4153a687be955",
+      "37b830caf3d5fef462ff2e51853b7baf",
+      "404c6f90ca9d74a9e885593824404e1b",
+      "451701c68f16e610953c122fa0c9a354",
+      "471f73c8321e351b9ec9e7e1622eb68a",
+      "56c598fbe7fa63e64819f0bde57bf637",
+      "938e71da3031e21538d7d6ca33332bfa",
+      "9ef6c3b5fc39e2f899e2376e5ccafc45",
+      "a1e1b9f8341d50dad29432180f07b3f6",
+      "c0ee926092bfa96b1ec390574c031608",
+      "d27579c461f02e3417ff5af98f9c48da"
+    ]
+  },
+  {
+    "query": "幂等性怎么保证",
+    "kind": "semantic",
+    "rationale": "讲幂等设计",
+    "relevant_chunk_ids": [
+      "00f181589741edf8688d1f5b9e83c748",
+      "8528d594d22712efb4cd7313835d83f7",
+      "9f8b45459aa73b8cc3a42a2faf6894c5"
+    ]
+  },
+  {
+    "query": "Kafka 消费者组 rebalance",
+    "kind": "keyword",
+    "rationale": "讲 rebalance 机制",
+    "relevant_chunk_ids": [
+      "1233a666e52f344822a8ef1286f63251",
+      "18c7dd0441af1038d2ebb24cb6309eb2",
+      "4a3e77d8826b682f07c27860d56d8848",
+      "4ccecf11ca4d27cfb31a81181985804d",
+      "5023f50cddebe50215910af7517a99e1",
+      "a7b1da1aedfb55e007ccdabb6ef3275b",
+      "dc5652604204d5bb60e759153038df95"
+    ]
+  },
+  {
+    "query": "Saga 模式",
+    "kind": "keyword",
+    "rationale": "讲 Saga 分布式事务",
+    "relevant_chunk_ids": [
+      "3819847f2f685eba29f708759d4f8a14",
+      "450403d9f5841e46855e968682ead05c",
+      "4d1910b6585676bcab188c8357fa6dd8",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "5a7fe0b19b005c283c2ebfbffccebd38",
+      "7080b73f02399d397c043663e7aa6b28",
+      "b52398af7125dbb2cf9eb4d43d53a9cd",
+      "cff2c2591463825d76cce833e49671ef"
+    ]
+  },
+  {
+    "query": "本地消息表",
+    "kind": "keyword",
+    "rationale": "讲本地消息表方案",
+    "relevant_chunk_ids": [
+      "450403d9f5841e46855e968682ead05c",
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "7080b73f02399d397c043663e7aa6b28"
+    ]
+  },
+  {
+    "query": "CAP 定理",
+    "kind": "keyword",
+    "rationale": "讲 CAP 三选二",
+    "relevant_chunk_ids": [
+      "4daafc085cbd182d0403fd42e6bd0f79",
+      "b52398af7125dbb2cf9eb4d43d53a9cd"
+    ]
+  }
+]
