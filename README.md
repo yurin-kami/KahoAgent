@@ -9,8 +9,8 @@
 
 | 指标 | 实测值 |
 |---|---|
-| Recall@5（hybrid + rerank） | 0.444 |
-| MRR（hybrid + rerank） | 0.798 |
+| Recall@5（hybrid + rerank） | 0.441 |
+| MRR（hybrid + rerank） | 0.818 |
 | 端到端首字延迟 P50 / P99 | 409ms / 1388ms |
 | 检索缓存命中率 | 94.8% |
 | 常驻内存 | 23.9 MB |
@@ -50,7 +50,12 @@
    │  Redis 缓存查询向量与结果（命中率 94.8%）          │
    └─────────────────────────────────────────────────┘
 
-   文档入库：Kafka ─▶ Chunker ─▶ Embedding ─▶ Milvus + PostgreSQL
+   文档入库（离线）：ingest_corpus ─▶ Chunker ─▶ Embedding ─▶ Milvus + PostgreSQL
+                                     PDF 先经 scripts/pdf/ 转 Markdown
+
+   ⚠️ Kafka 管道（internal/pipeline）已实现但**未接入生产链路**：
+      producer/consumer 完整、集成测试覆盖，但没有 HTTP 上传接口
+      也没有 worker 进程消费它。当前入库走上面的离线脚本。见「已知限制」
 ```
 
 ## 技术栈
@@ -60,7 +65,7 @@
 - **MCP**：[modelcontextprotocol/go-sdk](https://github.com/modelcontextprotocol/go-sdk) v1.7.0（官方 Go SDK）
 - **向量数据库**：Milvus（HNSW，M=16 / efConstruction=200 / COSINE）
 - **全文检索**：PostgreSQL `ts_rank` + [gojieba](https://github.com/yanyiwu/gojieba) 中文分词
-- **消息队列**：Kafka（文档异步处理管道）
+- **消息队列**：Kafka（文档异步处理管道，**已实现未接线** —— 见「已知限制」）
 - **缓存**：Redis（查询向量 + 检索结果）
 - **LLM**：DashScope qwen-plus / text-embedding-v3（OpenAI 兼容协议）
 - **HTTP**：标准库 `net/http` + SSE
@@ -86,7 +91,7 @@ KahoAgent/
 │   │   ├── retriever/   # 混合召回 + RRF 融合 + LLM 精排
 │   │   └── tokenizer/   # gojieba 分词（供 BM25 用）
 │   ├── mcp/server/      # Tools → MCP 的通用桥接 + 限流/超时/审计
-│   ├── pipeline/        # Kafka 文档处理管道
+│   ├── pipeline/        # Kafka 文档处理管道（已实现，未接入生产链路）
 │   ├── handler/         # HTTP handler（SSE 流式响应）
 │   ├── metrics/         # Prometheus 指标
 │   ├── eval/            # 检索评估指标计算
@@ -100,11 +105,14 @@ KahoAgent/
 ├── scripts/
 │   ├── eval/            # 检索评估（-tags=eval）
 │   ├── bench/           # 开环压测（-tags=loadtest）
+│   ├── pdf/             # PDF → Markdown 离线预处理（Python，不进镜像/CI）
 │   └── spike/           # 技术验证脚本
 └── docs/
     ├── IMPLEMENTATION.md   # 分阶段实施方案
     ├── LEARNING.md          # 完整学习清单（计划认知 + 实测修正）
     ├── eval-results.md     # 检索策略评估结果
+    ├── eval-results-pdf.md # PDF 语料评估（含 Markdown 对照组）
+    ├── pdf-plan-b.md       # PDF 支持实施方案（已执行）
     ├── optimization.md     # pprof 定位与优化前后对比
     ├── deployment.md       # 容器化与部署
     └── spike-evidence/     # 各阶段验收证据
@@ -234,6 +242,24 @@ go test -bench=. -benchmem ./internal/rag/retriever/
 - **`confusable` 类查询样本仅 8 条**，该维度的指标只适合看趋势。
 - **镜像 110MB**，达不到最初设定的 30MB —— cgo 二进制与 13.8MB 中文词典
   是主要构成，取舍说明见 [docs/deployment.md](docs/deployment.md)。
+- **Kafka 管道已实现但未接入生产链路**。`internal/pipeline` 有完整的
+  producer/consumer（`FetchMessage` + 手动 `CommitMessages` 实现至少一次语义、
+  失败重投递、900KB 消息上限），也有集成测试覆盖
+  （`//go:build integration`，含「畸形消息不阻塞队列」「重启后重投递」），
+  **但没有调用方**：服务只暴露 `/api/chat`，没有文件上传接口，
+  `cmd/` 下也没有 worker 进程。全仓库对 `internal/pipeline` 的引用只有
+  `scripts/eval/ingest_check.go` 一处，且只用了 `NewIngester`（分块+向量化那段），
+  没碰 producer/consumer。当前入库走离线脚本 `scripts/eval/ingest_corpus.go`
+  （带 `corpus` build tag，不进镜像/CI）。
+  这个判断后来成了 PDF 方案的依据 —— 入库既然是离线动作，
+  PDF 解析就没必要进 Go 运行时（见 [pdf-plan-b.md](docs/pdf-plan-b.md)）。
+- **PDF 是离线预处理，不是运行时能力**。服务本身不解析 PDF ——
+  用 `scripts/pdf/` 的 MinerU 流程转成 Markdown 再入库
+  （入库本就是离线动作，见 [pdf-plan-b.md](docs/pdf-plan-b.md)）。
+  实测转换失败率 7.1%、表格单元格保真 99.7%、检索质量与同源 Markdown 持平，
+  但**测试样本是自造的 PDF**（排版规整、无分栏、无扫描件），
+  真实 PDF 会更差；OCR 路径未启用。完整数据与局限见
+  [eval-results-pdf.md](docs/eval-results-pdf.md)。
 
 ## License
 

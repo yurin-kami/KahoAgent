@@ -446,6 +446,12 @@ func main() {
 
 **为什么要 Kafka**：文档向量化很慢（一个 10 页 PDF 可能要 30 秒）。如果同步处理，用户上传时 HTTP 请求会挂 30 秒。用 Kafka 解耦：上传接口收到文件立即返回，后台 worker 慢慢处理。
 
+> ⚠️ **实际结果（2026-09-04 审查）：这个场景没有实现。**
+> producer/consumer 写完且测过，但**没有上传接口、没有 worker 进程、
+> 生产代码零引用** —— 语料入库是手工跑一次的离线脚本，没有东西需要解耦。
+> 上面这段是规划时的推理，保留不删。
+> 完整核查与由此得出的教训见 `LEARNING.md` L1.4「实测修正 2」。
+
 | 概念 | 说明 | 本项目 |
 |------|------|--------|
 | Topic | 消息分类 | `document-processing` |
@@ -1793,10 +1799,10 @@ var (
 
 | 指标 | 实测值 | 测量方式 |
 |------|--------|---------|
-| Recall@5 (hybrid) | 0.346 | 77 条 golden set（规划写 50，实际扩到 77） |
-| Recall@5 (hybrid+rerank) | 0.444 | 同上 |
-| MRR (hybrid+rerank) | 0.798 | 同上 |
-| 向量检索 P50 / P99 | 151ms / 267ms | 同上，nearest-rank |
+| Recall@5 (hybrid) | 0.358 | 78 条 golden set（规划写 50，实际扩到 78） |
+| Recall@5 (hybrid+rerank) | 0.441 | 同上 |
+| MRR (hybrid+rerank) | 0.818 | 同上 |
+| 向量检索 P50 / P99 | 138ms / 318ms | 同上，nearest-rank |
 | 端到端首字延迟 P50 / P99 | 409ms / 1388ms | SSE 边收边计时，300 请求 |
 | HTTP 吞吐 | ~10 req/s ⚠️ | 开环压测；**瓶颈是 DashScope 配额，非本服务** |
 | MCP 工具调用吞吐 | 69.7 call/s | 并发 50，300 次调用 |
@@ -1832,13 +1838,16 @@ var (
       ⚠️ demo.gif 需要人工录屏（Claude Desktop 里的交互无法脚本化生成）。
       同一条代码路径已由 `cmd/mcp/e2e_test.go` 覆盖（真实二进制走 stdio），
       但 GIF 本身仍待补录。
-- [x] **简历数字用 Phase 5 实测值替换** → `docs/resume-material.md`
+- [x] **简历数字用 Phase 5 实测值替换**
       （原计划只是「替换数字」，实际发现没有承载它们的文档，
-      于是补了一份个人素材文档）
+      于是补了一份个人素材文档 —— 属个人材料，不入公开仓库。
+      其中引用的每个数字都能在 `docs/spike-evidence/phase5.md`、
+      `docs/eval-results.md`、`docs/optimization.md` 里找到出处）
 
 ## 可选（按优先级，时间够才做）
 1. Query 改写 / HyDE
-2. PDF 解析
+2. ~~PDF 解析~~ → **已完成**（2026-09-04）。方案 B：MinerU 离线预处理，
+   PDF 不进 Go 代码。见 `docs/pdf-plan-b.md` / `docs/eval-results-pdf.md`
 3. 简单 Web UI
 4. 增量索引更新
 
