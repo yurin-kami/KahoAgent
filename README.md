@@ -18,45 +18,52 @@
 
 ## 架构
 
-```
-                    ┌──────────────┐        ┌──────────────┐
-   HTTP + SSE ─────▶│              │        │  Claude      │
-   /api/chat        │  internal/   │        │  Desktop     │
-                    │  app         │        └──────┬───────┘
-                    │  (统一装配)   │               │ stdio
-                    └──────┬───────┘        ┌──────▼───────┐
-                           │                │  cmd/mcp     │
-                           │                │  MCP Server  │
-                           ▼                └──────┬───────┘
-                    ┌─────────────┐                │
-                    │ Eino ADK    │◀───────────────┘
-                    │ ReAct Agent │   两侧复用同一份 Tools
-                    └──────┬──────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        ▼                  ▼                  ▼
-   ┌─────────┐      ┌────────────┐     ┌──────────────┐
-   │rag_query│      │file_search │     │file_metadata │
-   └────┬────┘      │file_share  │     └──────────────┘
-        │           └─────┬──────┘
-        │                 └──────▶ CloudKaho API
-        ▼
-   ┌────────────────── RAG 检索链路 ──────────────────┐
-   │  Query                                          │
-   │    ├─▶ Embedding ─▶ Milvus (HNSW/COSINE)  ─┐    │
-   │    │                                       ├─▶ RRF ─▶ LLM 精排 ─▶ TopK
-   │    └─▶ gojieba 分词 ─▶ PostgreSQL ts_rank ─┘    │
-   │                                                 │
-   │  Redis 缓存查询向量与结果（命中率 94.8%）          │
-   └─────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    HTTP["HTTP + SSE<br/>/api/chat"] --> APP["internal/app<br/>统一装配"]
+    DESKTOP["Claude Desktop / Cursor"] -->|stdio| MCP["cmd/mcp<br/>MCP Server"]
 
-   文档入库（离线）：ingest_corpus ─▶ Chunker ─▶ Embedding ─▶ Milvus + PostgreSQL
-                                     PDF 先经 scripts/pdf/ 转 Markdown
+    APP --> AGENT["Eino ADK ReAct Agent<br/>两侧复用同一份 Tools"]
+    MCP --> AGENT
 
-   ⚠️ Kafka 管道（internal/pipeline）已实现但**未接入生产链路**：
-      producer/consumer 完整、集成测试覆盖，但没有 HTTP 上传接口
-      也没有 worker 进程消费它。当前入库走上面的离线脚本。见「已知限制」
+    AGENT --> T1["rag_query"]
+    AGENT --> T2["file_search"]
+    AGENT --> T3["file_metadata"]
+    AGENT --> T4["file_share"]
+
+    T2 --> CK["CloudKaho API"]
+    T3 --> CK
+    T4 --> CK
+
+    T1 --> Q["Query"]
+    subgraph RAG["RAG 检索链路"]
+        direction TB
+        Q --> EMB["Embedding"]
+        Q --> JIEBA["gojieba 分词"]
+        EMB --> MV[("Milvus<br/>HNSW / COSINE")]
+        JIEBA --> PG[("PostgreSQL<br/>ts_rank")]
+        MV --> RRF["RRF 融合"]
+        PG --> RRF
+        RRF --> RR["LLM 精排"]
+        RR --> TK["TopK"]
+    end
+
+    CACHE["Redis 缓存<br/>命中率 94.8%"] -.-> Q
 ```
+
+文档入库是**离线**动作，不在上面这条请求路径上：
+
+```mermaid
+flowchart LR
+    MD["Markdown 语料"] --> ING["ingest_corpus<br/>corpus build tag"]
+    PDF["PDF"] --> MU["scripts/pdf/<br/>MinerU 转换"] --> MD2["Markdown"] --> ING
+    ING --> CH["Chunker"] --> EMBED["Embedding"] --> STORE[("Milvus + PostgreSQL")]
+```
+
+> ⚠️ **Kafka 管道（`internal/pipeline`）已实现但未接入生产链路**：
+> producer/consumer 完整、集成测试覆盖，但没有 HTTP 上传接口，
+> 也没有 worker 进程消费它 —— 当前入库走上面这条离线脚本。
+> 详见[已知限制](#已知限制)。
 
 ## 技术栈
 

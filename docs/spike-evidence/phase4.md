@@ -9,13 +9,12 @@ go test -tags=e2e -v ./cmd/mcp/               # 端到端：真起二进制走 s
 
 ## 架构：MCP 层不含业务逻辑
 
-```
-Claude Desktop  ──stdio(JSON-RPC)──▶  cmd/mcp
-                                        │
-                                        ├─ internal/mcp/server  ← 协议转换 + Guard
-                                        │
-                                        └─ internal/app.New     ← 与主服务同一份装配
-                                             └─ Phase 3 的 4 个 Tool
+```mermaid
+flowchart TD
+    CD["Claude Desktop"] -->|"stdio (JSON-RPC)"| MCP["cmd/mcp"]
+    MCP --> SRV["internal/mcp/server<br/>协议转换 + Guard"]
+    MCP --> APP["internal/app.New<br/>与主服务同一份装配"]
+    APP --> TOOLS["Phase 3 的 4 个 Tool"]
 ```
 
 两个刻意的设计决定：

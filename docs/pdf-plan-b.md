@@ -15,9 +15,11 @@
 
 **PDF 不进 Go 代码。** 用 MinerU 离线转成 Markdown，喂给现有的 `ingest_corpus`。
 
-```
-PDF ──[MinerU, 离线 Python]──▶ .md ──▶ 现有 ingest_corpus ──▶ Milvus + PG
-                                       （MarkdownChunker 原封不动）
+```mermaid
+flowchart LR
+    PDF["PDF"] -->|"MinerU（离线 Python）"| MD[".md"]
+    MD --> ING["现有 ingest_corpus<br/>MarkdownChunker 原封不动"]
+    ING --> ST[("Milvus + PG")]
 ```
 
 Go 侧改动：**只有一个 bug 修复**（docID 碰撞），不新增任何包、不新增任何依赖。

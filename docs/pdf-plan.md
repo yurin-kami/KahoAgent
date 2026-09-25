@@ -215,10 +215,12 @@ raw []byte ──▶ Chunker.Chunk(ctx, docID, raw) ──▶ []rag.Chunk
 `MarkdownChunker` —— 层级推断的产出直接表达成 `#` / `##`，
 下游一行代码都不用改。
 
-```
-                    ┌─ .md  ─────────────────────────┐
-raw []byte ─ 路由 ─┤                                 ├─▶ MarkdownChunker ─▶ []rag.Chunk
-                    └─ .pdf ─▶ PDFParser ─▶ md text ─┘
+```mermaid
+flowchart LR
+    RAW["raw []byte"] --> RT{"按扩展名路由"}
+    RT -->|".md"| MC["MarkdownChunker"]
+    RT -->|".pdf"| PP["PDFParser"] --> MDT["md text"] --> MC
+    MC --> CH["[]rag.Chunk"]
 ```
 
 **为什么归一化成 Markdown 而不是直接产 Chunk：**

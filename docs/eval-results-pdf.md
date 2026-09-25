@@ -27,10 +27,13 @@ golden set 不同（38 vs 78 条查询），两者差多少都无法归因 —�
 所以建了对照组：**同样这 20 篇文档，以原始 Markdown 入库**。
 两组唯一的变量就是「有没有经过 PDF 往返」，差异才能归因到转换本身。
 
-```
-                    ┌─ 20 篇 .md ──────────────────▶ kahoagent_md20   （对照组）
-博客语料 20 篇 ─────┤
-                    └─ 20 篇 .md ─[reportlab]─▶ PDF ─[MinerU]─▶ .md ─▶ kahoagent_pdf（实验组）
+```mermaid
+flowchart LR
+    SRC["博客语料 20 篇"] --> MD["20 篇 .md"]
+    MD --> CTRL[("kahoagent_md20<br/>对照组")]
+    MD -->|"reportlab"| PDF["PDF"]
+    PDF -->|"MinerU"| MD2[".md"]
+    MD2 --> EXP[("kahoagent_pdf<br/>实验组")]
 ```
 
 对照组的 Markdown 直接取自博客源文件，与生成 PDF 时用的是同一批文件

@@ -1555,18 +1555,11 @@ func (m *SessionMemory) Load(ctx context.Context, sessionID string) ([]*schema.M
 
 ### L4.1 MCP 在架构中的位置
 
-```
-        ┌─────────────────┐
-        │ Claude Desktop  │  ← 别人的 AI 客户端
-        └────────┬────────┘
-                 │ MCP (JSON-RPC)
-        ┌────────▼────────┐
-        │  MCP Server     │  ← 我们写的（薄适配层）
-        ├─────────────────┤
-        │  Tool 实现       │  ← Phase 3 已写好，复用
-        ├─────────────────┤
-        │  RAG / CloudKaho │  ← Phase 1-2 已写好
-        └─────────────────┘
+```mermaid
+flowchart TB
+    CD["Claude Desktop<br/>别人的 AI 客户端"] -->|"MCP (JSON-RPC)"| MS["MCP Server<br/>我们写的（薄适配层）"]
+    MS --> TL["Tool 实现<br/>Phase 3 已写好，复用"]
+    TL --> RG["RAG / CloudKaho<br/>Phase 1-2 已写好"]
 ```
 
 **核心认知**：MCP 层**不包含任何业务逻辑**，它只做协议转换。业务逻辑在 Phase 3 的 Tool 里。
