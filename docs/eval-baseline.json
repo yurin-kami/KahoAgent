@@ -1,0 +1,35 @@
+{
+  "golden_set": 78,
+  "top_k": 5,
+  "generated_at": "2026-09-04T00:00:00Z",
+  "strategies": [
+    {
+      "name": "vector-only",
+      "recall_at_5": 0.314,
+      "mrr": 0.66,
+      "p50_ms": 138,
+      "p99_ms": 318
+    },
+    {
+      "name": "bm25-only",
+      "recall_at_5": 0.363,
+      "mrr": 0.723,
+      "p50_ms": 10,
+      "p99_ms": 90
+    },
+    {
+      "name": "hybrid-rrf",
+      "recall_at_5": 0.358,
+      "mrr": 0.719,
+      "p50_ms": 150,
+      "p99_ms": 718
+    },
+    {
+      "name": "hybrid-rrf+rerank",
+      "recall_at_5": 0.441,
+      "mrr": 0.818,
+      "p50_ms": 1884,
+      "p99_ms": 4089
+    }
+  ]
+}

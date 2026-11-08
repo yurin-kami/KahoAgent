@@ -147,6 +147,20 @@ services:
       retries: 5
     mem_limit: 1g
 
+  # ── 链路追踪（可选） ─────────────────────────────────
+  # all-in-one 镜像自带 collector + UI，足够本地用。
+  # 只在需要看 trace 时启动：podman-compose up -d jaeger
+  # UI: http://127.0.0.1:16686
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: kaho-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"   # UI
+      - "4318:4318"     # OTLP/HTTP（本项目用的就是这个）
+    mem_limit: 256m
+
 volumes:
   etcd_data:
   minio_data:

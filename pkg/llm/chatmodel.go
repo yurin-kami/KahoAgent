@@ -2,7 +2,6 @@ package llm
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,6 +14,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 
 	"github.com/yurin-kami/KahoAgent/internal/metrics"
+	"github.com/yurin-kami/KahoAgent/internal/reqstats"
 )
 
 // EinoChatModel 把 OpenAI 兼容的 chat completions 接口适配成 Eino 的
@@ -40,6 +40,12 @@ type EinoChatModel struct {
 
 	temperature float32
 	client      *http.Client
+
+	// up 负责熔断与备用上游。两个模型共用同一实现，
+	// 避免「精排切了备用、对话没切」这种分叉。
+	up       *upstream
+	fallback *Endpoint
+	breaker  *Breaker
 
 	// tools 是通过 WithTools 预绑定的工具。
 	// Agent 走的是「调用时传选项」的路径，此字段仅为兼容
@@ -74,6 +80,24 @@ func WithEinoHTTPClient(h *http.Client) EinoChatOption {
 	}
 }
 
+// WithEinoFallback 配置备用上游。
+//
+// ⚠️ 备用只在「还没开始流式输出」时生效：一旦 SSE 已经把头推给客户端，
+// 中途换模型会得到两段拼接的回答，比分段失败更糟。
+// 所以这里优先保证的是一次完整的流。
+func WithEinoFallback(ep Endpoint) EinoChatOption {
+	return func(c *EinoChatModel) { c.fallback = &ep }
+}
+
+// WithEinoBreaker 注入自定义熔断器（测试用）。
+func WithEinoBreaker(b *Breaker) EinoChatOption {
+	return func(c *EinoChatModel) {
+		if b != nil {
+			c.breaker = b
+		}
+	}
+}
+
 func NewEinoChatModel(apiKey, baseURL, modelName string, opts ...EinoChatOption) *EinoChatModel {
 	c := &EinoChatModel{
 		apiKey:  apiKey,
@@ -86,6 +110,10 @@ func NewEinoChatModel(apiKey, baseURL, modelName string, opts ...EinoChatOption)
 	}
 	for _, opt := range opts {
 		opt(c)
+	}
+	if c.up == nil {
+		c.up = newUpstream(Endpoint{APIKey: c.apiKey, BaseURL: c.baseURL, Model: c.model},
+			c.fallback, c.breaker, c.client)
 	}
 	return c
 }
@@ -174,14 +202,18 @@ type agentResponse struct {
 	} `json:"error"`
 }
 
-// recordUsage 把 token 用量上报到指标。
+// recordUsage 把 token 用量上报到指标与请求级统计。
+//
 // usage 为 nil 时静默跳过 —— 有的兼容实现不返回它，
 // 不该因此让整个请求失败。
-func (c *EinoChatModel) recordUsage(u *agentUsage) {
+func (c *EinoChatModel) recordUsage(ctx context.Context, u *agentUsage) {
 	if u == nil {
 		return
 	}
 	metrics.RecordTokens(c.model, u.PromptTokens, u.CompletionTokens)
+	// 请求级统计：前端要展示「这一次」用了多少 token。
+	// From 可能返回 nil（比如精排等非请求链路），AddTokens 对 nil 安全。
+	reqstats.From(ctx).AddTokens(u.PromptTokens, u.CompletionTokens)
 }
 
 // Generate 一次性生成，实现 model.BaseChatModel。
@@ -207,7 +239,7 @@ func (c *EinoChatModel) Generate(ctx context.Context, input []*schema.Message, o
 		return nil, fmt.Errorf("response contained no choices")
 	}
 
-	c.recordUsage(parsed.Usage)
+	c.recordUsage(ctx, parsed.Usage)
 	return toSchemaMessage(parsed.Choices[0].Message), nil
 }
 
@@ -221,21 +253,11 @@ func (c *EinoChatModel) Stream(ctx context.Context, input []*schema.Message, opt
 		return nil, err
 	}
 
-	req, err := c.newHTTPRequest(ctx, body)
+	// upstream 统一构建请求并带上 Accept: text/event-stream，
+	// 同时在这里完成「429/5xx 切备用」的重试。
+	resp, err := c.up.post(ctx, body, true)
 	if err != nil {
 		return nil, err
-	}
-	// SSE 需要显式声明，某些网关据此决定是否分块传输
-	req.Header.Set("Accept", "text/event-stream")
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		defer resp.Body.Close()
-		errBody, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncate(string(errBody), 300))
 	}
 
 	sr, sw := schema.Pipe[*schema.Message](streamBuffer)
@@ -293,7 +315,7 @@ func (c *EinoChatModel) pumpSSE(ctx context.Context, body io.Reader, sw *schema.
 		// ⚠️ usage 只出现在**最后一个** chunk 里，而那个 chunk 的
 		// choices 通常是空的 —— 所以必须在下面的 len(Choices)==0
 		// 提前 continue 之前处理，否则 token 统计永远是 0。
-		c.recordUsage(chunk.Usage)
+		c.recordUsage(ctx, chunk.Usage)
 
 		if len(chunk.Choices) == 0 {
 			continue
@@ -374,25 +396,10 @@ func (c *EinoChatModel) buildRequest(input []*schema.Message, opts []model.Optio
 	return json.Marshal(req)
 }
 
-func (c *EinoChatModel) newHTTPRequest(ctx context.Context, body []byte) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
-		c.baseURL+"/chat/completions", bytes.NewReader(body))
-	if err != nil {
-		return nil, fmt.Errorf("build request: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	return req, nil
-}
-
 func (c *EinoChatModel) do(ctx context.Context, body []byte) ([]byte, error) {
-	req, err := c.newHTTPRequest(ctx, body)
+	resp, err := c.up.post(ctx, body, false)
 	if err != nil {
 		return nil, err
-	}
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -400,9 +407,7 @@ func (c *EinoChatModel) do(ctx context.Context, body []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read body: %w", err)
 	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncate(string(raw), 300))
-	}
+	// post 已保证状态码 200，这里不再检查
 	return raw, nil
 }
 

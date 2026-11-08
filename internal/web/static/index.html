@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>KahoAgent · 文档问答</title>
+        <meta name="description" content="基于混合检索与 ReAct Agent 的文档问答控制台" />
+        <link rel="stylesheet" href="/static/app.css" />
+    </head>
+    <body>
+        <div class="app">
+            <header class="top">
+                <div class="brand">
+                    <span class="mark" aria-hidden="true"></span>
+                    <span class="name">KahoAgent</span>
+                    <span class="tag">RAG · MCP</span>
+                </div>
+                <div class="top-actions">
+                    <span id="status" class="status" data-state="idle">就绪</span>
+                    <button id="reset" class="ghost" type="button">清空会话</button>
+                </div>
+            </header>
+
+            <main class="main">
+                <section class="conversation" aria-label="对话">
+                    <div id="empty" class="empty">
+                        <h1>问点什么</h1>
+                        <p>
+                            混合检索（向量 + BM25）→ RRF 融合 → LLM
+                            精排。回答附来源，右侧能看到检索与工具调用的轨迹。
+                        </p>
+                        <div class="chips">
+                            <button class="chip" type="button" data-q="缓存穿透怎么解决？">
+                                缓存穿透怎么解决？
+                            </button>
+                            <button class="chip" type="button" data-q="Redis 的持久化有哪几种方式，怎么选？">
+                                Redis 持久化怎么选？
+                            </button>
+                            <button class="chip" type="button" data-q="Kafka 怎么保证消息不丢？">
+                                Kafka 怎么保证不丢消息？
+                            </button>
+                            <button class="chip" type="button" data-q="帮我找一下关于 RRF 融合的文档">
+                                找一下 RRF 的文档
+                            </button>
+                        </div>
+                    </div>
+                    <div id="messages" class="messages" aria-live="polite"></div>
+                </section>
+
+                <aside class="rail" aria-label="运行信息">
+                    <section class="panel">
+                        <h2>本次运行</h2>
+                        <dl class="metrics">
+                            <div><dt>首字</dt><dd id="m-ttft">—</dd></div>
+                            <div><dt>总耗时</dt><dd id="m-total">—</dd></div>
+                            <div><dt>输出</dt><dd id="m-chars">—</dd></div>
+                            <div><dt>事件</dt><dd id="m-events">—</dd></div>
+                            <div><dt>Token</dt><dd id="m-tokens">—</dd></div>
+                            <div><dt>检索缓存</dt><dd id="m-cache">—</dd></div>
+                        </dl>
+                        <p class="hint">
+                            首字/总耗时为浏览器实测；Token 与缓存来自服务端 stats 事件。
+                        </p>
+                    </section>
+
+                    <section class="panel">
+                        <h2>来源</h2>
+                        <ol id="sources" class="sources">
+                            <li class="muted">等待检索…</li>
+                        </ol>
+                    </section>
+
+                    <section class="panel grow">
+                        <h2>轨迹</h2>
+                        <ol id="trace" class="trace">
+                            <li class="muted">尚无事件</li>
+                        </ol>
+                    </section>
+                </aside>
+            </main>
+
+            <form id="composer" class="composer">
+                <label class="sr-only" for="input">输入问题</label>
+                <textarea
+                    id="input"
+                    rows="1"
+                    placeholder="问一个关于文档的问题…（Enter 发送，Shift+Enter 换行）"
+                ></textarea>
+                <button id="send" class="send" type="submit">发送</button>
+            </form>
+        </div>
+        <script src="/static/app.js" defer></script>
+    </body>
+</html>

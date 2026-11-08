@@ -65,3 +65,21 @@ type VectorStore interface {
 	// DeleteByDoc 删除某文档的全部 Chunk。
 	DeleteByDoc(ctx context.Context, docID string) error
 }
+
+// KeywordStore 是关键词索引的写入端（PostgreSQL chunks 表）。
+//
+// 为什么不把两个 Store 合成一个接口：它们索引的是完全不同的东西 ——
+// 一个存向量（语义召回），一个存词元（BM25 召回）。合并会让
+// 「只想用向量库」的场景（比如纯向量评估脚本）被迫依赖 PostgreSQL。
+// 分离之后，「有没有关键词索引」只是一个可选的装配项。
+//
+// ⚠️ 实现必须与 VectorStore 使用同一套 Chunk.ID，否则 RRF 无法按 ID
+// 融合两路结果 —— 这正是 retriever.ChunkWriter 与 Milvus 共用
+// sha256(docID#index) 的原因。
+type KeywordStore interface {
+	// Upsert 写入或覆盖 chunks，按 Chunk.ID 幂等。
+	Upsert(ctx context.Context, chunks []Chunk) error
+
+	// DeleteByDoc 删除某文档的全部 Chunk。
+	DeleteByDoc(ctx context.Context, docID string) error
+}

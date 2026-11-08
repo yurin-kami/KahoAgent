@@ -39,10 +39,14 @@ group_id = "kahoagent-worker"
 #     model           = "qwen-plus"
 #     embedding_model = "text-embedding-v3"   # 1024 维
 #
-#   DeepSeek
-#     base_url        = "https://api.deepseek.com/v1"
+#   DeepSeek（对话）
+#     base_url        = "https://api.deepseek.com"
 #     model           = "deepseek-chat"
-#     （DeepSeek 无 embedding 接口，需另配）
+#     ⚠️ DeepSeek 没有 embedding 接口，向量化必须另配：
+#        embedding_base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+#        embedding_api_key  = "sk-..."        # 另一家的 key
+#        embedding_model    = "text-embedding-v3"
+#     （也可以换 SiliconFlow 的 BAAI/bge-m3，同为 1024 维）
 #
 #   OpenAI
 #     base_url        = "https://api.openai.com/v1"
@@ -52,7 +56,15 @@ provider = "dashscope"
 api_key = ""                                                        # 留空则读环境变量
 base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 model = "qwen-plus"
+# 精排可选独立模型：推理模型（deepseek-flash / reasoner）逐条打分很慢，
+# 且小 max_tokens 下 content 可能为空；精排建议用非推理模型。
+# rerank_model = "deepseek-chat"
 embedding_model = "text-embedding-v3"
+
+# embedding 可以独立于对话模型（不同供应商）。
+# 留空时回退到上面的 api_key / base_url，兼容单供应商配置。
+# embedding_base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+# embedding_api_key  = ""
 
 # ⚠️ 必须与 embedding_model 的实际输出维度一致。
 #    不一致会导致 Milvus 插入失败（维度校验不通过）。
@@ -60,6 +72,32 @@ embedding_model = "text-embedding-v3"
 #      text-embedding-3-small  → 1536
 embedding_dim = 1024
 
+# ── 稳定性 ────────────────────────────────────────────
+# 备用模型：主模型返回 429 / 5xx 时自动切换。
+# 留空则关闭，行为与之前一致。
+# 同供应商换小模型最省事（qwen-plus → qwen-turbo 是独立配额），
+# 也可以指向另一家（base_url / api_key 留空时继承主模型的值）。
+# fallback_model = "qwen-turbo"
+# fallback_base_url = ""
+# fallback_api_key = ""
+
+# 历史字符预算（近似 token）。超限时从最旧的消息开始丢，
+# 而不是报错。中文约 1 字 ≈ 1 token。
+max_history_chars = 12000
+
 [mcp]
 transport = "stdio"   # stdio（Claude Desktop）/ http（远程）
 port = 3000
+
+[otel]
+# 链路追踪。默认关闭：本地开发不必为了跑通服务先起 collector。
+# 打开后 server 与 worker 会把 span 发到 OTLP/HTTP 端点
+# （docker-compose 里的 jaeger 服务已配好，UI 在 :16686）。
+enabled = false
+# ⚠️ 不要带 http:// 前缀，OTLP exporter 只接受 host:port，
+# 带 scheme 会报 "invalid endpoint"。
+endpoint = "127.0.0.1:4318"
+insecure = true          # 明文 HTTP；线上远端 collector 应设为 false
+service_name = "kahoagent"
+sample_ratio = 1.0      # 0~1；生产别开 1.0，SSE 长连接会把 span 量放大
+

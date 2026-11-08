@@ -1,7 +1,6 @@
 package llm
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -26,6 +25,14 @@ type ChatModel struct {
 	// 无法判断改动是否真的带来提升。
 	temperature float32
 	client      *http.Client
+
+	// up 负责「主上游 + 备用 + 熔断」。不在 complete 里直接 Do，
+	// 是为了让 ChatModel 与 EinoChatModel 共享同一套容错行为。
+	up *upstream
+
+	// fallback/breaker 只用于构造 upstream，运行期不直接使用。
+	fallback *Endpoint
+	breaker  *Breaker
 }
 
 type ChatOption func(*ChatModel)
@@ -42,6 +49,23 @@ func WithChatHTTPClient(h *http.Client) ChatOption {
 	}
 }
 
+// WithChatFallback 配置备用上游（通常在 429 / 5xx 时接管）。
+//
+// 只换模型不换供应商也能起作用：DashScope 的 qwen-turbo 与
+// qwen-plus 是独立的并发配额。
+func WithChatFallback(ep Endpoint) ChatOption {
+	return func(c *ChatModel) { c.fallback = &ep }
+}
+
+// WithChatBreaker 注入自定义熔断器（测试用）。
+func WithChatBreaker(b *Breaker) ChatOption {
+	return func(c *ChatModel) {
+		if b != nil {
+			c.breaker = b
+		}
+	}
+}
+
 func NewChatModel(apiKey, baseURL, model string, opts ...ChatOption) *ChatModel {
 	c := &ChatModel{
 		apiKey:      apiKey,
@@ -52,6 +76,10 @@ func NewChatModel(apiKey, baseURL, model string, opts ...ChatOption) *ChatModel 
 	}
 	for _, opt := range opts {
 		opt(c)
+	}
+	if c.up == nil {
+		c.up = newUpstream(Endpoint{APIKey: c.apiKey, BaseURL: c.baseURL, Model: c.model},
+			c.fallback, c.breaker, c.client)
 	}
 	return c
 }
@@ -85,8 +113,14 @@ type chatResponse struct {
 // Score 实现 retriever.Scorer，供精排使用。
 //
 // 限制输出长度是刻意的：精排只需要一个 0-10 的数字。
+//
+// ⚠️ 但预算不能太小：推理模型（如 deepseek-flash）会先输出
+// reasoning_content，16 个 token 会被它吃光，content 为空、
+// finish_reason=length —— 表现为「所有候选都解析不出分数」。
+// 256 对普通模型没有额外成本（它们输出一个数字就 stop），
+// 对推理模型则够用。
 func (c *ChatModel) Score(ctx context.Context, prompt string) (string, error) {
-	return c.complete(ctx, prompt, 16)
+	return c.complete(ctx, prompt, 256)
 }
 
 // Complete 发起一次不限长度的补全，供其他场景使用。
@@ -105,26 +139,16 @@ func (c *ChatModel) complete(ctx context.Context, prompt string, maxTokens int) 
 		return "", fmt.Errorf("marshal request: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
-		c.baseURL+"/chat/completions", bytes.NewReader(body))
+	// 统一走 upstream：熔断、429/5xx 切备用都在里面完成。
+	resp, err := c.up.post(ctx, body, false)
 	if err != nil {
-		return "", fmt.Errorf("build request: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("request failed: %w", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	raw, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("read body: %w", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncate(string(raw), 300))
 	}
 
 	var parsed chatResponse

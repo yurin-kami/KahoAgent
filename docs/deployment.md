@@ -2,12 +2,19 @@
 
 > 实测环境：podman 5.x / Windows 11 + WSL2，构建于 2026-08-20。
 
-## 镜像体积：110MB，没达到规划的 30MB
+## 镜像体积：110MB → 约 150MB，没达到规划的 30MB
+
+> **2026-11 更新**：P1 接通异步入库后，镜像里新增了第三个二进制
+> `kaho-worker`。它与 server/mcp 共用绝大部分依赖，按前两个各约 41MB
+> 估算，镜像从 110MB 涨到**约 150MB**。该数字是估算而非实测 ——
+> 本轮改动所在环境没有可用的容器运行时，下次真正构建时请用
+> `podman history` 复核本表。取舍没变：三个角色共用一个镜像，
+> 换来的是依赖版本永远一致。
 
 `docs/IMPLEMENTATION.md` 的 Phase 6 验收项写的是「多阶段构建，最终镜像 <30MB」。
-实测 **110MB**。这一节说明差距从哪来、为什么不打算硬压。
+实测 **110MB**（2026-08，两个二进制）。这一节说明差距从哪来、为什么不打算硬压。
 
-分层实测（`podman history`）：
+分层实测（`podman history`，2026-08）：
 
 | 层 | 体积 | 内容 |
 |---|---|---|
@@ -16,8 +23,9 @@
 | dict | 13.8MB | gojieba 中文词典 |
 | kaho-mcp | 42.4MB | MCP Server 二进制 |
 | kaho-server | 41.6MB | HTTP 服务二进制 |
+| kaho-worker | ≈41MB | 入库 worker 二进制（估算，未实测）|
 | config.example.toml | 4.1kB | |
-| **合计** | **110MB** | |
+| **合计** | **≈151MB** | |
 
 差距的根源是 **cgo**，而 cgo 来自 gojieba：
 
@@ -103,6 +111,34 @@ gojieba 的词典路径是在 `init()` 里用 `runtime.Caller` 算出来的
 `TestNewSegmenter_HonorsTheEnvVar`）。后者是反证：指向不存在的目录必须失败，
 否则无法区分「环境变量生效了」和「环境变量被忽略、走的还是默认路径」——
 两种情况下第一个测试的结果完全一样。
+
+## 三个角色，一个镜像
+
+镜像里现在有三个二进制，用 `--entrypoint` 决定容器扮演什么角色：
+
+| 角色 | 入口 | 端口 | 说明 |
+|---|---|---|---|
+| HTTP 服务 | `/app/kaho-server`（默认） | 8080 | 对话 + 上传 |
+| MCP Server | `/app/kaho-mcp` | stdio | 给 Claude Desktop / Cursor |
+| 入库 worker | `/app/kaho-worker` | 9191（指标） | 消费 Kafka，双写 Milvus/PG |
+
+```bash
+# worker：同一个镜像，换 entrypoint
+docker run --entrypoint /app/kaho-worker \
+  -v ./config.toml:/etc/kaho/config.toml:ro \
+  -e KAHO_CONFIG=/etc/kaho/config.toml \
+  -e DASHSCOPE_API_KEY=sk-xxx \
+  -p 9191:9191 \
+  kahoagent
+```
+
+为什么不拆成三个镜像：拆开之后，三个镜像各自的 `go.mod` 解析结果
+可能在某个时间点漂移（比如重建镜像时上游发了新版本），
+而 server 和 worker 对「同一条 chunk 的 ID 规则」必须完全一致 ——
+这种漂移只会在入库数据上表现为极难排查的重复/缺失。
+一个镜像、三个入口，版本天然锁定。
+
+代价是镜像多了约 41MB（见上表），对非 Serverless 场景可以接受。
 
 ## 配置
 

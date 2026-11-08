@@ -19,12 +19,23 @@ type IngestTask struct {
 	Raw   []byte `json:"raw"`
 }
 
-// maxTaskBytes 限制单条消息大小。
+// MaxTaskBytes 限制单条 Kafka 消息的大小。
 //
 // Kafka broker 默认 message.max.bytes 约为 1MB，超出会被 broker 拒绝。
 // 在 Producer 侧提前拦截，好过让消息发出去才失败 —— 后者的错误信息
 // 来自 broker，排查起来远不如这里直白。
-const maxTaskBytes = 900 * 1024
+//
+// ⚠️ 这是**序列化后**的大小，不是文档原文大小。IngestTask.Raw 是 []byte，
+// encoding/json 会把它编码成 base64，体积膨胀约 4/3。因此上传接口
+// 校验的原文上限应该是 MaxRawBytes，而不是这个值 ——
+// 拿 900KB 去卡原文，会导致 700KB 的文档在 Publish 阶段才失败。
+const MaxTaskBytes = 900 * 1024
+
+// MaxRawBytes 是单篇文档原文的安全上限（base64 膨胀后的余量）。
+//
+// 推导：raw * 4/3 + JSON 字段开销 ≤ MaxTaskBytes
+// → raw ≤ 900KB * 3/4 = 675KB。再留一点余量，取 640KB。
+const MaxRawBytes = 640 * 1024
 
 // Producer 把入库任务投递到 Kafka。
 //
@@ -71,9 +82,9 @@ func (p *Producer) Publish(ctx context.Context, task IngestTask) error {
 	if err != nil {
 		return fmt.Errorf("marshal task %s: %w", task.DocID, err)
 	}
-	if len(payload) > maxTaskBytes {
+	if len(payload) > MaxTaskBytes {
 		return fmt.Errorf("task %s is %d bytes, exceeds the %d limit",
-			task.DocID, len(payload), maxTaskBytes)
+			task.DocID, len(payload), MaxTaskBytes)
 	}
 
 	// ⚠️ Key 设为 DocID：Kafka 只保证 partition 内有序。
@@ -82,6 +93,9 @@ func (p *Producer) Publish(ctx context.Context, task IngestTask) error {
 	msg := kafka.Message{
 		Key:   []byte(task.DocID),
 		Value: payload,
+		// 把 W3C trace 上下文写进消息头：这样「上传请求」与
+		// 「worker 入库」在 Jaeger 里是同一条 trace，而不是两条孤立的。
+		Headers: InjectTraceHeaders(ctx),
 	}
 	if err := p.writer.WriteMessages(ctx, msg); err != nil {
 		return fmt.Errorf("publish task %s: %w", task.DocID, err)
@@ -90,3 +104,18 @@ func (p *Producer) Publish(ctx context.Context, task IngestTask) error {
 }
 
 func (p *Producer) Close() error { return p.writer.Close() }
+
+// PublishMessage 投递一条原始 Kafka 消息（死信队列用）。
+//
+// 与 Publish 分开：死信要保留原始 key / value / headers，
+// 而 Publish 只接受结构化的 IngestTask。
+func (p *Producer) PublishMessage(ctx context.Context, msg kafka.Message) error {
+	if len(msg.Value) > MaxTaskBytes {
+		return fmt.Errorf("dead-letter message is %d bytes, exceeds the %d limit",
+			len(msg.Value), MaxTaskBytes)
+	}
+	if err := p.writer.WriteMessages(ctx, msg); err != nil {
+		return fmt.Errorf("publish raw message: %w", err)
+	}
+	return nil
+}

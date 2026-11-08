@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'"
+        />
+        <title>KahoAgent Desktop</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar">
+                <div class="brand">
+                    <span class="mark" aria-hidden="true"></span>
+                    <div>
+                        <div class="name">KahoAgent</div>
+                        <div class="sub">RAG · MCP · Desktop</div>
+                    </div>
+                </div>
+
+                <nav class="nav" aria-label="主导航">
+                    <button class="nav-item is-active" type="button" data-pane="chat">
+                        <span class="ico" aria-hidden="true">◐</span> 对话
+                    </button>
+                    <button class="nav-item" type="button" id="btn-upload">
+                        <span class="ico" aria-hidden="true">↑</span> 上传文档
+                    </button>
+                    <button class="nav-item" type="button" id="btn-settings">
+                        <span class="ico" aria-hidden="true">⚙</span> 设置
+                    </button>
+                </nav>
+
+                <div class="side-note">
+                    <div class="side-label">服务端</div>
+                    <div class="side-value" id="server-label">—</div>
+                </div>
+
+                <div class="side-foot">
+                    <span id="version">v0.1.0</span>
+                    <a id="link-web" href="#" class="link">打开 Web 控制台</a>
+                </div>
+            </aside>
+
+            <main class="main">
+                <header class="main-head">
+                    <div>
+                        <h1>文档问答</h1>
+                        <p class="muted">混合检索 + ReAct Agent，回答附带来源</p>
+                    </div>
+                    <div class="head-actions">
+                        <span id="status" class="status" data-state="idle">就绪</span>
+                        <button id="btn-new" class="ghost" type="button">新会话</button>
+                    </div>
+                </header>
+
+                <div id="empty" class="empty">
+                    <h2>问点什么</h2>
+                    <p>
+                        桌面端直连本地服务。检索命中会显示来源，右侧能看到工具调用与本次用量。
+                    </p>
+                    <div class="chips">
+                        <button class="chip" type="button" data-q="缓存穿透怎么解决？">
+                            缓存穿透怎么解决？
+                        </button>
+                        <button class="chip" type="button" data-q="Kafka 怎么保证消息不丢？">
+                            Kafka 怎么保证不丢消息？
+                        </button>
+                        <button class="chip" type="button" data-q="帮我找一下关于 RRF 融合的文档">
+                            找一下 RRF 的文档
+                        </button>
+                    </div>
+                </div>
+
+                <div id="messages" class="messages" aria-live="polite"></div>
+
+                <form id="composer" class="composer">
+                    <label class="sr-only" for="input">输入问题</label>
+                    <textarea
+                        id="input"
+                        rows="1"
+                        placeholder="问一个关于文档的问题…（Enter 发送，Shift+Enter 换行）"
+                    ></textarea>
+                    <button id="send" class="send" type="submit">发送</button>
+                </form>
+            </main>
+
+            <aside class="rail" aria-label="运行信息">
+                <section class="panel">
+                    <h2>本次运行</h2>
+                    <dl class="metrics">
+                        <div><dt>首字</dt><dd id="m-ttft">—</dd></div>
+                        <div><dt>总耗时</dt><dd id="m-total">—</dd></div>
+                        <div><dt>输出</dt><dd id="m-chars">—</dd></div>
+                        <div><dt>事件</dt><dd id="m-events">—</dd></div>
+                        <div><dt>Token</dt><dd id="m-tokens">—</dd></div>
+                        <div><dt>检索缓存</dt><dd id="m-cache">—</dd></div>
+                    </dl>
+                </section>
+
+                <section class="panel">
+                    <h2>来源</h2>
+                    <ol id="sources" class="sources">
+                        <li class="muted">等待检索…</li>
+                    </ol>
+                </section>
+
+                <section class="panel grow">
+                    <h2>轨迹</h2>
+                    <ol id="trace" class="trace">
+                        <li class="muted">尚无事件</li>
+                    </ol>
+                </section>
+            </aside>
+        </div>
+
+        <dialog id="settings" class="settings">
+            <form method="dialog">
+                <h2>设置</h2>
+                <label for="server-input">服务端地址</label>
+                <input id="server-input" type="url" spellcheck="false" placeholder="http://127.0.0.1:8080" />
+                <p class="hint">
+                    只支持 http/https。API Key 保存在服务端，桌面端不接触。
+                </p>
+                <div class="settings-actions">
+                    <button type="button" class="ghost" id="btn-cancel">取消</button>
+                    <button type="button" class="send" id="btn-save">保存</button>
+                </div>
+            </form>
+        </dialog>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+        <script src="app.js"></script>
+    </body>
+</html>

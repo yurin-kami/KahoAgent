@@ -1,0 +1,100 @@
+# 检索质量回归门禁
+#
+# ⚠️ 为什么是 workflow_dispatch 而不是 pull_request：
+#   1. 全量评估要跑 78 条查询 × 4 种策略，精排那一路每条要调一次 LLM，
+#      单次成本与耗时都不适合挂在每个 PR 上。
+#   2. 评估依赖三样东西，GitHub 托管的 runner 拿不到：
+#      - 77 篇真实语料（CloudKaho 文档，不在本仓库）
+#      - 已灌好的 Milvus / PostgreSQL / Redis 数据
+#      - DASHSCOPE_API_KEY
+#   所以这个 job 跑在带语料的 self-hosted runner 上，由人工在发版前触发。
+#
+# 门禁逻辑本身（internal/eval/gate.go）有完整的单元测试，
+# 在普通 CI 里就会跑 —— 这里验证的是「真实数据上的质量没有回退」。
+name: Retrieval quality gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      corpus_dir:
+        description: "语料目录（runner 上的绝对路径）"
+        required: true
+      baseline:
+        description: "基线 JSON"
+        default: docs/eval-baseline.json
+      with_rerank:
+        description: "是否评估 LLM 精排（更慢、更贵，但这是简历上的数字来源）"
+        type: boolean
+        default: true
+
+jobs:
+  gate:
+    # 需要预先安装 Milvus / PostgreSQL / Redis / Kafka 的 runner，
+    # 以及已经导入的语料。见 docs/upgrade-plan.md 的 P2。
+    runs-on: [self-hosted, kaho-eval]
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Verify the C++ toolchain
+        run: g++ --version
+
+      - name: Check prerequisites
+        env:
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          KAHO_CONFIG: ${{ secrets.KAHO_CONFIG_PATH }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DASHSCOPE_API_KEY:-}" ]; then
+            echo "::error::缺少 DASHSCOPE_API_KEY secret —— 评估要调 embedding 与精排模型"
+            exit 1
+          fi
+          if [ -z "${KAHO_CONFIG:-}" ] || [ ! -f "${KAHO_CONFIG}" ]; then
+            echo "::error::缺少 KAHO_CONFIG_PATH（config.toml 路径）"
+            exit 1
+          fi
+          if [ ! -d "${{ inputs.corpus_dir }}" ]; then
+            echo "::error::语料目录不存在：${{ inputs.corpus_dir }}"
+            exit 1
+          fi
+
+      # 每次从零重建评估语料。不重建的话，上一次残留的 chunk 会让
+      # Recall 虚高 —— 评估集和索引必须一一对应。
+      - name: Rebuild corpus
+        env:
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          KAHO_CONFIG: ${{ secrets.KAHO_CONFIG_PATH }}
+        run: |
+          go run -tags=corpus ./scripts/eval/ingest_corpus.go \
+            -reset "${{ inputs.corpus_dir }}"
+
+      - name: Run eval with gate
+        env:
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          KAHO_CONFIG: ${{ secrets.KAHO_CONFIG_PATH }}
+        run: |
+          set -euo pipefail
+          ARGS=""
+          if [ "${{ inputs.with_rerank }}" = "true" ]; then ARGS="-rerank"; fi
+          go run -tags=eval ./scripts/eval/eval.go \
+            $ARGS \
+            -json eval-report.json \
+            -baseline "${{ inputs.baseline }}"
+
+      # 即使门禁失败也要留档：失败时的数字正是排查的起点。
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: |
+            eval-report.json
+            docs/eval-results.md
+          if-no-files-found: warn
