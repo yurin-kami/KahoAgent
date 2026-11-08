@@ -63,10 +63,10 @@ RUN CGO_ENABLED=1 GOOS=linux go build \
     CGO_ENABLED=1 GOOS=linux go build \
     -trimpath \
     -ldflags="-s -w" \
-    -o /out/kaho-mcp ./cmd/mcp && \\
-    CGO_ENABLED=1 GOOS=linux go build \\
-    -trimpath \\
-    -ldflags="-s -w" \\
+    -o /out/kaho-mcp ./cmd/mcp && \
+    CGO_ENABLED=1 GOOS=linux go build \
+    -trimpath \
+    -ldflags="-s -w" \
     -o /out/kaho-worker ./cmd/worker
 
 # 把 gojieba 的词典从 module 缓存里捞出来。
