@@ -127,7 +127,7 @@ func run(dir string, reset, dryRun bool, maxDocs int, exclude map[string]bool) e
 	}
 
 	// ---- 组装两个存储 ----
-	embedder := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	embedder := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 
 	store, err := vectorstore.NewMilvusStore(ctx, cfg.Milvus.Addr,

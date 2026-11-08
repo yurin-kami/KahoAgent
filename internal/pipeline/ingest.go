@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"log/slog"
 
+	"go.opentelemetry.io/otel/attribute"
+
 	"github.com/yurin-kami/KahoAgent/internal/rag"
+	"github.com/yurin-kami/KahoAgent/internal/trace"
 )
 
 // Ingester 是文档入库的编排器。
@@ -23,12 +26,49 @@ type Ingester struct {
 	chunker  rag.Chunker
 	embedder rag.Embedder
 	store    rag.VectorStore
-	logger   *slog.Logger
+	// keyword 可为 nil：纯向量场景（评估脚本、单测）不需要 PostgreSQL。
+	// 一旦装配，Run 会在写完向量后把同一批 chunk 写进关键词索引，
+	// 两条召回路径的数据才能在同一个版本上对齐。
+	keyword rag.KeywordStore
+	// replace 为 true 时，写入前先按 docID 清空旧块。
+	//
+	// 解决的是「更新后变短」的场景：chunk ID 是 sha256(docID#index)，
+	// 新版本只有 8 块而旧版本有 12 块时，编号 8~11 的旧块不会被覆盖，
+	// 会永远留在索引里 —— 检索结果里就出现了同一篇文档的两段历史内容，
+	// 拼接起来是一篇根本不存在的文档。
+	replace bool
+	logger  *slog.Logger
 }
 
-// NewIngester 组装入库管道。三个依赖都是必需的，缺失即刻报错 ——
+// IngesterOption 是可选装配项。
+//
+// 用 Option 而不是把 keyword 加进 NewIngester 的必填参数，是为了不破坏
+// 现有调用方（评估脚本、集成测试、单元测试）—— 它们只关心向量那条路。
+type IngesterOption func(*Ingester)
+
+// WithKeywordStore 装配关键词索引写入端（PostgreSQL）。
+//
+// ⚠️ 装配顺序有讲究：Run 先写 Milvus 再写 PG。若 PG 写失败，Run 返回 error，
+// consumer 不提交 offset，消息会被重新消费 —— 而 Milvus 的写入是
+// 按 Chunk.ID 的 upsert，重复执行不会产生重复数据。反过来先写 PG 也一样，
+// 关键是**两个存储的写入都必须是幂等的**，否则重试会制造脏数据。
+func WithKeywordStore(k rag.KeywordStore) IngesterOption {
+	return func(i *Ingester) { i.keyword = k }
+}
+
+// WithStaleCleanup 让入库在写入前先清空该文档的旧块。
+//
+// ⚠️ 为什么默认关闭：评估脚本（scripts/eval/ingest_corpus.go）是
+// 一次性全量重建，清空再写入会让「删了一半时 embedding 失败」的代价
+// 从「部分未更新」变成「整篇消失」。而在线上传路径必须打开 ——
+// 用户改短文档是常态，残留的尾部块会被检索出来，比整篇消失更难发现。
+func WithStaleCleanup() IngesterOption {
+	return func(i *Ingester) { i.replace = true }
+}
+
+// NewIngester 组装入库管道。三个核心依赖都是必需的，缺失即刻报错 ——
 // 让 nil 依赖在启动时暴露，而不是等到第一次入库时空指针。
-func NewIngester(chunker rag.Chunker, embedder rag.Embedder, store rag.VectorStore, logger *slog.Logger) (*Ingester, error) {
+func NewIngester(chunker rag.Chunker, embedder rag.Embedder, store rag.VectorStore, logger *slog.Logger, opts ...IngesterOption) (*Ingester, error) {
 	if chunker == nil {
 		return nil, fmt.Errorf("chunker must not be nil")
 	}
@@ -41,7 +81,11 @@ func NewIngester(chunker rag.Chunker, embedder rag.Embedder, store rag.VectorSto
 	if logger == nil {
 		logger = slog.Default()
 	}
-	return &Ingester{chunker: chunker, embedder: embedder, store: store, logger: logger}, nil
+	ing := &Ingester{chunker: chunker, embedder: embedder, store: store, logger: logger}
+	for _, opt := range opts {
+		opt(ing)
+	}
+	return ing, nil
 }
 
 // Run 将一篇文档切块、向量化并写入向量库，返回写入的块数。
@@ -54,11 +98,19 @@ func (i *Ingester) Run(ctx context.Context, docID string, raw []byte) (int, erro
 		return 0, fmt.Errorf("docID must not be empty")
 	}
 
+	// 入库的 trace：worker 侧每个文档一条，记录耗时与块数。
+	// doc_id 作为属性而不是 span 名 —— span 名要可聚合，
+	// 把高基数的 ID 放进名字会让 Jaeger 里出现几十万个不同操作名。
+	ctx, span := trace.Tracer().Start(ctx, "ingest.document")
+	defer span.End()
+	span.SetAttributes(attribute.String("ingest.doc_id", docID))
+
 	// 1. 分块
 	chunks, err := i.chunker.Chunk(ctx, docID, raw)
 	if err != nil {
 		return 0, fmt.Errorf("chunk doc %s: %w", docID, err)
 	}
+	span.SetAttributes(attribute.Int("ingest.chunks", len(chunks)))
 	// 空文档返回 0 而非报错：上传一个空文件是合法操作，不是故障。
 	// 若当成错误，Kafka 侧会不停重试这条永远不会成功的消息。
 	if len(chunks) == 0 {
@@ -86,9 +138,41 @@ func (i *Ingester) Run(ctx context.Context, docID string, raw []byte) (int, erro
 		return 0, fmt.Errorf("doc %s: got %d vectors for %d chunks", docID, len(vectors), len(chunks))
 	}
 
-	// 4. 写入
+	// 3.5 清理旧块（按需）。
+	//
+	// 放在 embedding 之后而不是最前面：向量化失败时旧版本仍然可用，
+	// 不会出现「索引里什么都没有」的窗口。代价是这一步之后到 upsert
+	// 完成前有几毫秒的空窗，但 Kafka 的同一 partition 有序消费保证了
+	// 同一文档不会与其他写操作并发。
+	if i.replace {
+		if err := i.store.DeleteByDoc(ctx, docID); err != nil {
+			return 0, fmt.Errorf("clear old chunks of doc %s: %w", docID, err)
+		}
+		if i.keyword != nil {
+			if err := i.keyword.DeleteByDoc(ctx, docID); err != nil {
+				return 0, fmt.Errorf("clear old chunks of doc %s from keyword store: %w", docID, err)
+			}
+		}
+	}
+
+	// 4. 写入向量库
 	if err := i.store.Upsert(ctx, chunks, vectors); err != nil {
 		return 0, fmt.Errorf("upsert %d chunks of doc %s: %w", len(chunks), docID, err)
+	}
+
+	// 5. 写入关键词索引。
+	//
+	// 这一步是「混合检索在异步链路里也成立」的前提：只写 Milvus 的话，
+	// 上传的文档能被子句/向量召回，但永远进不了 BM25 —— 而混合检索
+	// 的另一半会安静地少一路召回，指标不会报错，只会变差。
+	//
+	// 失败时不回滚 Milvus：Milvus 是幂等 upsert，consumer 重试会重写一遍；
+	// 分布式事务在这里既昂贵又没必要。
+	if i.keyword != nil {
+		if err := i.keyword.Upsert(ctx, chunks); err != nil {
+			return 0, fmt.Errorf("index %d chunks of doc %s into keyword store: %w",
+				len(chunks), docID, err)
+		}
 	}
 
 	i.logger.Info("ingested document",
@@ -107,6 +191,11 @@ func (i *Ingester) Delete(ctx context.Context, docID string) error {
 	}
 	if err := i.store.DeleteByDoc(ctx, docID); err != nil {
 		return fmt.Errorf("delete doc %s: %w", docID, err)
+	}
+	if i.keyword != nil {
+		if err := i.keyword.DeleteByDoc(ctx, docID); err != nil {
+			return fmt.Errorf("delete doc %s from keyword store: %w", docID, err)
+		}
 	}
 	i.logger.Info("deleted document", "doc_id", docID)
 	return nil

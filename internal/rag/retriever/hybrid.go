@@ -9,9 +9,13 @@ import (
 
 	einoretriever "github.com/cloudwego/eino/components/retriever"
 	"github.com/cloudwego/eino/schema"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 
 	"github.com/yurin-kami/KahoAgent/internal/metrics"
 	"github.com/yurin-kami/KahoAgent/internal/rag"
+	"github.com/yurin-kami/KahoAgent/internal/reqstats"
+	"github.com/yurin-kami/KahoAgent/internal/trace"
 )
 
 // 编译期断言：确保实现了 eino 的接口。
@@ -131,6 +135,16 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 
 	start := time.Now()
 
+	// 整条检索链路的父 span。子 span（各路召回、精排）会挂在它下面，
+	// 在 Jaeger 里看就是一张瀑布图 —— 这比 Prometheus 的分段耗时多看一层：
+	// 指标告诉你「rerank 慢了」，trace 告诉你是哪次请求、慢在哪个阶段。
+	//
+	// ⚠️ 只记 query 长度，不记原文：query 可能含用户隐私或误粘的密码，
+	// 而 trace 后端通常没有与业务日志同级的访问控制。
+	ctx, span := trace.Tracer().Start(ctx, "retrieval.hybrid")
+	defer span.End()
+	span.SetAttributes(attribute.Int("retrieval.query_length", len(query)))
+
 	// 1. 查缓存。key 必须包含策略参数 —— 否则改了 topK
 	//    还会命中用旧参数算出的结果。
 	key := h.cacheKey(query)
@@ -141,6 +155,10 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 			// ⚠️ 命中也要记 hybrid 耗时。
 			// 只记未命中的话，P99 会虚高 —— 而用户感知到的是**所有**
 			// 请求的分布，其中相当一部分是毫秒级的缓存命中。
+			span.SetAttributes(attribute.Bool("retrieval.cache_hit", true))
+			// 请求级统计：前端展示「这一次是否命中缓存」。
+			// nil 安全，非请求链路（评估脚本）调用时自动忽略。
+			reqstats.From(ctx).MarkCacheHit()
 			metrics.ObserveRetrieval("hybrid", time.Since(start).Seconds())
 			return hit, nil
 		}
@@ -148,6 +166,7 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 
 	// 2. 双路并发召回
 	rankings, chunkByID := h.recallAll(ctx, query)
+	span.SetAttributes(attribute.Int("retrieval.candidates", len(chunkByID)))
 	if len(chunkByID) == 0 {
 		// 所有路都失败或都没结果。区分这两种情况没有意义 ——
 		// 对调用方而言都是「没查到」。
@@ -175,7 +194,17 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 			candidates = candidates[:rerankCandidates]
 		}
 		rerankStart := time.Now()
-		reranked, err := h.reranker.Rerank(ctx, query, candidates, h.topK)
+		rctx, rspan := trace.Tracer().Start(ctx, "rerank.llm")
+		rspan.SetAttributes(attribute.Int("rerank.candidates", len(candidates)))
+		reranked, err := h.reranker.Rerank(rctx, query, candidates, h.topK)
+		if err != nil {
+			// 精排失败是「降级」不是「请求失败」，所以 status 记为 Error
+			// 但 span 本身正常结束 —— 在 waterfall 里能看出它耗时短、
+			// 且父 span 依然成功。
+			rspan.RecordError(err)
+			rspan.SetStatus(codes.Error, "rerank failed")
+		}
+		rspan.End()
 		metrics.ObserveRetrieval("rerank", time.Since(rerankStart).Seconds())
 		if err != nil {
 			// 精排失败不应让整次检索失败 —— RRF 的结果已经可用了，
@@ -193,6 +222,7 @@ func (h *HybridRetriever) Search(ctx context.Context, query string) ([]rag.Score
 	if h.cache != nil {
 		h.cache.Set(ctx, key, results)
 	}
+	span.SetAttributes(attribute.Int("retrieval.results", len(results)))
 	metrics.ObserveRetrieval("hybrid", time.Since(start).Seconds())
 	return results, nil
 }
@@ -216,7 +246,17 @@ func (h *HybridRetriever) recallAll(ctx context.Context, query string) ([]Rankin
 			defer wg.Done()
 
 			recallStart := time.Now()
-			hits, err := r.Recall(ctx, query, h.recallN)
+			// 每路一个子 span：vector 与 bm25 的耗时差两个数量级，
+			// 而它们是并发跑的 —— 只有 trace 能看出「慢的是哪一路、
+			// 另一路是不是早就返回了」。
+			rctx, rspan := trace.Tracer().Start(ctx, "retrieval."+r.Name())
+			hits, err := r.Recall(rctx, query, h.recallN)
+			rspan.SetAttributes(attribute.Int("retrieval.hits", len(hits)))
+			if err != nil {
+				rspan.RecordError(err)
+				rspan.SetStatus(codes.Error, "recall failed")
+			}
+			rspan.End()
 			// 按路记耗时：vector 和 bm25 差着两个数量级
 			// （Phase 2 实测 135ms vs 4ms），混在一起看不出是哪路慢
 			metrics.ObserveRetrieval(r.Name(), time.Since(recallStart).Seconds())

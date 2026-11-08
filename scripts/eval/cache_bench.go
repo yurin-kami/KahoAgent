@@ -73,7 +73,7 @@ func run() error {
 		return err
 	}
 
-	embedder := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	embedder := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 	store, err := vectorstore.NewMilvusStore(ctx, cfg.Milvus.Addr,
 		cfg.Milvus.Collection, cfg.LLM.EmbeddingDim)

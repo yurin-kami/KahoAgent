@@ -32,14 +32,23 @@ func kafkaBrokers() []string {
 func newTestTopic(t *testing.T) string {
 	t.Helper()
 	topic := fmt.Sprintf("test-%s-%d", t.Name(), time.Now().UnixNano()%1000000)
+	createTopic(t, topic)
+	return topic
+}
+
+// createTopic 建一个单分区 topic 并等 leader 就绪。
+//
+// 单分区是为了让测试可以按 Partition 0 精确读取，
+// 避免消费组 rebalance 带来的不确定性。
+func createTopic(t *testing.T, topic string) {
+	t.Helper()
 
 	conn, err := kafka.Dial("tcp", kafkaBrokers()[0])
 	if err != nil {
-		t.Fatalf("dial kafka: %v\n(是否已执行 podman-compose up -d ?)", err)
+		t.Fatalf("dial kafka: %v\n(是否已执行 bash scripts/local-stack.sh up ?)", err)
 	}
 	defer conn.Close()
 
-	// 单 partition：测试需要确定的消费顺序
 	if err := conn.CreateTopics(kafka.TopicConfig{
 		Topic: topic, NumPartitions: 1, ReplicationFactor: 1,
 	}); err != nil {
@@ -51,12 +60,6 @@ func newTestTopic(t *testing.T) string {
 	//    这期间写入会收到 UnknownTopicOrPartition。必须等到 leader 就绪，
 	//    否则测试会随机失败 —— 典型的分布式系统时序坑。
 	waitForTopic(t, topic)
-
-	// ⚠️ 不删除 topic。
-	//    删除在 Kafka 中是异步的，会引起元数据抖动 —— 实测下一个测试
-	//    新建的 topic 会因此收到 UnknownTopicOrPartition。
-	//    topic 名带时间戳已保证唯一，且容器本身是一次性的，留着无害。
-	return topic
 }
 
 // waitForTopic 轮询直到 topic 对 Producer 实际走的那条路径可见。
@@ -315,7 +318,9 @@ func TestProducer_RejectsOversizedTask(t *testing.T) {
 	}
 	defer producer.Close()
 
-	huge := make([]byte, maxTaskBytes+1)
+	// 用序列化上限直接构造：body 里的 []byte 会 base64 膨胀，
+	// 900KB 原文 → 约 1.2MB 消息，必定超过 MaxTaskBytes。
+	huge := make([]byte, MaxTaskBytes+1)
 	err = producer.Publish(context.Background(), IngestTask{DocID: "big", Raw: huge})
 	if err == nil {
 		t.Fatal("expected an error for an oversized task")

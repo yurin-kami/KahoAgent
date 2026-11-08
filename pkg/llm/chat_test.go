@@ -82,8 +82,11 @@ func TestChatModel_ScoreLimitsOutputLength(t *testing.T) {
 	if _, err := c.Score(context.Background(), "x"); err != nil {
 		t.Fatalf("score: %v", err)
 	}
-	if maxTokens == 0 || maxTokens > 64 {
-		t.Errorf("expected a small max_tokens for scoring, got %d", maxTokens)
+	// ⚠️ 不再要求「很小」：推理模型会先写 reasoning_content，
+	// 16 个 token 会被吃光、content 为空（实测 deepseek-flash）。
+	// 普通模型输出一个数字就 stop，调大上限不会真的用满。
+	if maxTokens < 32 || maxTokens > 512 {
+		t.Errorf("expected a reasoning-aware max_tokens for scoring, got %d", maxTokens)
 	}
 }
 

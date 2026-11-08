@@ -57,7 +57,7 @@ func run(path string) error {
 	docID := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
 
 	// 组装真实管道
-	embedder := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	embedder := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 
 	store, err := vectorstore.NewMilvusStore(ctx, cfg.Milvus.Addr,

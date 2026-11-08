@@ -1,0 +1,15 @@
+{
+  "name": "kahoagent-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KahoAgent 桌面客户端：对话、来源、运行轨迹与文档上传",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:mock": "electron . --mock",
+    "screenshot": "electron . --mock --screenshot screenshot.png"
+  },
+  "devDependencies": {
+    "electron": "40.1.0"
+  }
+}

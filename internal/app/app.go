@@ -22,6 +22,7 @@ import (
 	"github.com/yurin-kami/KahoAgent/internal/agent/tools"
 	"github.com/yurin-kami/KahoAgent/internal/config"
 	"github.com/yurin-kami/KahoAgent/internal/handler"
+	"github.com/yurin-kami/KahoAgent/internal/pipeline"
 	"github.com/yurin-kami/KahoAgent/internal/rag/retriever"
 	"github.com/yurin-kami/KahoAgent/pkg/cache"
 	"github.com/yurin-kami/KahoAgent/pkg/cloudkaho"
@@ -41,9 +42,19 @@ type App struct {
 	// Memory 暴露出来供测试清理会话；生产代码不需要碰它。
 	Memory *agent.SessionMemory
 
+	// UploadHandler 接收文档并投递到 Kafka，由 cmd/worker 异步消费。
+	// 与 Handler 并列而不是塞进 Handler：两者的失败模式完全不同 ——
+	// 对话失败返回 5xx 立刻可见，上传失败只是「任务没进队列」，
+	// 分开挂载才能单独限流、单独鉴权。
+	UploadHandler http.Handler
+
 	store *vectorstore.MilvusStore
 	pool  *pgxpool.Pool
 	rdb   *redis.Client
+
+	// producer 持有 Kafka 连接，Close 时必须释放，否则进程退出时
+	// 未 flush 的消息会丢。
+	producer *pipeline.Producer
 
 	closers []func()
 }
@@ -86,6 +97,13 @@ func (a *App) dial(ctx context.Context, cfg *config.Config, logger *slog.Logger)
 	if err != nil {
 		return fmt.Errorf("connect milvus: %w", err)
 	}
+	// ⚠️ 必须显式 Ensure：NewMilvusStore 只建连接，不建表。
+	// 之前只有评估脚本调用了它，服务路径漏了 —— 结果就是「空 Milvus
+	// 上第一次检索/入库报 collection not found」，而部署文档里
+	// 又没说需要先跑初始化脚本。Ensure 是幂等的，启动时无脑调用即可。
+	if err := store.EnsureCollection(ctx); err != nil {
+		return fmt.Errorf("ensure milvus collection: %w", err)
+	}
 	a.store = store
 	a.closers = append(a.closers, func() { _ = store.Close() })
 
@@ -119,7 +137,7 @@ func (a *App) dial(ctx context.Context, cfg *config.Config, logger *slog.Logger)
 }
 
 func (a *App) build(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
-	embedder := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	embedder := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 
 	vec, err := retriever.NewVectorRetriever(embedder, a.store)
@@ -131,8 +149,27 @@ func (a *App) build(ctx context.Context, cfg *config.Config, logger *slog.Logger
 		return err
 	}
 
-	chat := llm.NewChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model)
-	rerank, err := retriever.NewLLMReranker(chat, logger)
+	// 主备切换：只有配了 fallback_model 才启用。
+	// 精排与对话共用这两个选项列表，保证两处的容错行为一致。
+	var chatOpts []llm.ChatOption
+	var einoOpts []llm.EinoChatOption
+	if fbModel, fbURL, fbKey, ok := cfg.LLM.Fallback(); ok {
+		ep := llm.Endpoint{APIKey: fbKey, BaseURL: fbURL, Model: fbModel}
+		chatOpts = append(chatOpts, llm.WithChatFallback(ep))
+		einoOpts = append(einoOpts, llm.WithEinoFallback(ep))
+		logger.Info("llm fallback enabled", "model", fbModel, "base_url", fbURL)
+	}
+
+	chat := llm.NewChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model, chatOpts...)
+
+	// 精排可以单独用非推理模型（见 config.RerankModel 的注释）：
+	// 推理模型逐条打分既慢又可能拿不到 content。
+	rerankChat := chat
+	if name := cfg.LLM.RerankModelName(); name != cfg.LLM.Model {
+		rerankChat = llm.NewChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, name, chatOpts...)
+		logger.Info("rerank uses a separate model", "model", name)
+	}
+	rerank, err := retriever.NewLLMReranker(rerankChat, logger)
 	if err != nil {
 		return err
 	}
@@ -154,7 +191,7 @@ func (a *App) build(ctx context.Context, cfg *config.Config, logger *slog.Logger
 	a.Tools = agentTools
 
 	ag, err := agent.New(ctx, agent.Config{
-		Model: llm.NewEinoChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model),
+		Model: llm.NewEinoChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model, einoOpts...),
 		Tools: agentTools,
 	})
 	if err != nil {
@@ -168,11 +205,29 @@ func (a *App) build(ctx context.Context, cfg *config.Config, logger *slog.Logger
 	}
 	a.Memory = mem
 
-	h, err := handler.NewChatHandler(ag, mem, logger)
+	h, err := handler.NewChatHandler(ag, mem, logger,
+		handler.WithHistoryBudget(cfg.LLM.HistoryBudget()))
 	if err != nil {
 		return err
 	}
 	a.Handler = h
+
+	// Kafka producer 在构造时不建立连接（kafka-go 首次写入才 dial），
+	// 所以这里失败只可能是配置错误，不会因为 broker 没起来而阻塞启动 ——
+	// 这也意味着「服务起来了」不代表「可以上传」，真正的可用性要看
+	// kaho_upload_total{result="unavailable"}。
+	prod, err := pipeline.NewProducer(cfg.Kafka.Brokers, cfg.Kafka.Topic)
+	if err != nil {
+		return fmt.Errorf("build kafka producer: %w", err)
+	}
+	a.producer = prod
+	a.closers = append(a.closers, func() { _ = prod.Close() })
+
+	up, err := handler.NewUploadHandler(prod, logger)
+	if err != nil {
+		return err
+	}
+	a.UploadHandler = up
 	return nil
 }
 

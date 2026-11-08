@@ -22,6 +22,13 @@ type Chunk struct {
 	// ToolName 非空表示这是一次工具调用的结果
 	ToolName string
 
+	// ToolResult 是工具返回给模型的原始文本（仅 ToolName 非空时有值）。
+	//
+	// 为什么不直接丢掉：前端需要展示「这次回答引用了哪些片段」，
+	// 而引用信息就藏在这段文本里（rag_query 的「【片段 N】来源: …」格式）。
+	// 把它交给 handler 解析，比让前端去猜模型输出里的引用标记可靠得多。
+	ToolResult string
+
 	// Err 非空表示出错。出错后迭代即终止。
 	Err error
 }
@@ -78,7 +85,15 @@ func Consume(ctx context.Context, iter *adk.AsyncIterator[*adk.AgentEvent], fn f
 			if mo.Message == nil || mo.Message.Content == "" {
 				continue
 			}
-			if err := fn(Chunk{Text: mo.Message.Content, ToolName: toolName}); err != nil {
+			if toolName != "" {
+				// 工具结果是给模型看的中间产物，不能混进 Text，
+				// 否则 Collect/handler 会把它当成回答的一部分拼给用户。
+				if err := fn(Chunk{ToolName: toolName, ToolResult: mo.Message.Content}); err != nil {
+					return err
+				}
+				continue
+			}
+			if err := fn(Chunk{Text: mo.Message.Content}); err != nil {
 				return err
 			}
 			continue
@@ -115,7 +130,13 @@ func drain(ctx context.Context, sr *schema.StreamReader[*schema.Message], toolNa
 		if msg == nil || msg.Content == "" {
 			continue
 		}
-		if err := fn(Chunk{Text: msg.Content, ToolName: toolName}); err != nil {
+		if toolName != "" {
+			if err := fn(Chunk{ToolName: toolName, ToolResult: msg.Content}); err != nil {
+				return err
+			}
+			continue
+		}
+		if err := fn(Chunk{Text: msg.Content}); err != nil {
 			return err
 		}
 	}

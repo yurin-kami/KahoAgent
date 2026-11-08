@@ -8,9 +8,12 @@
 #   jieba 词典          13.8MB   ← BM25 那一路的中文分词，删了检索直接失效
 #   kaho-server         41.6MB
 #   kaho-mcp            42.4MB
+#   kaho-worker         ≈41MB（新增，与上面两个同源依赖，未单独实测）
 #
-# 光是「跑得起来」的最小地基就 26.5MB，两个 cgo 二进制又各占 40MB+
+# 光是「跑得起来」的最小地基就 26.5MB，cgo 二进制又各占 40MB+
 # （cgo 二进制无法静态裁剪到纯 Go 的水平）。
+# 三个二进制一起打包后镜像约 150MB —— 这是「一个镜像跑三种角色」的代价，
+# 换来的是三者依赖版本永远一致（见 docs/deployment.md 的取舍说明）。
 # <30MB 那个目标是在选定 gojieba 之前定的，属于规划阶段的估算失误，
 # 而不是实现没做到位 —— 记在这里，不悄悄改掉验收标准。
 
@@ -60,7 +63,11 @@ RUN CGO_ENABLED=1 GOOS=linux go build \
     CGO_ENABLED=1 GOOS=linux go build \
     -trimpath \
     -ldflags="-s -w" \
-    -o /out/kaho-mcp ./cmd/mcp
+    -o /out/kaho-mcp ./cmd/mcp && \\
+    CGO_ENABLED=1 GOOS=linux go build \\
+    -trimpath \\
+    -ldflags="-s -w" \\
+    -o /out/kaho-worker ./cmd/worker
 
 # 把 gojieba 的词典从 module 缓存里捞出来。
 #
@@ -95,6 +102,7 @@ WORKDIR /app
 
 COPY --from=builder /out/kaho-server /app/kaho-server
 COPY --from=builder /out/kaho-mcp /app/kaho-mcp
+COPY --from=builder /out/kaho-worker /app/kaho-worker
 COPY --from=builder /out/dict /app/dict
 COPY config.example.toml /app/config.example.toml
 

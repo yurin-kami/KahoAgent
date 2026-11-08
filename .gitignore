@@ -58,3 +58,17 @@ __pycache__/
 # 个人材料（面试问答稿）。本地保留、不入公开仓库 ——
 # 已用 git filter-repo 从全部历史中清除，这一行防止再次误加。
 docs/resume-material.md
+
+# 本机构建缓存（沙箱把默认 GOCACHE/GOMODCACHE 设成了只读路径，
+# 只能指到仓库内；这些目录纯属本地产物，不应入库）
+/.gocache/
+/.gomodcache/
+# 简历构建产物（本地资料，见 docs/upgrade-plan.md）
+/.resume-build/
+
+# Electron 桌面端依赖（npm install 生成，不入库）
+/desktop/node_modules/
+
+# 本地 embedding 服务
+/scripts/local-embed/.venv/
+/scripts/local-embed/models/

@@ -65,16 +65,21 @@ func main() {
 		goldenPath = flag.String("golden", "scripts/eval/golden_set.json", "golden set 路径")
 		withRerank = flag.Bool("rerank", false, "评估 LLM 精排（慢且消耗 API 配额）")
 		outPath    = flag.String("out", "docs/eval-results.md", "结果输出路径")
+		// 门禁相关：-baseline 指向上一轮的基线快照，-json 输出本轮快照。
+		// 两者配合使用：本轮结果写成 JSON → 人工确认后提交为新的 baseline。
+		baselinePath = flag.String("baseline", "", "基线 JSON 路径；设置后启用回归门禁")
+		jsonPath     = flag.String("json", "", "把本轮结果写成 JSON 的路径（供下次做基线）")
+		tolerance    = flag.Float64("tolerance", 0.02, "允许的绝对跌幅；小于 LLM 非确定性会被误报")
 	)
 	flag.Parse()
 
-	if err := run(*goldenPath, *outPath, *withRerank); err != nil {
+	if err := run(*goldenPath, *outPath, *withRerank, *baselinePath, *jsonPath, *tolerance); err != nil {
 		fmt.Fprintf(os.Stderr, "\n❌ %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(goldenPath, outPath string, withRerank bool) error {
+func run(goldenPath, outPath string, withRerank bool, baselinePath, jsonPath string, tolerance float64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Minute)
 	defer cancel()
 
@@ -98,7 +103,7 @@ func run(goldenPath, outPath string, withRerank bool) error {
 		return fmt.Errorf("load config: %w", err)
 	}
 
-	embedder := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	embedder := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 
 	store, err := vectorstore.NewMilvusStore(ctx, cfg.Milvus.Addr,
@@ -152,7 +157,7 @@ func run(goldenPath, outPath string, withRerank bool) error {
 	}
 
 	if withRerank {
-		chat := llm.NewChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.Model)
+		chat := llm.NewChatModel(cfg.LLM.APIKey, cfg.LLM.BaseURL, cfg.LLM.RerankModelName())
 		rr, err := retriever.NewLLMReranker(chat, quiet)
 		if err != nil {
 			return err
@@ -187,7 +192,102 @@ func run(goldenPath, outPath string, withRerank bool) error {
 	}
 	fmt.Printf("\n结果已写入 %s\n", outPath)
 
+	// 先把报告落盘再做门禁判定：门禁失败时同样需要一份可对比的报告，
+	// 否则 CI 红了却拿不到任何现场数据。
+	rep := buildReport(results, len(golden))
+	if jsonPath != "" {
+		if err := writeJSON(jsonPath, rep); err != nil {
+			return fmt.Errorf("write json report: %w", err)
+		}
+		fmt.Printf("本轮快照已写入 %s\n", jsonPath)
+	}
+	if baselinePath != "" {
+		if err := runGate(baselinePath, rep, tolerance, withRerank); err != nil {
+			return err
+		}
+	}
+
 	return checkAcceptance(results)
+}
+
+// buildReport 把内部结果转成可序列化的快照。
+//
+// 指标统一保留 3 位：MRR 0.8184 与 0.818 的差异对门禁没有意义，
+// 反而会让基线文件每次重跑都产生 diff。
+func buildReport(results []result, golden int) eval.Report {
+	rep := eval.Report{
+		GoldenSet:   golden,
+		TopK:        evalTopK,
+		GeneratedAt: time.Now().UTC().Format(time.RFC3339),
+	}
+	for _, r := range results {
+		rep.Strategies = append(rep.Strategies, eval.StrategyMetrics{
+			Name:      r.name,
+			RecallAt5: eval.Round(r.recall),
+			MRR:       eval.Round(r.mrr),
+			P50Ms:     float64(r.p50.Microseconds()) / 1000,
+			P99Ms:     float64(r.p99.Microseconds()) / 1000,
+		})
+	}
+	return rep
+}
+
+// writeJSON 写缩进 JSON。
+//
+// 用缩进而非紧凑格式：基线文件是要进 git、被人 review 的，
+// 一行 JSON 的 diff 无法阅读。
+func writeJSON(path string, rep eval.Report) error {
+	buf, err := json.MarshalIndent(rep, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(buf, '\n'), 0o644)
+}
+
+// runGate 把本轮结果与基线比较。
+//
+// full 表示本轮是否评估了全部策略。不带 -rerank 时基线里的
+// 「hybrid-rrf+rerank」不可能出现，把它当成「策略缺失」会让门禁永远红 ——
+// 所以这里按当前实际评估的策略集合裁剪基线，并明确打印被跳过的项。
+// 这不是放水：跳过项会写进输出，CI 日志里能看到本次门禁覆盖了哪些策略。
+func runGate(path string, cur eval.Report, tolerance float64, full bool) error {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("read baseline: %w", err)
+	}
+	var base eval.Report
+	if err := json.Unmarshal(raw, &base); err != nil {
+		return fmt.Errorf("parse baseline %s: %w", path, err)
+	}
+
+	if !full {
+		curNames := make(map[string]bool, len(cur.Strategies))
+		for _, s := range cur.Strategies {
+			curNames[s.Name] = true
+		}
+		kept := base.Strategies[:0]
+		for _, s := range base.Strategies {
+			if curNames[s.Name] {
+				kept = append(kept, s)
+			} else {
+				fmt.Printf("⚠️  门禁跳过未评估的策略：%s（本次未加 -rerank）\n", s.Name)
+			}
+		}
+		base.Strategies = kept
+	}
+
+	violations := eval.Compare(base, cur, tolerance)
+	if len(violations) == 0 {
+		fmt.Printf("\n✅ 质量门禁通过（容差 ±%.3f，基线 %s）\n", tolerance, path)
+		return nil
+	}
+
+	fmt.Printf("\n❌ 质量门禁未通过（容差 ±%.3f，基线 %s）：\n", tolerance, path)
+	for _, v := range violations {
+		fmt.Printf("   - %s\n", v)
+	}
+	return fmt.Errorf("检索质量回退：%d 项超过容差 ±%.3f；确认是有意变更后再更新 %s",
+		len(violations), tolerance, path)
 }
 
 func evaluate(ctx context.Context, s searcher, golden []goldenEntry) (result, error) {

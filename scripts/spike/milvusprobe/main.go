@@ -54,7 +54,7 @@ func run() error {
 	}
 	defer store.Close()
 
-	emb := llm.NewEmbedder(cfg.LLM.APIKey, cfg.LLM.BaseURL,
+	emb := llm.NewEmbedder(cfg.LLM.EmbeddingKey(), cfg.LLM.EmbeddingURL(),
 		cfg.LLM.EmbeddingModel, cfg.LLM.EmbeddingDim)
 
 	// ---- 双存储一致性核对 ----
